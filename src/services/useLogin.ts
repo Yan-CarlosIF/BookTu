@@ -1,6 +1,7 @@
 import { api } from "@/lib/axios";
 import { useToast } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 import nookies from "nookies";
 
 interface LoginSchema {
@@ -9,6 +10,7 @@ interface LoginSchema {
 }
 
 export function useLogin() {
+  const router = useRouter();
   const toast = useToast();
 
   return useMutation({
@@ -30,6 +32,8 @@ export function useLogin() {
         duration: 5000,
         isClosable: true,
       });
+
+      router.push("/home/books");
     },
 
     onError: () => {
