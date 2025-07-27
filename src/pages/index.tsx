@@ -1,21 +1,36 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Icon,
-  InputGroup,
-  InputLeftElement,
-  Text,
-  Input,
-  VStack,
-  Button,
-} from "@chakra-ui/react";
+import { Box, Flex, Heading, Text, Button } from "@chakra-ui/react";
 import { LockKeyhole, User } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useLogin } from "@/services/useLogin";
+import { Input } from "@/components/input";
+
+const loginSchema = z.object({
+  login: z.string().nonempty("Login obrigatório"),
+  password: z.string().nonempty("Informe sua senha"),
+});
+
+type LoginSchema = z.infer<typeof loginSchema>;
 
 export default function Home() {
+  const { mutateAsync: LoginFn } = useLogin();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors },
+  } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  async function handleLogin(data: LoginSchema) {
+    await LoginFn(data);
+  }
+
   return (
     <Flex direction="column" align="center" justify="center">
-      <Heading as="h1" fontSize="6xl" my={110}>
+      <Heading color="gray_800" as="h1" fontSize="6xl" my={110}>
         BookTu
       </Heading>
       <Box
@@ -27,62 +42,59 @@ export default function Home() {
         w={560}
         h={387}
       >
-        <Heading
-          display="flex"
-          gap={18}
-          justifyContent="center"
-          ml={-20}
-          alignItems="center"
-          as="header"
-        >
-          <Text fontSize="md">BookTu</Text>
-          <Text fontSize={28} fontWeight="medium">
-            Iniciar Sessão
-          </Text>
-        </Heading>
-        <VStack gap={30} mt={30}>
-          <InputGroup>
-            <InputLeftElement h={50}>
-              <Icon as={User} color="gray_600" fontSize={20} />
-            </InputLeftElement>
+        <Flex direction="column" h="100%">
+          <Heading
+            display="flex"
+            gap={18}
+            justifyContent="center"
+            ml={-20}
+            alignItems="center"
+            as="header"
+          >
+            <Text color="gray_800" fontSize="md">
+              BookTu
+            </Text>
+            <Text color="gray_800" fontSize={28} fontWeight="medium">
+              Iniciar Sessão
+            </Text>
+          </Heading>
+          <Flex
+            as="form"
+            direction="column"
+            onSubmit={handleSubmit(handleLogin)}
+            mt="30px"
+            gap="24px"
+            h="100%"
+          >
             <Input
-              h={50}
               placeholder="Login"
-              errorBorderColor="failed"
-              focusBorderColor="highlight_blue"
-              borderColor="gray_500"
-              bg="gray_300"
-              color="gray_600"
-              _placeholder={{ color: "gray_600", fontWeight: "medium" }}
+              error={errors.login}
+              icon={User}
+              {...register("login")}
             />
-          </InputGroup>
-          <InputGroup>
-            <InputLeftElement h={50}>
-              <Icon as={LockKeyhole} color="gray_600" fontSize={20} />
-            </InputLeftElement>
             <Input
-              h={50}
               placeholder="Senha"
-              errorBorderColor="failed"
-              focusBorderColor="highlight_blue"
-              borderColor="gray_500"
-              bg="gray_300"
-              color="gray_600"
-              _placeholder={{ color: "gray_600", fontWeight: "medium" }}
+              type="password"
+              error={errors.password}
+              icon={LockKeyhole}
+              {...register("password")}
             />
-          </InputGroup>
-        </VStack>
-        <Button
-          mt={62}
-          w="full"
-          _hover={{ bg: "teal.300" }}
-          bg="highlight_blue"
-          color="background"
-          fontSize="xl"
-          h={58}
-        >
-          Iniciar Sessão
-        </Button>
+            <Button
+              rounded="lg"
+              mt="auto"
+              type="submit"
+              isLoading={isSubmitting}
+              w="full"
+              _hover={{ bg: "teal.300" }}
+              bg="highlight_blue"
+              color="background"
+              fontSize="xl"
+              h="58px"
+            >
+              Iniciar Sessão
+            </Button>
+          </Flex>
+        </Flex>
       </Box>
     </Flex>
   );
