@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLogin } from "@/services/useLogin";
 import { Input } from "@/components/input";
+import { alreadyLoggedIn } from "@/utils/alreadyLoggedIn";
 
 const loginSchema = z.object({
   login: z.string().nonempty("Login obrigatório"),
@@ -67,12 +68,14 @@ export default function Home() {
             h="100%"
           >
             <Input
+              h={50}
               placeholder="Login"
               error={errors.login}
               icon={User}
               {...register("login")}
             />
             <Input
+              h={50}
               placeholder="Senha"
               type="password"
               error={errors.password}
@@ -99,3 +102,9 @@ export default function Home() {
     </Flex>
   );
 }
+
+export const getServerSideProps = alreadyLoggedIn(async (ctx) => {
+  return {
+    props: {},
+  };
+});

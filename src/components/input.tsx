@@ -16,18 +16,18 @@ interface InputProps extends ChakraInputProps {
   icon?: any;
 }
 const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
-  { placeholder, error = null, icon, ...props },
+  { placeholder, error = null, icon, h, ...props },
   ref
 ) => {
   return (
     <FormControl display="flex" flexDirection="column" isInvalid={!!error}>
       <InputGroup>
-        <InputLeftElement h={50}>
+        <InputLeftElement h={h}>
           <Icon as={icon} color="gray_600" fontSize={20} />
         </InputLeftElement>
         <ChakraInput
           isInvalid={!!error}
-          h={50}
+          h={h}
           placeholder={placeholder}
           errorBorderColor="failed"
           focusBorderColor="highlight_blue"
