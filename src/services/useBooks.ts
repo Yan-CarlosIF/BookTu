@@ -10,11 +10,11 @@ interface IResponse {
   lastPage: number;
 }
 
-export function UseBooks(page: number, sort?: string) {
+export function UseBooks(page: number, sort: string) {
   const token = nookies.get(null)["auth.token"];
 
   return useQuery({
-    queryKey: ["books", page],
+    queryKey: ["books", page, sort],
     queryFn: async () => {
       const { data } = await api.get<IResponse>("/books", {
         headers: {

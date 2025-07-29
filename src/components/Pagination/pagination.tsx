@@ -12,6 +12,10 @@ export function Pagination({ lastPage, currentPage }: PaginationProps) {
   const router = useRouter();
 
   function handlePageChange(page: number) {
+    if (router.query.sort) {
+      return router.push(`?page=${page}&sort=${router.query.sort}`);
+    }
+
     router.push(`?page=${page}`);
   }
 

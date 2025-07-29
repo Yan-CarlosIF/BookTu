@@ -8,6 +8,7 @@ import { Search } from "lucide-react";
 import { UseBooks } from "@/services/useBooks";
 import { CheckBoxTable } from "@/components/CheckboxTable";
 import { CheckboxTableLoading } from "@/components/CheckboxTable/loading";
+import { useRouter } from "next/router";
 
 type BooksPageProps = {
   name: string;
@@ -16,7 +17,21 @@ type BooksPageProps = {
 };
 
 const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
+  const router = useRouter();
   const { data, isLoading } = UseBooks(page, sort);
+
+  function handleFilterChange(sort: string) {
+    if (sort === "") {
+      return router.push(`?page=${page}`);
+    }
+
+    router.push({
+      query: {
+        page,
+        sort,
+      },
+    });
+  }
 
   return (
     <>
@@ -44,14 +59,15 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
           color="background"
           fontWeight="medium"
           h="42px"
-          w="125px"
+          w="210px"
           _hover={{ bg: "teal.400" }}
+          onChange={(e) => handleFilterChange(e.target.value)}
         >
           <option value="asc">A-Z</option>
           <option value="desc">Z-A</option>
           <option value="price-asc">Menor preço</option>
           <option value="price-desc">Maior preço</option>
-          <option value="newest">Mais recentes</option>
+          <option value="latest">Mais recentes</option>
           <option value="oldest">Mais antigos</option>
         </Select>
       </Flex>
