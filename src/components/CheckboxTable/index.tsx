@@ -10,12 +10,14 @@ import {
   Text,
   Flex,
   Button,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
-import { useState } from "react";
 import { ActionBar } from "../ActionBar/action-bar";
 import { CheckboxTableItem } from "./checkbox-table-item";
 import { Pagination } from "../Pagination/pagination";
+import { useCheckboxToggle } from "@/hooks/checkboxToggle";
+import { AddBookModal } from "./AddBookModal/add-book-modal";
 
 interface CheckBoxTableProps {
   data: {
@@ -27,28 +29,15 @@ interface CheckBoxTableProps {
 }
 
 export function CheckBoxTable({ data }: CheckBoxTableProps) {
-  const [selectedData, setSelectedData] = useState<string[]>([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const toggleSelectAll = () => {
-    if (selectedData.length === data?.data.length) {
-      setSelectedData([]);
-    } else {
-      setSelectedData(data?.data.map((book) => book.id));
-    }
-  };
-
-  const toggleSelect = (id: string) => {
-    if (selectedData.includes(id)) {
-      setSelectedData(selectedData.filter((bookId) => bookId !== id));
-    } else {
-      setSelectedData([...selectedData, id]);
-    }
-  };
-
-  const handleDeleteSelected = () => {
-    console.log("Excluir livros com ID:", selectedData);
-    setSelectedData([]);
-  };
+  const {
+    handleDeleteSelected,
+    selectedData,
+    setSelectedData,
+    toggleSelect,
+    toggleSelectAll,
+  } = useCheckboxToggle(data);
 
   return (
     <>
@@ -93,6 +82,7 @@ export function CheckBoxTable({ data }: CheckBoxTableProps) {
         <Button
           rightIcon={<Plus />}
           color="background"
+          onClick={onOpen}
           _focus={{ bg: "teal.400" }}
           _hover={{ bg: "teal.400" }}
           fontWeight="medium"
@@ -102,6 +92,7 @@ export function CheckBoxTable({ data }: CheckBoxTableProps) {
         >
           Adicionar
         </Button>
+        <AddBookModal isOpen={isOpen} onClose={onClose} />
 
         <Pagination currentPage={data.page} lastPage={data.lastPage} />
       </Flex>

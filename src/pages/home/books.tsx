@@ -1,6 +1,6 @@
 import { HomeLayout } from "@/components/Home/layout";
 import { NextPageWithLayout } from "../_app";
-import { ReactElement } from "react";
+import { ReactElement, useMemo, useState } from "react";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 import { Flex, Select } from "@chakra-ui/react";
 import { Input } from "@/components/input";
@@ -17,8 +17,9 @@ type BooksPageProps = {
 };
 
 const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
-  const router = useRouter();
   const { data, isLoading } = UseBooks(page, sort);
+  const [search, setSearch] = useState("");
+  const router = useRouter();
 
   function handleFilterChange(sort: string) {
     if (sort === "") {
@@ -32,6 +33,26 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
       },
     });
   }
+
+  // Filtra os dados baseado no termo de busca
+  const filteredData = useMemo(() => {
+    if (!data?.books || !search.trim()) {
+      return data;
+    }
+
+    const filteredBooks = data.books.filter(
+      (book) =>
+        book.title?.toLowerCase().includes(search.toLowerCase().trim()) ||
+        book.author?.toLowerCase().includes(search.toLowerCase().trim())
+    );
+
+    return {
+      lastPage: Math.ceil(filteredBooks.length / 10),
+      page,
+      total: filteredBooks.length,
+      books: filteredBooks,
+    };
+  }, [data, search]);
 
   return (
     <>
@@ -49,6 +70,8 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
           h="42px"
           bg="background"
           placeholder="Procurar por nome do livro"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           icon={Search}
         />
         <Select
@@ -78,8 +101,8 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
       ) : (
         <CheckBoxTable
           data={{
-            ...data,
-            data: data.books,
+            ...filteredData,
+            data: filteredData?.books || [],
           }}
         />
       )}

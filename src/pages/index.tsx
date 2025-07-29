@@ -69,6 +69,7 @@ export default function Home() {
           >
             <Input
               h={50}
+              name="login"
               placeholder="Login"
               error={errors.login}
               icon={User}
@@ -76,6 +77,7 @@ export default function Home() {
             />
             <Input
               h={50}
+              name="password"
               placeholder="Senha"
               type="password"
               error={errors.password}
