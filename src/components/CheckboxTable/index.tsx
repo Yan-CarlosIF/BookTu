@@ -41,7 +41,7 @@ export function CheckBoxTable({ data }: CheckBoxTableProps) {
 
   return (
     <>
-      <TableContainer mt="40px">
+      <TableContainer h="575px" mt="40px">
         <Table borderWidth={1} borderColor="gray.200" colorScheme="gray">
           <Thead bg="gray_300">
             <Tr>

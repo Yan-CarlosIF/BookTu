@@ -68,7 +68,7 @@ export function CategoriesCheckboxList() {
           _focus={{ outline: "none" }}
           _active={{ outline: "none" }}
         >
-          <Text isTruncated>{getDisplayText()}</Text>
+          <Text fontWeight="medium" isTruncated>{getDisplayText()}</Text>
         </MenuButton>
         <MenuList maxH="200px" overflow="scroll">
           {categories.map((category) => (

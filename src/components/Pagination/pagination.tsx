@@ -28,7 +28,7 @@ export function Pagination({ lastPage, currentPage }: PaginationProps) {
   }
 
   return (
-    <HStack spacing="2">
+    <HStack w="328px" spacing="2">
       {currentPage > 1 && (
         <>
           <Button

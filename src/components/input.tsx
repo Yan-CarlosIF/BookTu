@@ -23,12 +23,19 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
 ) => {
   return (
     <FormControl display="flex" flexDirection="column" isInvalid={!!error}>
-      {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
+      {label && (
+        <FormLabel color="gray_800" htmlFor={name}>
+          {label}
+        </FormLabel>
+      )}
       <InputGroup>
-        <InputLeftElement h={h}>
-          <Icon as={icon} color="gray_600" fontSize={20} />
-        </InputLeftElement>
+        {icon && (
+          <InputLeftElement h={h}>
+            <Icon as={icon} color="gray_600" fontSize={20} />
+          </InputLeftElement>
+        )}
         <ChakraInput
+          name={name}
           isInvalid={!!error}
           h={h}
           placeholder={placeholder}
