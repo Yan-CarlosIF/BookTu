@@ -21,7 +21,7 @@ export function ActionBar({
   return (
     <Box
       position="fixed"
-      bottom="6"
+      bottom="7"
       borderRadius="lg"
       left="58%"
       transform="translateX(-50%)"

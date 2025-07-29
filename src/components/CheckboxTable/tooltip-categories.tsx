@@ -21,6 +21,8 @@ export function TooltipCategories({
       <Text cursor="context-menu" as="span">
         {categories[0].name}{" "}
         <Tooltip
+          hasArrow
+          bg="gray_800"
           placement="top-start"
           label={categories.map((c, index) => (
             <>

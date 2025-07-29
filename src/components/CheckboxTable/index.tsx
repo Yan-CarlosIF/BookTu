@@ -15,9 +15,15 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { ActionBar } from "../ActionBar/action-bar";
 import { CheckboxTableItem } from "./checkbox-table-item";
+import { Pagination } from "../Pagination/pagination";
 
 interface CheckBoxTableProps {
-  data: { data: Book[]; total: number; page: number; lastPage: number };
+  data: {
+    data: Book[];
+    total: number;
+    page: number;
+    lastPage: number;
+  };
 }
 
 export function CheckBoxTable({ data }: CheckBoxTableProps) {
@@ -97,7 +103,7 @@ export function CheckBoxTable({ data }: CheckBoxTableProps) {
           Adicionar
         </Button>
 
-        <Text>PAGINAÇÃO</Text>
+        <Pagination currentPage={data.page} lastPage={data.lastPage} />
       </Flex>
       <ActionBar
         count={selectedData.length}

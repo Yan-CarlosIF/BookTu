@@ -2,19 +2,21 @@ import { HomeLayout } from "@/components/Home/layout";
 import { NextPageWithLayout } from "../_app";
 import { ReactElement } from "react";
 import { withAuthServerSideProps } from "@/utils/withAuth";
-import { Flex, Select, Text } from "@chakra-ui/react";
+import { Flex, Select } from "@chakra-ui/react";
 import { Input } from "@/components/input";
 import { Search } from "lucide-react";
 import { UseBooks } from "@/services/useBooks";
 import { CheckBoxTable } from "@/components/CheckboxTable";
-import { mockBooks } from "@/shared/constants/books";
+import { CheckboxTableLoading } from "@/components/CheckboxTable/loading";
 
 type BooksPageProps = {
   name: string;
+  page: number;
+  sort?: string;
 };
 
-const BooksPage: NextPageWithLayout<BooksPageProps> = () => {
-  const { data, isFetching } = UseBooks(1, null);
+const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
+  const { data, isLoading } = UseBooks(page, sort);
 
   return (
     <>
@@ -55,13 +57,13 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = () => {
       </Flex>
 
       {/* Tabela */}
-      {isFetching ? (
-        <Text>Carregando...</Text>
+      {isLoading ? (
+        <CheckboxTableLoading />
       ) : (
         <CheckBoxTable
           data={{
             ...data,
-            data: mockBooks,
+            data: data.books,
           }}
         />
       )}
@@ -81,9 +83,13 @@ BooksPage.getLayout = function getLayout(
 };
 
 export const getServerSideProps = withAuthServerSideProps(async (ctx, user) => {
+  const { page, sort } = ctx.query;
+
   return {
     props: {
       name: user.name,
+      page: page ? Number(page) : 1,
+      sort: sort ?? null,
     },
   };
 });
