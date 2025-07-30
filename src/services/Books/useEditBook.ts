@@ -1,0 +1,52 @@
+import { api } from "@/lib/axios";
+import { useToast } from "@chakra-ui/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import nookies from "nookies";
+
+interface IEditBook {
+  id: string;
+  data: {
+    title?: string;
+    author?: string;
+    release_year?: number;
+    price?: number;
+    description?: string;
+    categoryIds?: string[];
+  };
+}
+
+export function useEditBook() {
+  const queryClient = useQueryClient();
+  const toast = useToast();
+  const token = nookies.get(null)["auth.token"];
+
+  return useMutation({
+    mutationFn: async ({ id, data }: IEditBook) => {
+      await api.patch(`/books/${id}`, data, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+
+      toast({
+        title: "Livro editado com sucesso",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+
+    onError: () => {
+      toast({
+        title: "Erro ao editar livro",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+  });
+}

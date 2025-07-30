@@ -1,7 +1,7 @@
 import { InputNumber } from "@/components/input-number";
 import { useCheckboxToggle } from "@/hooks/checkboxToggle";
-import { useAllCategories } from "@/services/useAllCategories";
-import { useCreateBook } from "@/services/useCreateBook";
+import { useAllCategories } from "@/services/Categories/useAllCategories";
+import { useCreateBook } from "@/services/Books/useCreateBook";
 import { Category } from "@/shared/types/category";
 import {
   Button,
@@ -41,16 +41,12 @@ type AddBookFormData = z.infer<typeof addBookSchema>;
 export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
   const { mutateAsync: createBookFn } = useCreateBook();
 
-  async function handleAddBook(data: AddBookFormData) {
-    console.log(data);
-    await createBookFn(data);
-  }
-
   const {
     control,
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<AddBookFormData>({
     // @ts-ignore
@@ -63,6 +59,7 @@ export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
   });
 
   const { data } = useAllCategories();
+  const categories = data || [];
 
   const title = watch("title");
   const author = watch("author");
@@ -70,11 +67,14 @@ export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
   const price = watch("price");
   const description = watch("description");
 
-  const categories = data || [];
-
   const { selectedData, setSelectedData } = useCheckboxToggle<Category>({
     data: categories,
   });
+
+  async function handleAddBook(data: AddBookFormData) {
+    reset();
+    await createBookFn(data);
+  }
 
   return (
     <Modal isOpen={isOpen} size="2xl" onClose={onClose}>

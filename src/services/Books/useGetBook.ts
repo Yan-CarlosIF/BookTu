@@ -3,31 +3,19 @@ import { Book } from "@/shared/types/book";
 import { useQuery } from "@tanstack/react-query";
 import nookies from "nookies";
 
-interface IResponse {
-  books: Book[];
-  total: number;
-  page: number;
-  lastPage: number;
-}
-
-export function UseBooks(page: number, sort: string) {
+export function useGetBook(id: string) {
   const token = nookies.get(null)["auth.token"];
 
   return useQuery({
-    queryKey: ["books", page, sort],
+    queryKey: ["book", id],
     queryFn: async () => {
-      const { data } = await api.get<IResponse>("/books", {
+      const { data } = await api.get<Book>(`/books/${id}`, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
-        },
-        params: {
-          page,
-          sort,
         },
       });
 
       return data;
     },
-    staleTime: 1000 * 60,
   });
 }

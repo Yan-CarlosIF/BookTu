@@ -5,7 +5,7 @@ import { withAuthServerSideProps } from "@/utils/withAuth";
 import { Flex, Select } from "@chakra-ui/react";
 import { Input } from "@/components/input";
 import { Search } from "lucide-react";
-import { UseBooks } from "@/services/useBooks";
+import { UseListBooks } from "@/services/Books/useListBooks";
 import { CheckBoxTable } from "@/components/CheckboxTable";
 import { CheckboxTableLoading } from "@/components/CheckboxTable/loading";
 import { useRouter } from "next/router";
@@ -17,7 +17,7 @@ type BooksPageProps = {
 };
 
 const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
-  const { data, isLoading } = UseBooks(page, sort);
+  const { data, isLoading } = UseListBooks(page, sort);
   const [search, setSearch] = useState("");
   const router = useRouter();
 

@@ -2,7 +2,7 @@ import { Category } from "@/shared/types/category";
 import { useQuery } from "@tanstack/react-query";
 import nookies from "nookies";
 
-import { api } from "../lib/axios";
+import { api } from "../../lib/axios";
 
 export function useAllCategories() {
   const token = nookies.get(null)["auth.token"];

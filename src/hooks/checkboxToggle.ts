@@ -27,16 +27,10 @@ export function useCheckboxToggle<T extends Book | Category>({
     }
   };
 
-  const handleDeleteSelected = () => {
-    console.log("Excluir livros com ID:", selectedData);
-    setSelectedData([]);
-  };
-
   return {
     selectedData,
     toggleSelectAll,
     toggleSelect,
-    handleDeleteSelected,
     setSelectedData,
   };
 }

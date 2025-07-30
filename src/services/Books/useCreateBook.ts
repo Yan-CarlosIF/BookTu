@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../lib/axios";
+import { api } from "../../lib/axios";
 import nookies from "nookies";
 import { useToast } from "@chakra-ui/react";
 

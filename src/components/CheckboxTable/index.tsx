@@ -17,7 +17,7 @@ import { ActionBar } from "../ActionBar/action-bar";
 import { CheckboxTableItem } from "./checkbox-table-item";
 import { Pagination } from "../Pagination/pagination";
 import { useCheckboxToggle } from "@/hooks/checkboxToggle";
-import { AddBookModal } from "./AddBookModal/add-book-modal";
+import { AddBookModal } from "./BookModal/add";
 
 interface CheckBoxTableProps {
   data: {
@@ -31,13 +31,8 @@ interface CheckBoxTableProps {
 export function CheckBoxTable({ data }: CheckBoxTableProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const {
-    handleDeleteSelected,
-    selectedData,
-    setSelectedData,
-    toggleSelect,
-    toggleSelectAll,
-  } = useCheckboxToggle({ data: data.data });
+  const { selectedData, setSelectedData, toggleSelect, toggleSelectAll } =
+    useCheckboxToggle({ data: data.data });
 
   return (
     <>
@@ -97,9 +92,10 @@ export function CheckBoxTable({ data }: CheckBoxTableProps) {
         <Pagination currentPage={data.page} lastPage={data.lastPage} />
       </Flex>
       <ActionBar
+        setSelectedData={setSelectedData}
+        data={selectedData}
         count={selectedData.length}
         onClear={() => setSelectedData([])}
-        onDelete={handleDeleteSelected}
       />
     </>
   );

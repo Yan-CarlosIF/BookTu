@@ -3,7 +3,7 @@ import { LockKeyhole, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLogin } from "@/services/useLogin";
+import { useLogin } from "@/services/Users/useLogin";
 import { Input } from "@/components/input";
 import { alreadyLoggedIn } from "@/utils/alreadyLoggedIn";
 
