@@ -37,7 +37,7 @@ export function CheckBoxTable({ data }: CheckBoxTableProps) {
     setSelectedData,
     toggleSelect,
     toggleSelectAll,
-  } = useCheckboxToggle(data);
+  } = useCheckboxToggle({ data: data.data });
 
   return (
     <>

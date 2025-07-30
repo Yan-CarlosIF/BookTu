@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   FormControl,
   FormLabel,
@@ -8,46 +7,29 @@ import {
   MenuItem,
   Button,
   Checkbox,
-  Box,
   Text,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "lucide-react";
+import { Category } from "@/shared/types/category";
 
-export function CategoriesCheckboxList() {
-  const [selectedCategories, setSelectedCategories] = useState([]);
+interface CategoriesCheckboxListProps {
+  categories: Category[];
+  selectedData: string[];
+  setSelectedData: (data: string[]) => void;
+}
 
-  const categories = [
-    { id: "1", label: "Categoria 1" },
-    { id: "2", label: "Categoria 2" },
-    { id: "3", label: "Categoria 3" },
-    { id: "4", label: "Categoria 4" },
-    { id: "1", label: "Categoria 1" },
-    { id: "2", label: "Categoria 2" },
-    { id: "3", label: "Categoria 3" },
-    { id: "4", label: "Categoria 4" },
-    { id: "1", label: "Categoria 1" },
-    { id: "2", label: "Categoria 2" },
-    { id: "3", label: "Categoria 3" },
-    { id: "4", label: "Categoria 4" },
-  ];
-
-  const handleCheckboxChange = (categoryId) => {
-    setSelectedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((id) => id !== categoryId)
-        : [...prev, categoryId]
-    );
-  };
-
+export function CategoriesCheckboxList({
+  categories,
+  selectedData,
+  setSelectedData,
+}: CategoriesCheckboxListProps) {
   const getDisplayText = () => {
-    if (selectedCategories.length === 0) return "Selecione as categorias";
-    if (selectedCategories.length === 1) {
-      const category = categories.find(
-        (cat) => cat.id === selectedCategories[0]
-      );
-      return category?.label;
+    if (selectedData.length === 0) return "Selecione as categorias";
+    if (selectedData.length === 1) {
+      const category = categories.find((cat) => selectedData.includes(cat.id));
+      return category?.name;
     }
-    return `${selectedCategories.length} categorias selecionadas`;
+    return `${selectedData.length} categorias selecionadas`;
   };
 
   return (
@@ -68,32 +50,36 @@ export function CategoriesCheckboxList() {
           _focus={{ outline: "none" }}
           _active={{ outline: "none" }}
         >
-          <Text fontWeight="medium" isTruncated>{getDisplayText()}</Text>
+          <Text fontWeight="medium" isTruncated>
+            {getDisplayText()}
+          </Text>
         </MenuButton>
         <MenuList maxH="200px" overflow="scroll">
           {categories.map((category) => (
             <MenuItem
               _hover={{ bg: "gray_300" }}
               key={category.id}
-              onClick={() => handleCheckboxChange(category.id)}
+              onClick={(e) => e.stopPropagation()}
             >
               <Checkbox
                 colorScheme="teal"
-                isChecked={selectedCategories.includes(category.id)}
-                onChange={() => handleCheckboxChange(category.id)}
+                isChecked={selectedData.some((id) => id === category.id)}
+                onChange={() => {
+                  if (selectedData.includes(category.id)) {
+                    setSelectedData(
+                      selectedData.filter((id) => id !== category.id)
+                    );
+                  } else {
+                    setSelectedData([...selectedData, category.id]);
+                  }
+                }}
               >
-                {category.label}
+                {category.name}
               </Checkbox>
             </MenuItem>
           ))}
         </MenuList>
       </Menu>
-
-      <Box mt={2}>
-        <Text fontSize="sm" color="gray_600">
-          Selecionados: {selectedCategories.join(", ") || "Nenhum"}
-        </Text>
-      </Box>
     </FormControl>
   );
 }

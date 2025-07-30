@@ -1,4 +1,8 @@
 import { InputNumber } from "@/components/input-number";
+import { useCheckboxToggle } from "@/hooks/checkboxToggle";
+import { useAllCategories } from "@/services/useAllCategories";
+import { useCreateBook } from "@/services/useCreateBook";
+import { Category } from "@/shared/types/category";
 import {
   Button,
   Modal,
@@ -29,25 +33,47 @@ const addBookSchema = z.object({
     .max(2026, "Ano inválido"),
   price: z.coerce.number().min(0.1, "Preço inválido"),
   description: z.string().optional(),
-  categories: z.array(z.string()).optional(),
+  categoryIds: z.array(z.string()).optional(),
 });
 
 type AddBookFormData = z.infer<typeof addBookSchema>;
 
 export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
+  const { mutateAsync: createBookFn } = useCreateBook();
+
+  async function handleAddBook(data: AddBookFormData) {
+    console.log(data);
+    await createBookFn(data);
+  }
+
   const {
     control,
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<AddBookFormData>({
     // @ts-ignore
     resolver: zodResolver(addBookSchema),
     defaultValues: {
-      categories: [],
+      categoryIds: [],
       release_year: 0,
       price: 0,
     },
+  });
+
+  const { data } = useAllCategories();
+
+  const title = watch("title");
+  const author = watch("author");
+  const release_year = watch("release_year");
+  const price = watch("price");
+  const description = watch("description");
+
+  const categories = data || [];
+
+  const { selectedData, setSelectedData } = useCheckboxToggle<Category>({
+    data: categories,
   });
 
   return (
@@ -58,7 +84,16 @@ export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
         <ModalCloseButton />
         <ModalBody
           as="form"
-          onSubmit={handleSubmit((data) => console.log(data))}
+          onSubmit={handleSubmit(() =>
+            handleAddBook({
+              categoryIds: selectedData,
+              title,
+              author,
+              release_year: Number(release_year),
+              price: Number(price),
+              description,
+            })
+          )}
           display="grid"
           gridTemplateColumns="1fr 1fr"
           gap="28px"
@@ -112,7 +147,9 @@ export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
           />
 
           <Input
-            minH={"40px"}
+            minH="40px"
+            h="130px"
+            maxH="130px"
             as="textarea"
             p="8px"
             label="Descrição (opcional)"
@@ -122,12 +159,17 @@ export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
             error={errors.description}
             {...register("description")}
           />
-          <CategoriesCheckboxList />
+          <CategoriesCheckboxList
+            selectedData={selectedData}
+            categories={categories}
+            setSelectedData={setSelectedData}
+          />
           <Button
             py={7}
             colorScheme="teal"
             type="submit"
             fontSize="lg"
+            onClick={onClose}
             isLoading={isSubmitting}
             gridColumn="1 / -1"
           >

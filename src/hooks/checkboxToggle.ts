@@ -1,27 +1,27 @@
 import { Book } from "@/shared/types/book";
+import { Category } from "@/shared/types/category";
 import { useState } from "react";
 
-interface CheckboxToggleProps {
-  data: Book[];
-  total: number;
-  page: number;
-  lastPage: number;
+interface CheckboxToggleProps<T> {
+  data: T[];
 }
 
-export function useCheckboxToggle(data: CheckboxToggleProps) {
+export function useCheckboxToggle<T extends Book | Category>({
+  data,
+}: CheckboxToggleProps<T>) {
   const [selectedData, setSelectedData] = useState<string[]>([]);
 
   const toggleSelectAll = () => {
-    if (selectedData.length === data?.data.length) {
+    if (selectedData.length === data.length) {
       setSelectedData([]);
     } else {
-      setSelectedData(data?.data.map((book) => book.id));
+      setSelectedData(data.map((data) => data.id));
     }
   };
 
   const toggleSelect = (id: string) => {
     if (selectedData.includes(id)) {
-      setSelectedData(selectedData.filter((bookId) => bookId !== id));
+      setSelectedData(selectedData.filter((dataId) => dataId !== id));
     } else {
       setSelectedData([...selectedData, id]);
     }

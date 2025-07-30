@@ -37,9 +37,10 @@ const InputNumberComponent: ForwardRefRenderFunction<
         <NumberInputField
           borderColor="gray_500"
           bg="gray_300"
-          border="2px"
+          border="1px"
           _focus={{
-            borderColor: !!error ? "none" : "highlight_blue",
+            ring: "2px",
+            ringColor: !!error ? "none" : "highlight_blue",
           }}
           color="gray_600"
           placeholder={label}
