@@ -13,6 +13,7 @@ import {
 import { Trash2 } from "lucide-react";
 import { useRef } from "react";
 
+import { useDeleteCategory } from "@/services/Categories/useDeleteCategory";
 import { Category } from "@/shared/types/category";
 
 import { EditPopover } from "./edit-popover";
@@ -22,6 +23,8 @@ interface SimpleTableItemProps {
 }
 
 export function SimpleTableItem({ category }: SimpleTableItemProps) {
+  const { mutateAsync: deleteCategoryFn } = useDeleteCategory();
+
   const {
     isOpen: isCancelOpen,
     onOpen: onOpenCancel,
@@ -30,11 +33,17 @@ export function SimpleTableItem({ category }: SimpleTableItemProps) {
 
   const cancelRef = useRef(null);
 
+  async function handleDeleteCategory() {
+    await deleteCategoryFn(category.id);
+
+    onCloseCancel();
+  }
+
   return (
     <Tr key={category.id}>
       <Th w="66%">{category.name}</Th>
       <Th>
-        <EditPopover />
+        <EditPopover category={category} />
       </Th>
       <Th>
         <Button
@@ -66,7 +75,7 @@ export function SimpleTableItem({ category }: SimpleTableItemProps) {
               <Button ref={cancelRef} onClick={onCloseCancel}>
                 Cancelar
               </Button>
-              <Button colorScheme="red" ml={3}>
+              <Button onClick={handleDeleteCategory} colorScheme="red" ml={3}>
                 Confirmar
               </Button>
             </AlertDialogFooter>

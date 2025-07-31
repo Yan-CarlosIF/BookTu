@@ -11,12 +11,28 @@ import {
 import { EditIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
+import { useEditCategory } from "@/services/Categories/useEditCategory";
+import { Category } from "@/shared/types/category";
+
 import { Input } from "../input";
 
-export function EditPopover() {
-  const [editText, setEditText] = useState("");
+interface EditPopoverProps {
+  category: Category;
+}
+
+export function EditPopover({ category }: EditPopoverProps) {
+  const [editText, setEditText] = useState(category.name);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialFocusRef = useRef(null);
+
+  const { mutateAsync: editCategoryFn } = useEditCategory();
+
+  async function handleEditCategory() {
+    await editCategoryFn({ id: category.id, name: editText });
+
+    setEditText("");
+    onClose();
+  }
 
   return (
     <Popover
@@ -41,7 +57,9 @@ export function EditPopover() {
           fontSize="sm"
           placeholder="Nome da categoria"
         />
-        <Button colorScheme="teal">Salvar</Button>
+        <Button onClick={handleEditCategory} colorScheme="teal">
+          Salvar
+        </Button>
       </PopoverContent>
     </Popover>
   );
