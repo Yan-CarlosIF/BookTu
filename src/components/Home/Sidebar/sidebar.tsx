@@ -1,5 +1,5 @@
 import { Box, Heading, Stack } from "@chakra-ui/react";
-import { Book, LogOut, PlusCircle } from "lucide-react";
+import { Book, LogOut, PlusCircle, Users } from "lucide-react";
 
 import { SidebarItem } from "./sidebar-item";
 
@@ -24,6 +24,12 @@ export function Sidebar({ slug }: { slug: string }) {
           title="Livros"
           href="/home/books"
           isActive={slug === "books"}
+        />
+        <SidebarItem
+          icon={Users}
+          title="Usuários"
+          href="/home/users"
+          isActive={slug === "users"}
         />
         <SidebarItem
           icon={PlusCircle}

@@ -54,7 +54,7 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
         <Input
           h="42px"
           bg="background"
-          placeholder="Procurar por nome da categoria"
+          placeholder="Procurar pelo nome da categoria"
           icon={Search}
         />
         <Select

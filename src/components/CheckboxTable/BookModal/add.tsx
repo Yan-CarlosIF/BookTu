@@ -27,8 +27,8 @@ interface AddBookModalProps {
 }
 
 const addBookSchema = z.object({
-  title: z.string().nonempty("Informe o título"),
-  author: z.string().nonempty("Informe o autor"),
+  title: z.string().min(1, "Informe o título"),
+  author: z.string().min(1, "Informe o autor"),
   release_year: z.coerce
     .number()
     .min(1, "Informe o ano de publicação")
@@ -51,7 +51,6 @@ export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<AddBookFormData>({
-    // @ts-ignore
     resolver: zodResolver(addBookSchema),
     defaultValues: {
       categoryIds: [],
@@ -73,9 +72,23 @@ export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
     data: categories,
   });
 
-  async function handleAddBook(data: AddBookFormData) {
+  async function handleAddBook({
+    categoryIds,
+    title,
+    author,
+    release_year,
+    price,
+    description,
+  }: AddBookFormData) {
     reset();
-    await createBookFn(data);
+    await createBookFn({
+      title,
+      author,
+      release_year,
+      price,
+      description,
+      categories: categoryIds,
+    });
   }
 
   return (

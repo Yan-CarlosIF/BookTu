@@ -1,25 +1,40 @@
-import { Flex, Select } from "@chakra-ui/react";
-import { Search } from "lucide-react";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  Select,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
+import { Plus, Search } from "lucide-react";
 import { useRouter } from "next/router";
-import { ReactElement, useMemo, useState } from "react";
+import { ReactElement, useState } from "react";
 
-import { CheckBoxTable } from "@/components/CheckboxTable";
-import { CheckboxTableLoading } from "@/components/CheckboxTable/loading";
+import { ActionBar } from "@/components/ActionBar/action-bar";
+import { CheckboxUserTable } from "@/components/CheckboxTable/user";
 import { HomeLayout } from "@/components/Home/layout";
 import { Input } from "@/components/input";
-import { UseListBooks } from "@/services/Books/useListBooks";
+import { Pagination } from "@/components/Pagination/pagination";
+import { useListUsers } from "@/services/Users/useListUsers";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
 import { NextPageWithLayout } from "../_app";
 
-type BooksPageProps = {
+export type UsersPageProps = {
   name: string;
   page: number;
-  sort?: string;
+  sort?: string | null;
 };
 
-const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
-  const { data, isLoading } = UseListBooks(page, sort);
+const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
+  const { data, isLoading } = useListUsers(page, sort);
   const [search, setSearch] = useState("");
   const router = useRouter();
 
@@ -36,26 +51,6 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
     });
   }
 
-  // Filtra os dados baseado no termo de busca
-  const filteredData = useMemo(() => {
-    if (!data?.books || !search.trim()) {
-      return data;
-    }
-
-    const filteredBooks = data.books.filter(
-      (book) =>
-        book.title?.toLowerCase().includes(search.toLowerCase().trim()) ||
-        book.author?.toLowerCase().includes(search.toLowerCase().trim())
-    );
-
-    return {
-      lastPage: Math.ceil(filteredBooks.length / 10),
-      page,
-      total: filteredBooks.length,
-      books: filteredBooks,
-    };
-  }, [data, search, page]);
-
   return (
     <>
       <Flex
@@ -71,7 +66,7 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
         <Input
           h="42px"
           bg="background"
-          placeholder="Procurar pelo título ou autor"
+          placeholder="Procurar pelo nome do usuário"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           icon={Search}
@@ -90,21 +85,20 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
         >
           <option value="asc">A-Z</option>
           <option value="desc">Z-A</option>
-          <option value="price-asc">Menor preço</option>
-          <option value="price-desc">Maior preço</option>
-          <option value="latest">Mais recentes</option>
-          <option value="oldest">Mais antigos</option>
+          <option value="operator">Operador</option>
+          <option value="admin">Admin</option>
         </Select>
       </Flex>
 
-      {/* Tabela */}
       {isLoading ? (
-        <CheckboxTableLoading />
+        <div>Carregando...</div>
       ) : (
-        <CheckBoxTable
+        <CheckboxUserTable
           data={{
-            ...filteredData,
-            data: filteredData?.books || [],
+            data: data.users,
+            total: data.total,
+            page: data.page,
+            lastPage: data.lastPage,
           }}
         />
       )}
@@ -112,12 +106,12 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
   );
 };
 
-BooksPage.getLayout = function getLayout(
+UsersPage.getLayout = function getLayout(
   page: ReactElement,
-  pageProps: BooksPageProps
+  pageProps: UsersPageProps
 ) {
   return (
-    <HomeLayout slug="books" name={pageProps.name}>
+    <HomeLayout slug="users" name={pageProps.name}>
       {page}
     </HomeLayout>
   );
@@ -135,4 +129,4 @@ export const getServerSideProps = withAuthServerSideProps(async (ctx, user) => {
   };
 });
 
-export default BooksPage;
+export default UsersPage;
