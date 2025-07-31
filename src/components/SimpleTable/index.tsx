@@ -18,7 +18,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { ChartBarStacked, Plus } from "lucide-react";
+import { useState } from "react";
 
+import { useCreateCategory } from "@/services/Categories/useCreateCategory";
 import { Category } from "@/shared/types/category";
 
 import { Input } from "../input";
@@ -35,7 +37,15 @@ interface SimpleTableProps {
 }
 
 export function SimpleTable({ data }: SimpleTableProps) {
+  const [name, setName] = useState("");
+  const { mutateAsync: createCategoryFn } = useCreateCategory();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  async function handleCreateCategory() {
+    await createCategoryFn(name);
+    setName("");
+    onClose();
+  }
 
   return (
     <>
@@ -80,6 +90,8 @@ export function SimpleTable({ data }: SimpleTableProps) {
             <ModalCloseButton />
             <ModalBody>
               <Input
+                onChange={(e) => setName(e.target.value)}
+                value={name}
                 icon={ChartBarStacked}
                 label="Nome da categoria"
                 placeholder="Insira o nome nova categoria"
@@ -95,7 +107,9 @@ export function SimpleTable({ data }: SimpleTableProps) {
               >
                 Cancelar
               </Button>
-              <Button colorScheme="teal">Adicionar</Button>
+              <Button onClick={handleCreateCategory} colorScheme="teal">
+                Adicionar
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

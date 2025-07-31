@@ -70,8 +70,8 @@ export function SimpleTableLoading() {
           color="gray_800"
           fontWeight="medium"
         >
-          Página <Skeleton w="20px" h="16px" borderRadius="4px" /> de{" "}
-          <Skeleton w="20px" h="16px" borderRadius="4px" />
+          Página <Skeleton as="strong" w="20px" h="16px" borderRadius="4px" />{" "}
+          de <Skeleton as="strong" w="20px" h="16px" borderRadius="4px" />
         </Text>
 
         <Button
