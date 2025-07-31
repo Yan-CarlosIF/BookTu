@@ -1,6 +1,7 @@
+import { useState } from "react";
+
 import { Book } from "@/shared/types/book";
 import { Category } from "@/shared/types/category";
-import { useState } from "react";
 
 interface CheckboxToggleProps<T> {
   data: T[];

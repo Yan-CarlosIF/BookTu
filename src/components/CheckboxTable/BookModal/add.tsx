@@ -1,8 +1,3 @@
-import { InputNumber } from "@/components/input-number";
-import { useCheckboxToggle } from "@/hooks/checkboxToggle";
-import { useAllCategories } from "@/services/Categories/useAllCategories";
-import { useCreateBook } from "@/services/Books/useCreateBook";
-import { Category } from "@/shared/types/category";
 import {
   Button,
   Modal,
@@ -16,6 +11,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Book, Calendar, DollarSign, UserRound } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { InputNumber } from "@/components/input-number";
+import { useCheckboxToggle } from "@/hooks/checkboxToggle";
+import { useCreateBook } from "@/services/Books/useCreateBook";
+import { useAllCategories } from "@/services/Categories/useAllCategories";
+import { Category } from "@/shared/types/category";
+
 import { Input } from "../../input";
 import { CategoriesCheckboxList } from "./categories-menu";
 

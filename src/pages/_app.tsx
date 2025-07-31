@@ -1,11 +1,12 @@
-import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
-import { ReactElement, ReactNode } from "react";
-import { NextPage } from "next";
-import { chakraTheme } from "@/lib/chakra-theme";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "@/lib/query-client";
+import { NextPage } from "next";
+import type { AppProps } from "next/app";
 import Head from "next/head";
+import { ReactElement, ReactNode } from "react";
+
+import { chakraTheme } from "@/lib/chakra-theme";
+import { queryClient } from "@/lib/query-client";
 
 export type NextPageWithLayout<P = {}> = NextPage<P> & {
   getLayout?: (page: ReactElement, pageProps: P) => ReactNode;

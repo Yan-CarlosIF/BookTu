@@ -1,8 +1,9 @@
-import { api } from "@/lib/axios";
 import { useToast } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import nookies from "nookies";
+
+import { api } from "@/lib/axios";
 
 interface LoginSchema {
   login: string;

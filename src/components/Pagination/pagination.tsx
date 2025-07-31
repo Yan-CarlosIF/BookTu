@@ -1,6 +1,7 @@
 import { Button, HStack, Icon, StackProps } from "@chakra-ui/react";
 import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react";
 import { useRouter } from "next/router";
+
 import { PaginationItem } from "./pagination-item";
 
 interface PaginationProps extends StackProps {

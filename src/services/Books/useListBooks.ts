@@ -1,7 +1,8 @@
-import { api } from "@/lib/axios";
-import { Book } from "@/shared/types/book";
 import { useQuery } from "@tanstack/react-query";
 import nookies from "nookies";
+
+import { api } from "@/lib/axios";
+import { Book } from "@/shared/types/book";
 
 interface IResponse {
   books: Book[];

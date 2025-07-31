@@ -1,7 +1,8 @@
-import { api } from "@/lib/axios";
-import { Book } from "@/shared/types/book";
 import { useQuery } from "@tanstack/react-query";
 import nookies from "nookies";
+
+import { api } from "@/lib/axios";
+import { Book } from "@/shared/types/book";
 
 export function useGetBook(id: string) {
   const token = nookies.get(null)["auth.token"];

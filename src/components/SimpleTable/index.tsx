@@ -1,24 +1,26 @@
-import { Category } from "@/shared/types/category";
 import {
   Button,
   Flex,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Table,
   TableContainer,
   Tbody,
+  Text,
   Th,
   Thead,
   Tr,
-  Text,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
   useDisclosure,
 } from "@chakra-ui/react";
 import { ChartBarStacked, Plus } from "lucide-react";
+
+import { Category } from "@/shared/types/category";
+
 import { Input } from "../input";
 import { Pagination } from "../Pagination/pagination";
 import { SimpleTableItem } from "./simple-table-item";

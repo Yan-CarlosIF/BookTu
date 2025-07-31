@@ -1,4 +1,4 @@
-import { Tooltip, Text, Divider } from "@chakra-ui/react";
+import { Divider,Text, Tooltip } from "@chakra-ui/react";
 
 export function TooltipCategories({
   categories,

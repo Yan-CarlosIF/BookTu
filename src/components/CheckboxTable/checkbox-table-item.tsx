@@ -1,6 +1,8 @@
+import { Box, Checkbox, Td, Text,Tr } from "@chakra-ui/react";
+
 import { Book } from "@/shared/types/book";
 import { formatPriceIntoBRL } from "@/utils/format";
-import { Box, Checkbox, Td, Tr, Text } from "@chakra-ui/react";
+
 import { TooltipCategories } from "./tooltip-categories";
 
 type CheckboxTableItemProps = {

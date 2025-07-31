@@ -1,4 +1,5 @@
 import { Box, Flex, Heading } from "@chakra-ui/react";
+
 import { Sidebar } from "./Sidebar/sidebar";
 import { UserHeader } from "./user-header";
 

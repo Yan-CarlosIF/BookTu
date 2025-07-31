@@ -1,17 +1,17 @@
 import {
+  Button,
   Checkbox,
+  Flex,
+  HStack,
+  Skeleton,
   Table,
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
-  Text,
-  Flex,
-  Button,
-  Skeleton,
-  HStack,
 } from "@chakra-ui/react";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 

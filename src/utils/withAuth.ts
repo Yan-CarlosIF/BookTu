@@ -1,4 +1,5 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
+
 import { api } from "@/lib/axios";
 
 type WithAuthResult = {

@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "../../lib/axios";
 import nookies from "nookies";
+
 import { Category } from "@/shared/types/category";
+
+import { api } from "../../lib/axios";
 
 interface IResponse {
   categories: Category[];

@@ -1,15 +1,16 @@
 import {
+  Button,
+  Checkbox,
   FormControl,
   FormLabel,
   Menu,
   MenuButton,
-  MenuList,
   MenuItem,
-  Button,
-  Checkbox,
+  MenuList,
   Text,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "lucide-react";
+
 import { Category } from "@/shared/types/category";
 
 interface CategoriesCheckboxListProps {

@@ -1,15 +1,15 @@
 import {
+  Button,
   Flex,
+  HStack,
+  Skeleton,
   Table,
   TableContainer,
   Tbody,
+  Text,
   Th,
   Thead,
   Tr,
-  Text,
-  Button,
-  HStack,
-  Skeleton,
 } from "@chakra-ui/react";
 import {
   ChevronLeft,

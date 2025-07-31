@@ -1,8 +1,8 @@
 import { Button, ButtonProps, Flex, Icon, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
-import nookies from "nookies";
 import { useRouter } from "next/router";
+import nookies from "nookies";
 
 interface SidebarItemProps extends ButtonProps {
   isActive?: boolean;

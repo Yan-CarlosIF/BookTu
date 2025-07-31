@@ -1,23 +1,25 @@
-import { Book } from "@/shared/types/book";
 import {
+  Button,
   Checkbox,
+  Flex,
   Table,
   TableContainer,
   Tbody,
+  Text,
   Th,
   Thead,
   Tr,
-  Text,
-  Flex,
-  Button,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
-import { ActionBar } from "../ActionBar/action-bar";
-import { CheckboxTableItem } from "./checkbox-table-item";
-import { Pagination } from "../Pagination/pagination";
+
 import { useCheckboxToggle } from "@/hooks/checkboxToggle";
+import { Book } from "@/shared/types/book";
+
+import { ActionBar } from "../ActionBar/action-bar";
+import { Pagination } from "../Pagination/pagination";
 import { AddBookModal } from "./BookModal/add";
+import { CheckboxTableItem } from "./checkbox-table-item";
 
 interface CheckBoxTableProps {
   data: {

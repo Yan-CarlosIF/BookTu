@@ -1,7 +1,3 @@
-import { InputNumber } from "@/components/input-number";
-import { useCheckboxToggle } from "@/hooks/checkboxToggle";
-import { useAllCategories } from "@/services/Categories/useAllCategories";
-import { Category } from "@/shared/types/category";
 import {
   Button,
   Modal,
@@ -18,13 +14,19 @@ import {
   DollarSign,
   UserRound,
 } from "lucide-react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { InputNumber } from "@/components/input-number";
+import { useCheckboxToggle } from "@/hooks/checkboxToggle";
+import { useEditBook } from "@/services/Books/useEditBook";
+import { useGetBook } from "@/services/Books/useGetBook";
+import { useAllCategories } from "@/services/Categories/useAllCategories";
+import { Category } from "@/shared/types/category";
+
 import { Input } from "../../input";
 import { CategoriesCheckboxList } from "./categories-menu";
-import { useGetBook } from "@/services/Books/useGetBook";
-import { useEditBook } from "@/services/Books/useEditBook";
-import { useEffect } from "react";
 
 interface EditBookModalProps {
   bookId: string;
@@ -104,7 +106,7 @@ export function EditBookModal({
       });
       setSelectedData(book.categories.map((category) => category.id));
     }
-  }, [book, reset]);
+  }, [book, reset, setSelectedData]);
 
   return (
     <Modal isCentered isOpen={isOpen} size="2xl" onClose={onClose}>

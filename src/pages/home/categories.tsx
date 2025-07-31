@@ -1,14 +1,16 @@
-import { HomeLayout } from "@/components/Home/layout";
-import { NextPageWithLayout } from "../_app";
-import { ReactElement } from "react";
-import { withAuthServerSideProps } from "@/utils/withAuth";
 import { Flex, Select } from "@chakra-ui/react";
-import { Input } from "@/components/input";
-import { useRouter } from "next/router";
 import { Search } from "lucide-react";
-import { UseListCategories } from "@/services/Categories/useListCategories";
+import { useRouter } from "next/router";
+import { ReactElement } from "react";
+
+import { HomeLayout } from "@/components/Home/layout";
+import { Input } from "@/components/input";
 import { SimpleTable } from "@/components/SimpleTable";
 import { SimpleTableLoading } from "@/components/SimpleTable/loading";
+import { UseListCategories } from "@/services/Categories/useListCategories";
+import { withAuthServerSideProps } from "@/utils/withAuth";
+
+import { NextPageWithLayout } from "../_app";
 
 export type CategoriesPageProps = {
   name: string;

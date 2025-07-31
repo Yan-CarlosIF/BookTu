@@ -1,14 +1,16 @@
-import { HomeLayout } from "@/components/Home/layout";
-import { NextPageWithLayout } from "../_app";
-import { ReactElement, useMemo, useState } from "react";
-import { withAuthServerSideProps } from "@/utils/withAuth";
 import { Flex, Select } from "@chakra-ui/react";
-import { Input } from "@/components/input";
 import { Search } from "lucide-react";
-import { UseListBooks } from "@/services/Books/useListBooks";
+import { useRouter } from "next/router";
+import { ReactElement, useMemo, useState } from "react";
+
 import { CheckBoxTable } from "@/components/CheckboxTable";
 import { CheckboxTableLoading } from "@/components/CheckboxTable/loading";
-import { useRouter } from "next/router";
+import { HomeLayout } from "@/components/Home/layout";
+import { Input } from "@/components/input";
+import { UseListBooks } from "@/services/Books/useListBooks";
+import { withAuthServerSideProps } from "@/utils/withAuth";
+
+import { NextPageWithLayout } from "../_app";
 
 type BooksPageProps = {
   name: string;
@@ -52,7 +54,7 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
       total: filteredBooks.length,
       books: filteredBooks,
     };
-  }, [data, search]);
+  }, [data, search, page]);
 
   return (
     <>

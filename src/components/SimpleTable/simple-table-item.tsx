@@ -1,4 +1,3 @@
-import { Category } from "@/shared/types/category";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -13,6 +12,9 @@ import {
 } from "@chakra-ui/react";
 import { Trash2 } from "lucide-react";
 import { useRef } from "react";
+
+import { Category } from "@/shared/types/category";
+
 import { EditPopover } from "./edit-popover";
 
 interface SimpleTableItemProps {
