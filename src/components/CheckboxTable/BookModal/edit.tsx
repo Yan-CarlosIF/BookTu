@@ -107,7 +107,7 @@ export function EditBookModal({
   }, [book, reset]);
 
   return (
-    <Modal isOpen={isOpen} size="2xl" onClose={onClose}>
+    <Modal isCentered isOpen={isOpen} size="2xl" onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader color="gray_800">Editar Livro</ModalHeader>

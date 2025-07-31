@@ -1,14 +1,18 @@
-import { Button, HStack, Icon } from "@chakra-ui/react";
+import { Button, HStack, Icon, StackProps } from "@chakra-ui/react";
 import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react";
 import { useRouter } from "next/router";
 import { PaginationItem } from "./pagination-item";
 
-interface PaginationProps {
+interface PaginationProps extends StackProps {
   currentPage: number;
   lastPage: number;
 }
 
-export function Pagination({ lastPage, currentPage }: PaginationProps) {
+export function Pagination({
+  lastPage,
+  currentPage,
+  ...rest
+}: PaginationProps) {
   const router = useRouter();
 
   function handlePageChange(page: number) {
@@ -28,7 +32,7 @@ export function Pagination({ lastPage, currentPage }: PaginationProps) {
   }
 
   return (
-    <HStack w="328px" spacing="2">
+    <HStack w="328px" {...rest} spacing="2">
       {currentPage > 1 && (
         <>
           <Button

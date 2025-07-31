@@ -48,7 +48,7 @@ export function CancelAlertDialog({
       <AlertDialogOverlay />
       <AlertDialogContent>
         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-          Cancelar
+          Deletar livro
         </AlertDialogHeader>
 
         <AlertDialogBody>
