@@ -98,16 +98,12 @@ export function BookModal({
 
   async function handleActionBook(data: BookFormData) {
     if (action === "add") {
-      await mutateAsync({
-        title,
-        author,
-        release_year,
-        price,
-        description,
-        categoryIds: selectedData,
-      } as ICreateBook);
+      await mutateAsync(data as ICreateBook);
     } else {
-      await mutateAsync({ id: book.id, data } as IEditBook);
+      await mutateAsync({
+        id: book.id,
+        data,
+      } as IEditBook);
     }
 
     reset();
@@ -202,8 +198,8 @@ export function BookModal({
 
           <Input
             minH="40px"
-            h="130px"
-            maxH="130px"
+            h="140px"
+            maxH="140px"
             as="textarea"
             p="8px"
             label="Descrição (opcional)"
