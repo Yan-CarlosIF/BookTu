@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { ReactElement, useState } from "react";
 
 import { CheckboxTableUsersLoading } from "@/components/CheckboxTable/LoadingState/loading-users";
-import { CheckboxTableUsers } from "@/components/CheckboxTable/user";
+import { CheckboxTableUsers } from "@/components/CheckboxTable/users";
 import { HomeLayout } from "@/components/Home/layout";
 import { SearchBar } from "@/components/search-bar";
 import { TableCheckboxProvider } from "@/context/checkboxContext";

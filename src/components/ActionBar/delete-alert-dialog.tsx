@@ -10,10 +10,12 @@ import {
 import { useContext, useRef } from "react";
 
 import { TableCheckboxContext } from "@/context/checkboxContext";
-import { useDeleteBooks } from "@/services/Books/useDeleteBook";
+import { useDeleteBook } from "@/services/Books/useDeleteBook";
+import { useDeleteUser } from "@/services/Users/useDeleteUser";
 
 interface DeleteAlertDialogProps {
   data: string[];
+  type: "book" | "user";
   isOpen: boolean;
   onClose: () => void;
 }
@@ -22,21 +24,32 @@ export function DeleteAlertDialog({
   data,
   isOpen,
   onClose,
+  type,
 }: DeleteAlertDialogProps) {
-  const { mutateAsync: deleteBooksFn } = useDeleteBooks();
+  const { mutateAsync: deleteUsersFn } = useDeleteUser();
+  const { mutateAsync: deleteBooksFn } = useDeleteBook();
 
   const cancelRef = useRef();
 
-  const { setSelectedBooks } = useContext(TableCheckboxContext);
+  const { setSelectedBooks, setSelectedUsers } =
+    useContext(TableCheckboxContext);
 
   async function handleDelete(ids: string[]) {
     onClose();
 
-    ids.forEach(async (id) => {
-      await deleteBooksFn(id);
-    });
+    if (type === "user") {
+      ids.forEach(async (id) => {
+        await deleteUsersFn(id);
+      });
 
-    setSelectedBooks([]);
+      setSelectedUsers([]);
+    } else {
+      ids.forEach(async (id) => {
+        await deleteBooksFn(id);
+      });
+
+      setSelectedBooks([]);
+    }
   }
 
   return (
@@ -45,16 +58,20 @@ export function DeleteAlertDialog({
       leastDestructiveRef={cancelRef}
       onClose={onClose}
       isOpen={isOpen}
+      size="lg"
       isCentered
     >
       <AlertDialogOverlay />
       <AlertDialogContent>
         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-          Deletar livro
+          {type === "book"
+            ? `Deletar livro${data.length > 1 ? "s" : ""}`
+            : `Deletar usuário${data.length > 1 ? "s" : ""}`}
         </AlertDialogHeader>
 
         <AlertDialogBody>
-          Tem certeza que deseja excluir o{data.length > 1 && "s"} livro
+          Tem certeza que deseja excluir o{data.length > 1 && "s"}{" "}
+          {type === "book" ? "livro" : "usuário"}
           {data.length > 1 && "s"} selecionado{data.length > 1 && "s"}?
         </AlertDialogBody>
 

@@ -1,10 +1,4 @@
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Button,
   Checkbox,
   Flex,
@@ -18,13 +12,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
-import { useContext, useRef } from "react";
+import { useContext } from "react";
 
 import { TableCheckboxContext } from "@/context/checkboxContext";
-import { useDeleteUser } from "@/services/Users/useDeleteUser";
 import { User } from "@/shared/types/users";
 
 import { ActionBar } from "../ActionBar/action-bar";
+import { DeleteAlertDialog } from "../ActionBar/delete-alert-dialog";
 import { Pagination } from "../Pagination/pagination";
 import { CheckboxTableItem } from "./checkbox-table-item";
 import { AddUserModal } from "./UserModal/add";
@@ -40,7 +34,6 @@ interface CheckboxTableItemProps {
 }
 
 export function CheckboxTableUsers({ data }: CheckboxTableItemProps) {
-  const { mutateAsync: deleteUserFn } = useDeleteUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const {
@@ -55,20 +48,8 @@ export function CheckboxTableUsers({ data }: CheckboxTableItemProps) {
     onClose: onCloseCancel,
   } = useDisclosure();
 
-  const cancelRef = useRef(null);
-
   const { selectedUsers, setSelectedUsers, toggleSelectAllUsers } =
     useContext(TableCheckboxContext);
-
-  async function handleDeleteUsers() {
-    onCloseCancel();
-
-    selectedUsers.forEach(async ({ id }) => {
-      await deleteUserFn(id);
-    });
-
-    setSelectedUsers([]);
-  }
 
   return (
     <>
@@ -146,36 +127,12 @@ export function CheckboxTableUsers({ data }: CheckboxTableItemProps) {
         <Button colorScheme="red" size="sm" onClick={onOpenCancel}>
           Excluir
         </Button>
-        <AlertDialog
-          motionPreset="slideInBottom"
-          leastDestructiveRef={cancelRef}
-          onClose={onCloseCancel}
+        <DeleteAlertDialog
+          data={selectedUsers.map(({ id }) => id)}
           isOpen={isCancelOpen}
-          isCentered
-        >
-          <AlertDialogOverlay />
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Deletar Usuário{selectedUsers.length > 1 && "s"}
-            </AlertDialogHeader>
-
-            <AlertDialogBody>
-              Tem certeza que deseja excluir o{selectedUsers.length > 1 && "s"}{" "}
-              usuário
-              {selectedUsers.length > 1 && "s"} selecionado
-              {selectedUsers.length > 1 && "s"}?
-            </AlertDialogBody>
-
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onCloseCancel}>
-                Cancelar
-              </Button>
-              <Button onClick={handleDeleteUsers} colorScheme="red" ml={3}>
-                Confirmar
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+          onClose={onCloseCancel}
+          type="user"
+        />
       </ActionBar>
     </>
   );

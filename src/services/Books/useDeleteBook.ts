@@ -4,7 +4,7 @@ import nookies from "nookies";
 
 import { api } from "@/lib/axios";
 
-export function useDeleteBooks() {
+export function useDeleteBook() {
   const queryClient = useQueryClient();
   const toast = useToast();
   const token = nookies.get(null)["auth.token"];

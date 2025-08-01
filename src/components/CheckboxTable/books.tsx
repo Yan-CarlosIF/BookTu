@@ -20,7 +20,7 @@ import { useEditBook } from "@/services/Books/useEditBook";
 import { Book } from "@/shared/types/book";
 
 import { ActionBar } from "../ActionBar/action-bar";
-import { DeleteAlertDialog } from "../ActionBar/delete-alert";
+import { DeleteAlertDialog } from "../ActionBar/delete-alert-dialog";
 import { Pagination } from "../Pagination/pagination";
 import { BookModal } from "./BookModal";
 import { CheckboxTableItem } from "./checkbox-table-item";
@@ -41,6 +41,7 @@ export function CheckBoxTableBooks({
 }: CheckBoxTableProps) {
   const { mutateAsync: createBookFn } = useCreateBook();
   const { mutateAsync: editBookFn } = useEditBook();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const {
@@ -142,6 +143,7 @@ export function CheckBoxTableBooks({
               Excluir
             </Button>
             <DeleteAlertDialog
+              type="book"
               data={selectedBooks.map((book) => book.id)}
               isOpen={isCancelOpen}
               onClose={onCloseCancel}
