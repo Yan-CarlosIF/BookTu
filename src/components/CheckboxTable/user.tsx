@@ -39,7 +39,7 @@ interface CheckboxTableItemProps {
   };
 }
 
-export function CheckboxUserTable({ data }: CheckboxTableItemProps) {
+export function CheckboxTableUsers({ data }: CheckboxTableItemProps) {
   const { mutateAsync: deleteUserFn } = useDeleteUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
 

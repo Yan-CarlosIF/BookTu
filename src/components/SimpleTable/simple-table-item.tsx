@@ -20,9 +20,10 @@ import { EditPopover } from "./edit-popover";
 
 interface SimpleTableItemProps {
   category: Category;
+  isAdmin?: boolean;
 }
 
-export function SimpleTableItem({ category }: SimpleTableItemProps) {
+export function SimpleTableItem({ category, isAdmin }: SimpleTableItemProps) {
   const { mutateAsync: deleteCategoryFn } = useDeleteCategory();
 
   const {
@@ -45,43 +46,45 @@ export function SimpleTableItem({ category }: SimpleTableItemProps) {
       <Th>
         <EditPopover category={category} />
       </Th>
-      <Th>
-        <Button
-          onClick={onOpenCancel}
-          rightIcon={<Trash2 size={16} />}
-          size="sm"
-          colorScheme="red"
-        >
-          Deletar
-        </Button>
-        <AlertDialog
-          motionPreset="slideInBottom"
-          leastDestructiveRef={cancelRef}
-          onClose={onCloseCancel}
-          isOpen={isCancelOpen}
-          isCentered
-        >
-          <AlertDialogOverlay />
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Deletar categoria
-            </AlertDialogHeader>
+      {isAdmin && (
+        <Th>
+          <Button
+            onClick={onOpenCancel}
+            rightIcon={<Trash2 size={16} />}
+            size="sm"
+            colorScheme="red"
+          >
+            Deletar
+          </Button>
+          <AlertDialog
+            motionPreset="slideInBottom"
+            leastDestructiveRef={cancelRef}
+            onClose={onCloseCancel}
+            isOpen={isCancelOpen}
+            isCentered
+          >
+            <AlertDialogOverlay />
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Deletar categoria
+              </AlertDialogHeader>
 
-            <AlertDialogBody>
-              Tem certeza que deseja excluir a categoria {category.name}?
-            </AlertDialogBody>
+              <AlertDialogBody>
+                Tem certeza que deseja excluir a categoria {category.name}?
+              </AlertDialogBody>
 
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onCloseCancel}>
-                Cancelar
-              </Button>
-              <Button onClick={handleDeleteCategory} colorScheme="red" ml={3}>
-                Confirmar
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </Th>
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={onCloseCancel}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleDeleteCategory} colorScheme="red" ml={3}>
+                  Confirmar
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </Th>
+      )}
     </Tr>
   );
 }

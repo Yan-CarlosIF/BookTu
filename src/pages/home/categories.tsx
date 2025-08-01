@@ -22,6 +22,7 @@ export type CategoriesPageProps = {
 const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
   page,
   sort,
+  isAdmin,
 }) => {
   const { data, isLoading } = UseListCategories(page, sort);
 
@@ -75,7 +76,11 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
         </Select>
       </Flex>
 
-      {isLoading ? <SimpleTableLoading /> : <SimpleTable data={data} />}
+      {isLoading ? (
+        <SimpleTableLoading />
+      ) : (
+        <SimpleTable isAdmin={isAdmin} data={data} />
+      )}
     </>
   );
 };

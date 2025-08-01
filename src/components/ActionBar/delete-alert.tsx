@@ -12,17 +12,17 @@ import { useContext, useRef } from "react";
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { useDeleteBooks } from "@/services/Books/useDeleteBook";
 
-interface CancelAlertDialogProps {
+interface DeleteAlertDialogProps {
   data: string[];
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function CancelAlertDialog({
+export function DeleteAlertDialog({
   data,
   isOpen,
   onClose,
-}: CancelAlertDialogProps) {
+}: DeleteAlertDialogProps) {
   const { mutateAsync: deleteBooksFn } = useDeleteBooks();
 
   const cancelRef = useRef();

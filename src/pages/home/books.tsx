@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/router";
 import { ReactElement, useMemo, useState } from "react";
 
-import { CheckBoxTable } from "@/components/CheckboxTable/books";
+import { CheckBoxTableBooks } from "@/components/CheckboxTable/books";
 import { CheckboxTableLoading } from "@/components/CheckboxTable/loading";
 import { HomeLayout } from "@/components/Home/layout";
 import { Input } from "@/components/input";
@@ -20,7 +20,11 @@ type BooksPageProps = {
   isAdmin?: boolean;
 };
 
-const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
+const BooksPage: NextPageWithLayout<BooksPageProps> = ({
+  page,
+  sort,
+  isAdmin,
+}) => {
   const { data, isLoading } = UseListBooks(page, sort);
   const [search, setSearch] = useState("");
   const router = useRouter();
@@ -102,11 +106,12 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
         <CheckboxTableLoading />
       ) : (
         <TableCheckboxProvider>
-          <CheckBoxTable
+          <CheckBoxTableBooks
             data={{
               ...filteredData,
               data: filteredData?.books || [],
             }}
+            isAdmin={isAdmin}
           />
         </TableCheckboxProvider>
       )}

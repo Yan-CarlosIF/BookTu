@@ -34,9 +34,10 @@ interface SimpleTableProps {
     page: number;
     lastPage: number;
   };
+  isAdmin?: boolean;
 }
 
-export function SimpleTable({ data }: SimpleTableProps) {
+export function SimpleTable({ data, isAdmin = false }: SimpleTableProps) {
   const [name, setName] = useState("");
   const { mutateAsync: createCategoryFn } = useCreateCategory();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -55,12 +56,16 @@ export function SimpleTable({ data }: SimpleTableProps) {
             <Tr>
               <Th>Nome</Th>
               <Th>Editar</Th>
-              <Th>Deletar</Th>
+              {isAdmin && <Th>Deletar</Th>}
             </Tr>
           </Thead>
           <Tbody>
             {data.categories.map((category) => (
-              <SimpleTableItem key={category.id} category={category} />
+              <SimpleTableItem
+                isAdmin={isAdmin}
+                key={category.id}
+                category={category}
+              />
             ))}
           </Tbody>
         </Table>

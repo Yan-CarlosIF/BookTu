@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/router";
 import { ReactElement, useState } from "react";
 
-import { CheckboxUserTable } from "@/components/CheckboxTable/user";
+import { CheckboxTableUsers } from "@/components/CheckboxTable/user";
 import { HomeLayout } from "@/components/Home/layout";
 import { Input } from "@/components/input";
 import { TableCheckboxProvider } from "@/context/checkboxContext";
@@ -80,7 +80,7 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
         <div>Carregando...</div>
       ) : (
         <TableCheckboxProvider>
-          <CheckboxUserTable
+          <CheckboxTableUsers
             data={{
               data: data.users,
               total: data.total,

@@ -16,9 +16,10 @@ import { useContext } from "react";
 
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { Book } from "@/shared/types/book";
+import { withAuthServerSideProps } from "@/utils/withAuth";
 
 import { ActionBar } from "../ActionBar/action-bar";
-import { CancelAlertDialog } from "../ActionBar/cancel-alert";
+import { DeleteAlertDialog } from "../ActionBar/delete-alert";
 import { Pagination } from "../Pagination/pagination";
 import { AddBookModal } from "./BookModal/add";
 import { EditBookModal } from "./BookModal/edit";
@@ -31,10 +32,16 @@ interface CheckBoxTableProps {
     page: number;
     lastPage: number;
   };
+  isAdmin?: boolean;
 }
 
-export function CheckBoxTable({ data }: CheckBoxTableProps) {
+export function CheckBoxTableBooks({
+  data,
+  isAdmin = false,
+}: CheckBoxTableProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  console.log(isAdmin);
 
   const {
     isOpen: isCancelOpen,
@@ -119,14 +126,18 @@ export function CheckBoxTable({ data }: CheckBoxTableProps) {
             <EditBookModal isOpen={isOpen} onClose={onClose} />
           </>
         )}
-        <Button colorScheme="red" size="sm" onClick={onOpenCancel}>
-          Excluir
-        </Button>
-        <CancelAlertDialog
-          data={selectedBooks.map((book) => book.id)}
-          isOpen={isCancelOpen}
-          onClose={onCloseCancel}
-        />
+        {isAdmin && (
+          <>
+            <Button colorScheme="red" size="sm" onClick={onOpenCancel}>
+              Excluir
+            </Button>
+            <DeleteAlertDialog
+              data={selectedBooks.map((book) => book.id)}
+              isOpen={isCancelOpen}
+              onClose={onCloseCancel}
+            />
+          </>
+        )}
       </ActionBar>
     </>
   );
