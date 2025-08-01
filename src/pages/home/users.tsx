@@ -6,6 +6,7 @@ import { CheckboxTableUsers } from "@/components/CheckboxTable/users";
 import { HomeLayout } from "@/components/Home/layout";
 import { SearchBar } from "@/components/search-bar";
 import { TableCheckboxProvider } from "@/context/checkboxContext";
+import { useDataFilter } from "@/hooks/useDataFilter";
 import { useListUsers } from "@/services/Users/useListUsers";
 import { ensureUserAdmin } from "@/utils/ensureUserAdmin";
 
@@ -55,6 +56,12 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
     });
   }
 
+  const filteredUsers = useDataFilter({
+    data: data?.users,
+    searchValue: search,
+    searchKeys: ["name"],
+  });
+
   return (
     <>
       <SearchBar
@@ -71,8 +78,8 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
         <TableCheckboxProvider>
           <CheckboxTableUsers
             data={{
-              data: data.users,
-              total: data.total,
+              data: filteredUsers,
+              total: filteredUsers.length,
               page: data.page,
               lastPage: data.lastPage,
             }}

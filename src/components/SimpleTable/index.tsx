@@ -50,7 +50,7 @@ export function SimpleTable({ data, isAdmin = false }: SimpleTableProps) {
 
   return (
     <>
-      <TableContainer mt="40px">
+      <TableContainer h="612px" mt="40px">
         <Table borderWidth={1} borderColor="gray.200">
           <Thead bg="gray_300">
             <Tr>

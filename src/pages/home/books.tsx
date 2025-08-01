@@ -1,11 +1,12 @@
 import { useRouter } from "next/router";
-import { ReactElement, useMemo, useState } from "react";
+import { ReactElement, useState } from "react";
 
 import { CheckBoxTableBooks } from "@/components/CheckboxTable/books";
 import { CheckboxTableBooksLoading } from "@/components/CheckboxTable/LoadingState/loading-books";
 import { HomeLayout } from "@/components/Home/layout";
 import { SearchBar } from "@/components/search-bar";
 import { TableCheckboxProvider } from "@/context/checkboxContext";
+import { useDataFilter } from "@/hooks/useDataFilter";
 import { UseListBooks } from "@/services/Books/useListBooks";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
@@ -67,24 +68,11 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({
     });
   }
 
-  const filteredData = useMemo(() => {
-    if (!data?.books || !search.trim()) {
-      return data;
-    }
-
-    const filteredBooks = data.books.filter(
-      (book) =>
-        book.title?.toLowerCase().includes(search.toLowerCase().trim()) ||
-        book.author?.toLowerCase().includes(search.toLowerCase().trim())
-    );
-
-    return {
-      lastPage: Math.ceil(filteredBooks.length / 10),
-      page,
-      total: filteredBooks.length,
-      books: filteredBooks,
-    };
-  }, [data, search, page]);
+  const filteredBooks = useDataFilter({
+    data: data?.books,
+    searchValue: search,
+    searchKeys: ["title", "author"],
+  });
 
   return (
     <>
@@ -102,8 +90,10 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({
         <TableCheckboxProvider>
           <CheckBoxTableBooks
             data={{
-              ...filteredData,
-              data: filteredData?.books || [],
+              data: filteredBooks,
+              total: filteredBooks.length,
+              page: data?.page,
+              lastPage: data?.lastPage,
             }}
             isAdmin={isAdmin}
           />

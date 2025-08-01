@@ -5,6 +5,7 @@ import { HomeLayout } from "@/components/Home/layout";
 import { SearchBar } from "@/components/search-bar";
 import { SimpleTable } from "@/components/SimpleTable";
 import { SimpleTableLoading } from "@/components/SimpleTable/loading";
+import { useDataFilter } from "@/hooks/useDataFilter";
 import { UseListCategories } from "@/services/Categories/useListCategories";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
@@ -51,6 +52,12 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
     });
   }
 
+  const filteredCategories = useDataFilter({
+    data: data?.categories,
+    searchValue: search,
+    searchKeys: ["name"],
+  });
+
   return (
     <>
       <SearchBar
@@ -64,7 +71,15 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
       {isLoading ? (
         <SimpleTableLoading />
       ) : (
-        <SimpleTable isAdmin={isAdmin} data={data} />
+        <SimpleTable
+          isAdmin={isAdmin}
+          data={{
+            categories: filteredCategories,
+            total: filteredCategories.length,
+            page: data?.page,
+            lastPage: data?.lastPage,
+          }}
+        />
       )}
     </>
   );
