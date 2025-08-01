@@ -4,7 +4,7 @@ import nookies from "nookies";
 
 import { api } from "@/lib/axios";
 
-interface IEditBook {
+export interface IEditBook {
   id: string;
   data: {
     title?: string;

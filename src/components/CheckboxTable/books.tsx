@@ -15,13 +15,14 @@ import { Plus } from "lucide-react";
 import { useContext } from "react";
 
 import { TableCheckboxContext } from "@/context/checkboxContext";
+import { useCreateBook } from "@/services/Books/useCreateBook";
+import { useEditBook } from "@/services/Books/useEditBook";
 import { Book } from "@/shared/types/book";
 
 import { ActionBar } from "../ActionBar/action-bar";
 import { DeleteAlertDialog } from "../ActionBar/delete-alert";
 import { Pagination } from "../Pagination/pagination";
-import { AddBookModal } from "./BookModal/add";
-import { EditBookModal } from "./BookModal/edit";
+import { BookModal } from "./BookModal";
 import { CheckboxTableItem } from "./checkbox-table-item";
 
 interface CheckBoxTableProps {
@@ -38,9 +39,9 @@ export function CheckBoxTableBooks({
   data,
   isAdmin = false,
 }: CheckBoxTableProps) {
+  const { mutateAsync: createBookFn } = useCreateBook();
+  const { mutateAsync: editBookFn } = useEditBook();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  console.log(isAdmin);
 
   const {
     isOpen: isCancelOpen,
@@ -99,7 +100,12 @@ export function CheckBoxTableBooks({
         >
           Adicionar
         </Button>
-        <AddBookModal isOpen={isOpen} onClose={onClose} />
+        <BookModal
+          action="add"
+          isOpen={isOpen}
+          onClose={onClose}
+          mutateAsync={createBookFn}
+        />
 
         <Pagination currentPage={data.page} lastPage={data.lastPage} />
       </Flex>
@@ -122,7 +128,12 @@ export function CheckBoxTableBooks({
             >
               Editar
             </Button>
-            <EditBookModal isOpen={isOpen} onClose={onClose} />
+            <BookModal
+              action="edit"
+              isOpen={isOpen}
+              onClose={onClose}
+              mutateAsync={editBookFn}
+            />
           </>
         )}
         {isAdmin && (

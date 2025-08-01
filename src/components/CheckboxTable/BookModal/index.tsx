@@ -8,6 +8,7 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { UseMutateAsyncFunction } from "@tanstack/react-query";
 import {
   Book as BookIcon,
   Calendar,
@@ -21,19 +22,27 @@ import { z } from "zod";
 import { InputNumber } from "@/components/input-number";
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { useSelectToggle } from "@/hooks/selectToggle";
-import { useEditBook } from "@/services/Books/useEditBook";
+import { ICreateBook } from "@/services/Books/useCreateBook";
+import { IEditBook } from "@/services/Books/useEditBook";
 import { useAllCategories } from "@/services/Categories/useAllCategories";
 import { Category } from "@/shared/types/category";
 
 import { Input } from "../../input";
 import { CategoriesCheckboxList } from "./categories-menu";
 
-interface EditBookModalProps {
+interface BookModalProps {
+  action: "edit" | "add";
   isOpen: boolean;
   onClose: () => void;
+  mutateAsync: UseMutateAsyncFunction<
+    void,
+    unknown,
+    IEditBook | ICreateBook,
+    unknown
+  >;
 }
 
-const editBookSchema = z.object({
+const bookSchema = z.object({
   title: z.string().min(1, "Informe o título"),
   author: z.string().min(1, "Informe o autor"),
   release_year: z.coerce
@@ -45,10 +54,14 @@ const editBookSchema = z.object({
   categoryIds: z.array(z.string()).optional(),
 });
 
-type EditBookFormData = z.infer<typeof editBookSchema>;
+type BookFormData = z.infer<typeof bookSchema>;
 
-export function EditBookModal({ isOpen, onClose }: EditBookModalProps) {
-  const { mutateAsync: editBookFn } = useEditBook();
+export function BookModal({
+  isOpen,
+  onClose,
+  action,
+  mutateAsync,
+}: BookModalProps) {
   const { data } = useAllCategories();
   const categories = data || [];
 
@@ -64,8 +77,8 @@ export function EditBookModal({ isOpen, onClose }: EditBookModalProps) {
     watch,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<EditBookFormData>({
-    resolver: zodResolver(editBookSchema),
+  } = useForm<BookFormData>({
+    resolver: zodResolver(bookSchema),
     defaultValues: {
       categoryIds: [],
       release_year: 0,
@@ -83,14 +96,26 @@ export function EditBookModal({ isOpen, onClose }: EditBookModalProps) {
     data: categories,
   });
 
-  async function handleEditBook(data: EditBookFormData) {
+  async function handleActionBook(data: BookFormData) {
+    if (action === "add") {
+      await mutateAsync({
+        title,
+        author,
+        release_year,
+        price,
+        description,
+        categoryIds: selectedData,
+      } as ICreateBook);
+    } else {
+      await mutateAsync({ id: book.id, data } as IEditBook);
+    }
+
     reset();
-    await editBookFn({ id: book.id, data });
     setSelectedBooks([]);
   }
 
   useEffect(() => {
-    if (book) {
+    if (book && action === "edit") {
       reset({
         categoryIds: book.categories.map((category) => category.id),
         release_year: book.release_year,
@@ -101,18 +126,20 @@ export function EditBookModal({ isOpen, onClose }: EditBookModalProps) {
       });
       setSelectedData(book.categories.map((category) => category.id));
     }
-  }, [book, reset, setSelectedData]);
+  }, [book, reset, setSelectedData, action]);
 
   return (
     <Modal isCentered isOpen={isOpen} size="2xl" onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader color="gray_800">Editar Livro</ModalHeader>
+        <ModalHeader color="gray_800">
+          {action === "add" ? "Adicionar" : "Editar"} Livro
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody
           as="form"
           onSubmit={handleSubmit(() =>
-            handleEditBook({
+            handleActionBook({
               categoryIds: selectedData,
               title,
               author,
@@ -200,7 +227,7 @@ export function EditBookModal({ isOpen, onClose }: EditBookModalProps) {
             isLoading={isSubmitting}
             gridColumn="1 / -1"
           >
-            Editar
+            {action === "edit" ? "Editar" : "Adicionar"}
           </Button>
         </ModalBody>
       </ModalContent>

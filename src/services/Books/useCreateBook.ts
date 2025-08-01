@@ -4,7 +4,7 @@ import nookies from "nookies";
 
 import { api } from "../../lib/axios";
 
-interface ICreateBook {
+export interface ICreateBook {
   title: string;
   author: string;
   release_year: number;

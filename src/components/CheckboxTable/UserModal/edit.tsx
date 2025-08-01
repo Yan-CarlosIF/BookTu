@@ -53,7 +53,6 @@ export function EditUserModal({ isOpen, onClose }: EditUserModalProps) {
     defaultValues: {
       name: user?.name,
       login: user?.login,
-
       registration: user?.registration,
       permission: user?.permission,
       role: user?.role,
@@ -155,7 +154,6 @@ export function EditUserModal({ isOpen, onClose }: EditUserModalProps) {
               )}
             />
           </Flex>
-
           <Button
             py={7}
             colorScheme="teal"
