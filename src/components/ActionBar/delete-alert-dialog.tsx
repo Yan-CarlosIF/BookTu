@@ -38,15 +38,11 @@ export function DeleteAlertDialog({
     onClose();
 
     if (type === "user") {
-      ids.forEach(async (id) => {
-        await deleteUsersFn(id);
-      });
+      Promise.all(ids.map((id) => deleteUsersFn(id)));
 
       setSelectedUsers([]);
     } else {
-      ids.forEach(async (id) => {
-        await deleteBooksFn(id);
-      });
+      Promise.all(ids.map((id) => deleteBooksFn(id)));
 
       setSelectedBooks([]);
     }
