@@ -26,7 +26,7 @@ import { User } from "@/shared/types/users";
 
 import { ActionBar } from "../ActionBar/action-bar";
 import { Pagination } from "../Pagination/pagination";
-import { CheckboxTableItemUser } from "./checkbox-table-item-user";
+import { CheckboxTableItem } from "./checkbox-table-item";
 import { AddUserModal } from "./UserModal/add";
 import { EditUserModal } from "./UserModal/edit";
 
@@ -94,7 +94,7 @@ export function CheckboxTableUsers({ data }: CheckboxTableItemProps) {
           </Thead>
           <Tbody>
             {data.data.map((user) => (
-              <CheckboxTableItemUser key={user.id} user={user} />
+              <CheckboxTableItem type="user" key={user.id} data={user} />
             ))}
           </Tbody>
         </Table>

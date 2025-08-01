@@ -77,7 +77,7 @@ export function CheckBoxTableBooks({
           </Thead>
           <Tbody>
             {data.data.map((book) => (
-              <CheckboxTableItem book={book} key={book.id} />
+              <CheckboxTableItem type="book" data={book} key={book.id} />
             ))}
           </Tbody>
         </Table>
