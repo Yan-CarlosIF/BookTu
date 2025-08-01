@@ -1,7 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import nookies from "nookies";
-import { type } from "os";
 
 import { api } from "@/lib/axios";
 import { User } from "@/shared/types/users";

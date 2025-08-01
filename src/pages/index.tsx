@@ -109,7 +109,7 @@ export default function Home() {
   );
 }
 
-export const getServerSideProps = alreadyLoggedIn(async (ctx) => {
+export const getServerSideProps = alreadyLoggedIn(async (_ctx) => {
   return {
     props: {},
   };

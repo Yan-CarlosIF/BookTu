@@ -1,12 +1,9 @@
-import { Flex, Select } from "@chakra-ui/react";
-import { Search } from "lucide-react";
 import { useRouter } from "next/router";
 import { ReactElement, useMemo, useState } from "react";
 
 import { CheckBoxTableBooks } from "@/components/CheckboxTable/books";
 import { CheckboxTableBooksLoading } from "@/components/CheckboxTable/LoadingState/loading-books";
 import { HomeLayout } from "@/components/Home/layout";
-import { Input } from "@/components/input";
 import { SearchBar } from "@/components/search-bar";
 import { TableCheckboxProvider } from "@/context/checkboxContext";
 import { UseListBooks } from "@/services/Books/useListBooks";

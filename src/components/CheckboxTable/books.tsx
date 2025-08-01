@@ -16,7 +16,6 @@ import { useContext } from "react";
 
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { Book } from "@/shared/types/book";
-import { withAuthServerSideProps } from "@/utils/withAuth";
 
 import { ActionBar } from "../ActionBar/action-bar";
 import { DeleteAlertDialog } from "../ActionBar/delete-alert";
