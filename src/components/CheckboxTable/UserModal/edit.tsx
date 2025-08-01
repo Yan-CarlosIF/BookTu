@@ -11,37 +11,36 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  AtSign,
-  IdCard,
-  Lock,
-  RectangleEllipsis,
-  UserRound,
-} from "lucide-react";
+import { AtSign, IdCard, RectangleEllipsis, UserRound } from "lucide-react";
+import { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Input } from "@/components/input";
-import { useCreateUser } from "@/services/Users/useCreateUser";
+import { TableCheckboxContext } from "@/context/checkboxContext";
+import { useEditUser } from "@/services/Users/useEditUser";
 
-interface AddUserModalProps {
+interface EditUserModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const addUserSchema = z.object({
+const editUserSchema = z.object({
   name: z.string().min(1, "Informe o nome"),
   login: z.string().min(1, "Informe o login"),
-  password: z.string().min(3, "Informe uma senha segura"),
   registration: z.string().min(1, "Informe a matrícula"),
   permission: z.enum(["admin", "operator"]),
   role: z.string().optional(),
 });
 
-type AddUserFormData = z.infer<typeof addUserSchema>;
+type EditUserFormData = z.infer<typeof editUserSchema>;
 
-export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
-  const { mutateAsync: createUserFn } = useCreateUser();
+export function EditUserModal({ isOpen, onClose }: EditUserModalProps) {
+  const { mutateAsync: editUserFn } = useEditUser();
+  const {
+    selectedUsers: [user],
+    setSelectedUsers,
+  } = useContext(TableCheckboxContext);
 
   const {
     handleSubmit,
@@ -49,21 +48,32 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
     register,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<AddUserFormData>({
-    resolver: zodResolver(addUserSchema),
+  } = useForm<EditUserFormData>({
+    resolver: zodResolver(editUserSchema),
+    defaultValues: {
+      name: user?.name,
+      login: user?.login,
+
+      registration: user?.registration,
+      permission: user?.permission,
+      role: user?.role,
+    },
   });
 
-  async function handleAddUser(data: AddUserFormData) {
-    await createUserFn({
-      name: data.name,
-      login: data.login,
-      password: data.password,
-      registration: data.registration,
-      permission: data.permission,
-      role: data.role,
+  async function handleEditUser(data: EditUserFormData) {
+    reset();
+    await editUserFn({
+      id: user.id,
+      data: {
+        name: data.name,
+        login: data.login,
+        registration: data.registration,
+        permission: data.permission,
+        role: data.role,
+      },
     });
 
-    reset();
+    setSelectedUsers([]);
     onClose();
   }
 
@@ -71,11 +81,11 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
     <Modal isCentered isOpen={isOpen} size="xl" onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Adicionar Usuário</ModalHeader>
+        <ModalHeader>Editar Usuário</ModalHeader>
         <ModalCloseButton />
         <ModalBody
           as="form"
-          onSubmit={handleSubmit(handleAddUser)}
+          onSubmit={handleSubmit(handleEditUser)}
           display="grid"
           gridTemplateColumns="1fr 1fr"
           gap="28px"
@@ -98,16 +108,6 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
             isInvalid={!!errors.login}
             error={errors.login}
             {...register("login")}
-          />
-          <Input
-            icon={Lock}
-            label="Senha"
-            name="password"
-            type="password"
-            placeholder="Senha do usuário"
-            isInvalid={!!errors.password}
-            error={errors.password}
-            {...register("password")}
           />
           <Input
             icon={RectangleEllipsis}
@@ -164,7 +164,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
             isLoading={isSubmitting}
             gridColumn="1 / -1"
           >
-            Adicionar
+            Salvar
           </Button>
         </ModalBody>
       </ModalContent>

@@ -14,14 +14,14 @@ import {
   DollarSign,
   UserRound,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { InputNumber } from "@/components/input-number";
-import { useCheckboxToggle } from "@/hooks/checkboxToggle";
+import { TableCheckboxContext } from "@/context/checkboxContext";
+import { useSelectToggle } from "@/hooks/selectToggle";
 import { useEditBook } from "@/services/Books/useEditBook";
-import { useGetBook } from "@/services/Books/useGetBook";
 import { useAllCategories } from "@/services/Categories/useAllCategories";
 import { Category } from "@/shared/types/category";
 
@@ -29,15 +29,13 @@ import { Input } from "../../input";
 import { CategoriesCheckboxList } from "./categories-menu";
 
 interface EditBookModalProps {
-  bookId: string;
   isOpen: boolean;
   onClose: () => void;
-  setSelectedData: (data: string[]) => void;
 }
 
 const editBookSchema = z.object({
-  title: z.string().nonempty("Informe o título"),
-  author: z.string().nonempty("Informe o autor"),
+  title: z.string().min(1, "Informe o título"),
+  author: z.string().min(1, "Informe o autor"),
   release_year: z.coerce
     .number()
     .min(1, "Informe o ano de publicação")
@@ -49,14 +47,15 @@ const editBookSchema = z.object({
 
 type EditBookFormData = z.infer<typeof editBookSchema>;
 
-export function EditBookModal({
-  bookId,
-  isOpen,
-  onClose,
-  setSelectedData: clearSelected,
-}: EditBookModalProps) {
-  const { data: book } = useGetBook(bookId);
+export function EditBookModal({ isOpen, onClose }: EditBookModalProps) {
   const { mutateAsync: editBookFn } = useEditBook();
+  const { data } = useAllCategories();
+  const categories = data || [];
+
+  const {
+    selectedBooks: [book],
+    setSelectedBooks,
+  } = useContext(TableCheckboxContext);
 
   const {
     control,
@@ -66,7 +65,6 @@ export function EditBookModal({
     reset,
     formState: { errors, isSubmitting },
   } = useForm<EditBookFormData>({
-    // @ts-ignore
     resolver: zodResolver(editBookSchema),
     defaultValues: {
       categoryIds: [],
@@ -75,23 +73,20 @@ export function EditBookModal({
     },
   });
 
-  const { data } = useAllCategories();
-  const categories = data || [];
-
   const title = watch("title");
   const author = watch("author");
   const release_year = watch("release_year");
   const price = watch("price");
   const description = watch("description");
 
-  const { selectedData, setSelectedData } = useCheckboxToggle<Category>({
+  const { selectedData, setSelectedData } = useSelectToggle<Category>({
     data: categories,
   });
 
   async function handleEditBook(data: EditBookFormData) {
     reset();
-    await editBookFn({ id: bookId, data });
-    clearSelected([]);
+    await editBookFn({ id: book.id, data });
+    setSelectedBooks([]);
   }
 
   useEffect(() => {

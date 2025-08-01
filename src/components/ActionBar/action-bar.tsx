@@ -1,33 +1,12 @@
-import { useDisclosure } from "@chakra-ui/react";
-import { Box, Button,Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
-import { EditBookModal } from "../CheckboxTable/BookModal/edit";
-import { CancelAlertDialog } from "./cancel-alert";
-
 interface ActionBarProps {
-  setSelectedData: (data: string[]) => void;
-  data: string[];
   count: number;
-  onClear: () => void;
-  children?: ReactNode;
+  children: ReactNode;
 }
 
-export function ActionBar({
-  data,
-  count,
-  onClear,
-  children,
-  setSelectedData,
-}: ActionBarProps) {
-  const {
-    isOpen: isCancelOpen,
-    onOpen: onOpenCancel,
-    onClose: onCloseCancel,
-  } = useDisclosure();
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
+export function ActionBar({ count, children }: ActionBarProps) {
   if (count === 0) {
     return null;
   }
@@ -64,44 +43,7 @@ export function ActionBar({
             {count} selecionado{count > 1 ? "s" : ""}
           </Text>
         </Box>
-        <Flex gap="2">
-          {children}
-          <Button
-            color="gray_800"
-            variant="outline"
-            size="sm"
-            onClick={onClear}
-          >
-            Cancelar
-          </Button>
-          {count === 1 && (
-            <>
-              <Button
-                color="gray_800"
-                variant="outline"
-                size="sm"
-                onClick={onOpen}
-              >
-                Editar
-              </Button>
-              <EditBookModal
-                setSelectedData={setSelectedData}
-                bookId={data[0]}
-                isOpen={isOpen}
-                onClose={onClose}
-              />
-            </>
-          )}
-          <Button colorScheme="red" size="sm" onClick={onOpenCancel}>
-            Excluir
-          </Button>
-          <CancelAlertDialog
-            data={data}
-            onClear={onClear}
-            isOpen={isCancelOpen}
-            onClose={onCloseCancel}
-          />
-        </Flex>
+        <Flex gap="2">{children}</Flex>
       </Flex>
     </Box>
   );

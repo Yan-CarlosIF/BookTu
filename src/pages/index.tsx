@@ -1,4 +1,4 @@
-import { Box, Button,Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LockKeyhole, User } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -9,8 +9,8 @@ import { useLogin } from "@/services/Users/useLogin";
 import { alreadyLoggedIn } from "@/utils/alreadyLoggedIn";
 
 const loginSchema = z.object({
-  login: z.string().nonempty("Login obrigatório"),
-  password: z.string().nonempty("Informe sua senha"),
+  login: z.string().min(1, "Login obrigatório"),
+  password: z.string().min(1, "Informe sua senha"),
 });
 
 type LoginSchema = z.infer<typeof loginSchema>;
@@ -27,7 +27,10 @@ export default function Home() {
   });
 
   async function handleLogin(data: LoginSchema) {
-    await LoginFn(data);
+    await LoginFn({
+      login: data.login,
+      password: data.password,
+    });
   }
 
   return (

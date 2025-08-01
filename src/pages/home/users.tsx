@@ -1,27 +1,12 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Flex,
-  Select,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
-import { Plus, Search } from "lucide-react";
+import { Flex, Select } from "@chakra-ui/react";
+import { Search } from "lucide-react";
 import { useRouter } from "next/router";
 import { ReactElement, useState } from "react";
 
-import { ActionBar } from "@/components/ActionBar/action-bar";
 import { CheckboxUserTable } from "@/components/CheckboxTable/user";
 import { HomeLayout } from "@/components/Home/layout";
 import { Input } from "@/components/input";
-import { Pagination } from "@/components/Pagination/pagination";
+import { TableCheckboxProvider } from "@/context/checkboxContext";
 import { useListUsers } from "@/services/Users/useListUsers";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
@@ -93,14 +78,16 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
       {isLoading ? (
         <div>Carregando...</div>
       ) : (
-        <CheckboxUserTable
-          data={{
-            data: data.users,
-            total: data.total,
-            page: data.page,
-            lastPage: data.lastPage,
-          }}
-        />
+        <TableCheckboxProvider>
+          <CheckboxUserTable
+            data={{
+              data: data.users,
+              total: data.total,
+              page: data.page,
+              lastPage: data.lastPage,
+            }}
+          />
+        </TableCheckboxProvider>
       )}
     </>
   );

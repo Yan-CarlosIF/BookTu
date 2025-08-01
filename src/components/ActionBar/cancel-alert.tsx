@@ -7,26 +7,27 @@ import {
   AlertDialogOverlay,
   Button,
 } from "@chakra-ui/react";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 
+import { TableCheckboxContext } from "@/context/checkboxContext";
 import { useDeleteBooks } from "@/services/Books/useDeleteBook";
 
 interface CancelAlertDialogProps {
   data: string[];
   isOpen: boolean;
   onClose: () => void;
-  onClear: () => void;
 }
 
 export function CancelAlertDialog({
   data,
   isOpen,
   onClose,
-  onClear,
 }: CancelAlertDialogProps) {
   const { mutateAsync: deleteBooksFn } = useDeleteBooks();
 
   const cancelRef = useRef();
+
+  const { setSelectedBooks } = useContext(TableCheckboxContext);
 
   async function handleDelete(ids: string[]) {
     onClose();
@@ -35,7 +36,7 @@ export function CancelAlertDialog({
       await deleteBooksFn(id);
     });
 
-    onClear();
+    setSelectedBooks([]);
   }
 
   return (

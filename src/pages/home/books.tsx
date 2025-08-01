@@ -3,10 +3,11 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/router";
 import { ReactElement, useMemo, useState } from "react";
 
-import { CheckBoxTable } from "@/components/CheckboxTable";
+import { CheckBoxTable } from "@/components/CheckboxTable/books";
 import { CheckboxTableLoading } from "@/components/CheckboxTable/loading";
 import { HomeLayout } from "@/components/Home/layout";
 import { Input } from "@/components/input";
+import { TableCheckboxProvider } from "@/context/checkboxContext";
 import { UseListBooks } from "@/services/Books/useListBooks";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
@@ -36,7 +37,6 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
     });
   }
 
-  // Filtra os dados baseado no termo de busca
   const filteredData = useMemo(() => {
     if (!data?.books || !search.trim()) {
       return data;
@@ -97,16 +97,17 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
         </Select>
       </Flex>
 
-      {/* Tabela */}
       {isLoading ? (
         <CheckboxTableLoading />
       ) : (
-        <CheckBoxTable
-          data={{
-            ...filteredData,
-            data: filteredData?.books || [],
-          }}
-        />
+        <TableCheckboxProvider>
+          <CheckBoxTable
+            data={{
+              ...filteredData,
+              data: filteredData?.books || [],
+            }}
+          />
+        </TableCheckboxProvider>
       )}
     </>
   );

@@ -8,26 +8,26 @@ interface CheckboxToggleProps<T> {
   data: T[];
 }
 
-export function useCheckboxToggle<T extends Book | Category | User>({
+export function useSelectToggle<T extends Book | Category | User>({
   data,
 }: CheckboxToggleProps<T>) {
   const [selectedData, setSelectedData] = useState<string[]>([]);
 
-  const toggleSelectAll = () => {
+  function toggleSelectAll() {
     if (selectedData.length === data.length) {
       setSelectedData([]);
     } else {
       setSelectedData(data.map((data) => data.id));
     }
-  };
+  }
 
-  const toggleSelect = (id: string) => {
+  function toggleSelect(id: string) {
     if (selectedData.includes(id)) {
       setSelectedData(selectedData.filter((dataId) => dataId !== id));
     } else {
       setSelectedData([...selectedData, id]);
     }
-  };
+  }
 
   return {
     selectedData,

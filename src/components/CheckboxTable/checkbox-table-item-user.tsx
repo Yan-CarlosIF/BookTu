@@ -1,25 +1,23 @@
-import { Box, Checkbox, Td, Text,Tr } from "@chakra-ui/react";
+import { Box, Checkbox, Td, Text, Tr } from "@chakra-ui/react";
+import { useContext } from "react";
 
+import { TableCheckboxContext } from "@/context/checkboxContext";
 import { User } from "@/shared/types/users";
 
 type CheckboxTableItemUserProps = {
   user: User;
-  isChecked: boolean;
-  toggleSelect: (id: string) => void;
 };
 
-export function CheckboxTableItemUser({
-  user,
-  isChecked,
-  toggleSelect,
-}: CheckboxTableItemUserProps) {
+export function CheckboxTableItemUser({ user }: CheckboxTableItemUserProps) {
+  const { selectedUsers, toggleSelectUser } = useContext(TableCheckboxContext);
+
   return (
     <Tr>
       <Td>
         <Checkbox
           colorScheme="teal"
-          isChecked={isChecked}
-          onChange={() => toggleSelect(user.id)}
+          isChecked={selectedUsers.some((b) => b.id === user.id)}
+          onChange={() => toggleSelectUser(user)}
         />
       </Td>
       <Td maxH="40px" p="0px" borderRight="1px" borderRightColor="gray.200">

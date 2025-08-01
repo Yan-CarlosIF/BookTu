@@ -1,12 +1,16 @@
 import {
-  Box,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Button,
   Checkbox,
   Flex,
   Table,
   TableContainer,
   Tbody,
-  Td,
   Text,
   Th,
   Thead,
@@ -14,14 +18,17 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
+import { useContext, useRef } from "react";
 
-import { useCheckboxToggle } from "@/hooks/checkboxToggle";
+import { TableCheckboxContext } from "@/context/checkboxContext";
+import { useDeleteUser } from "@/services/Users/useDeleteUser";
 import { User } from "@/shared/types/users";
 
 import { ActionBar } from "../ActionBar/action-bar";
 import { Pagination } from "../Pagination/pagination";
 import { CheckboxTableItemUser } from "./checkbox-table-item-user";
 import { AddUserModal } from "./UserModal/add";
+import { EditUserModal } from "./UserModal/edit";
 
 interface CheckboxTableItemProps {
   data: {
@@ -33,12 +40,35 @@ interface CheckboxTableItemProps {
 }
 
 export function CheckboxUserTable({ data }: CheckboxTableItemProps) {
+  const { mutateAsync: deleteUserFn } = useDeleteUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { selectedData, toggleSelectAll, toggleSelect, setSelectedData } =
-    useCheckboxToggle({
-      data: data.data,
+  const {
+    isOpen: isEditOpen,
+    onOpen: onOpenEdit,
+    onClose: onCloseEdit,
+  } = useDisclosure();
+
+  const {
+    isOpen: isCancelOpen,
+    onOpen: onOpenCancel,
+    onClose: onCloseCancel,
+  } = useDisclosure();
+
+  const cancelRef = useRef(null);
+
+  const { selectedUsers, setSelectedUsers, toggleSelectAllUsers } =
+    useContext(TableCheckboxContext);
+
+  async function handleDeleteUsers() {
+    onCloseCancel();
+
+    selectedUsers.forEach(async ({ id }) => {
+      await deleteUserFn(id);
     });
+
+    setSelectedUsers([]);
+  }
 
   return (
     <>
@@ -49,12 +79,12 @@ export function CheckboxUserTable({ data }: CheckboxTableItemProps) {
               <Th w="120px">
                 <Checkbox
                   colorScheme="teal"
-                  isChecked={selectedData.length === data.data.length}
+                  isChecked={selectedUsers.length === data.data.length}
                   isIndeterminate={
-                    selectedData.length > 0 &&
-                    selectedData.length < data.data.length
+                    selectedUsers.length > 0 &&
+                    selectedUsers.length < data.data.length
                   }
-                  onChange={toggleSelectAll}
+                  onChange={() => toggleSelectAllUsers(data.data)}
                 />
               </Th>
               <Th>Nome</Th>
@@ -64,12 +94,7 @@ export function CheckboxUserTable({ data }: CheckboxTableItemProps) {
           </Thead>
           <Tbody>
             {data.data.map((user) => (
-              <CheckboxTableItemUser
-                key={user.id}
-                user={user}
-                isChecked={selectedData.includes(user.id)}
-                toggleSelect={toggleSelect}
-              />
+              <CheckboxTableItemUser key={user.id} user={user} />
             ))}
           </Tbody>
         </Table>
@@ -96,12 +121,62 @@ export function CheckboxUserTable({ data }: CheckboxTableItemProps) {
 
         <Pagination currentPage={data.page} lastPage={data.lastPage} />
       </Flex>
-      <ActionBar
-        setSelectedData={setSelectedData}
-        data={selectedData}
-        count={selectedData.length}
-        onClear={() => setSelectedData([])}
-      />
+      <ActionBar count={selectedUsers.length}>
+        <Button
+          color="gray_800"
+          variant="outline"
+          size="sm"
+          onClick={() => setSelectedUsers([])}
+        >
+          Cancelar
+        </Button>
+        {selectedUsers.length === 1 && (
+          <>
+            <Button
+              color="gray_800"
+              variant="outline"
+              size="sm"
+              onClick={onOpenEdit}
+            >
+              Editar
+            </Button>
+            <EditUserModal isOpen={isEditOpen} onClose={onCloseEdit} />
+          </>
+        )}
+        <Button colorScheme="red" size="sm" onClick={onOpenCancel}>
+          Excluir
+        </Button>
+        <AlertDialog
+          motionPreset="slideInBottom"
+          leastDestructiveRef={cancelRef}
+          onClose={onCloseCancel}
+          isOpen={isCancelOpen}
+          isCentered
+        >
+          <AlertDialogOverlay />
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Deletar Usuário{selectedUsers.length > 1 && "s"}
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Tem certeza que deseja excluir o{selectedUsers.length > 1 && "s"}{" "}
+              usuário
+              {selectedUsers.length > 1 && "s"} selecionado
+              {selectedUsers.length > 1 && "s"}?
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onCloseCancel}>
+                Cancelar
+              </Button>
+              <Button onClick={handleDeleteUsers} colorScheme="red" ml={3}>
+                Confirmar
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </ActionBar>
     </>
   );
 }

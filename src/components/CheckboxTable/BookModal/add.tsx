@@ -13,7 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { InputNumber } from "@/components/input-number";
-import { useCheckboxToggle } from "@/hooks/checkboxToggle";
+import { useSelectToggle } from "@/hooks/selectToggle";
 import { useCreateBook } from "@/services/Books/useCreateBook";
 import { useAllCategories } from "@/services/Categories/useAllCategories";
 import { Category } from "@/shared/types/category";
@@ -68,7 +68,7 @@ export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
   const price = watch("price");
   const description = watch("description");
 
-  const { selectedData, setSelectedData } = useCheckboxToggle<Category>({
+  const { selectedData, setSelectedData } = useSelectToggle<Category>({
     data: categories,
   });
 
@@ -87,7 +87,7 @@ export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
       release_year,
       price,
       description,
-      categories: categoryIds,
+      categoryIds,
     });
   }
 
@@ -160,7 +160,6 @@ export function AddBookModal({ isOpen, onClose }: AddBookModalProps) {
               />
             )}
           />
-
           <Input
             minH="40px"
             h="130px"

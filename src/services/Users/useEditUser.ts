@@ -1,39 +1,32 @@
 import { useToast } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import nookies from "nookies";
+import { type } from "os";
 
-import { api } from "../../lib/axios";
+import { api } from "@/lib/axios";
+import { User } from "@/shared/types/users";
 
-interface ICreateBook {
-  title: string;
-  author: string;
-  release_year: number;
-  price: number;
-  description?: string;
-  categoryIds?: string[];
-}
+type IEditUser = { id: string; data: Omit<User, "id"> };
 
-export function useCreateBook() {
+export function useEditUser() {
   const queryClient = useQueryClient();
   const toast = useToast();
   const token = nookies.get(null)["auth.token"];
 
   return useMutation({
-    mutationFn: async (data: ICreateBook) => {
-      const { data: response } = await api.post("/books", data, {
+    mutationFn: async ({ id, data }: IEditUser) => {
+      await api.patch(`/users/${id}`, data, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
         },
       });
-
-      return response;
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["books"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
 
       toast({
-        title: "Livro cadastrado com sucesso",
+        title: "Usuário editado com sucesso",
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -42,7 +35,7 @@ export function useCreateBook() {
 
     onError: () => {
       toast({
-        title: "Erro ao cadastrar livro",
+        title: "Erro ao editar usuário",
         status: "error",
         duration: 3000,
         isClosable: true,

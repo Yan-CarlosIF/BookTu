@@ -12,13 +12,16 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
+import { useContext } from "react";
 
-import { useCheckboxToggle } from "@/hooks/checkboxToggle";
+import { TableCheckboxContext } from "@/context/checkboxContext";
 import { Book } from "@/shared/types/book";
 
 import { ActionBar } from "../ActionBar/action-bar";
+import { CancelAlertDialog } from "../ActionBar/cancel-alert";
 import { Pagination } from "../Pagination/pagination";
 import { AddBookModal } from "./BookModal/add";
+import { EditBookModal } from "./BookModal/edit";
 import { CheckboxTableItem } from "./checkbox-table-item";
 
 interface CheckBoxTableProps {
@@ -33,8 +36,14 @@ interface CheckBoxTableProps {
 export function CheckBoxTable({ data }: CheckBoxTableProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { selectedData, setSelectedData, toggleSelect, toggleSelectAll } =
-    useCheckboxToggle({ data: data.data });
+  const {
+    isOpen: isCancelOpen,
+    onOpen: onOpenCancel,
+    onClose: onCloseCancel,
+  } = useDisclosure();
+
+  const { selectedBooks, toggleSelectAllBooks, setSelectedBooks } =
+    useContext(TableCheckboxContext);
 
   return (
     <>
@@ -45,12 +54,12 @@ export function CheckBoxTable({ data }: CheckBoxTableProps) {
               <Th>
                 <Checkbox
                   colorScheme="teal"
-                  isChecked={selectedData.length === data.data.length}
+                  isChecked={selectedBooks.length === data.data.length}
                   isIndeterminate={
-                    selectedData.length > 0 &&
-                    selectedData.length < data.data.length
+                    selectedBooks.length > 0 &&
+                    selectedBooks.length < data.data.length
                   }
-                  onChange={toggleSelectAll}
+                  onChange={() => toggleSelectAllBooks(data.data)}
                 />
               </Th>
               <Th>Título</Th>
@@ -61,12 +70,7 @@ export function CheckBoxTable({ data }: CheckBoxTableProps) {
           </Thead>
           <Tbody>
             {data.data.map((book) => (
-              <CheckboxTableItem
-                book={book}
-                key={book.id}
-                isChecked={selectedData.includes(book.id)}
-                toggleSelect={toggleSelect}
-              />
+              <CheckboxTableItem book={book} key={book.id} />
             ))}
           </Tbody>
         </Table>
@@ -93,12 +97,37 @@ export function CheckBoxTable({ data }: CheckBoxTableProps) {
 
         <Pagination currentPage={data.page} lastPage={data.lastPage} />
       </Flex>
-      <ActionBar
-        setSelectedData={setSelectedData}
-        data={selectedData}
-        count={selectedData.length}
-        onClear={() => setSelectedData([])}
-      />
+      <ActionBar count={selectedBooks.length}>
+        <Button
+          color="gray_800"
+          variant="outline"
+          size="sm"
+          onClick={() => setSelectedBooks([])}
+        >
+          Cancelar
+        </Button>
+        {selectedBooks.length === 1 && (
+          <>
+            <Button
+              color="gray_800"
+              variant="outline"
+              size="sm"
+              onClick={onOpen}
+            >
+              Editar
+            </Button>
+            <EditBookModal isOpen={isOpen} onClose={onClose} />
+          </>
+        )}
+        <Button colorScheme="red" size="sm" onClick={onOpenCancel}>
+          Excluir
+        </Button>
+        <CancelAlertDialog
+          data={selectedBooks.map((book) => book.id)}
+          isOpen={isCancelOpen}
+          onClose={onCloseCancel}
+        />
+      </ActionBar>
     </>
   );
 }
