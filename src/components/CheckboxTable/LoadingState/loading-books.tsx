@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
-export function CheckboxTableLoading() {
+export function CheckboxTableBooksLoading() {
   return (
     <>
       <TableContainer mt="40px">

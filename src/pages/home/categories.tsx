@@ -1,10 +1,8 @@
-import { Flex, Select } from "@chakra-ui/react";
-import { Search } from "lucide-react";
 import { useRouter } from "next/router";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 
 import { HomeLayout } from "@/components/Home/layout";
-import { Input } from "@/components/input";
+import { SearchBar } from "@/components/search-bar";
 import { SimpleTable } from "@/components/SimpleTable";
 import { SimpleTableLoading } from "@/components/SimpleTable/loading";
 import { UseListCategories } from "@/services/Categories/useListCategories";
@@ -19,11 +17,23 @@ export type CategoriesPageProps = {
   isAdmin?: boolean;
 };
 
+const filterOptions = [
+  {
+    value: "asc",
+    label: "A-Z",
+  },
+  {
+    value: "desc",
+    label: "Z-A",
+  },
+];
+
 const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
   page,
   sort,
   isAdmin,
 }) => {
+  const [search, setSearch] = useState("");
   const { data, isLoading } = UseListCategories(page, sort);
 
   const router = useRouter();
@@ -43,38 +53,13 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
 
   return (
     <>
-      <Flex
-        boxShadow="lg"
-        mt="36px"
-        align="center"
-        bg="gray_300"
-        borderRadius="lg"
-        px="24px"
-        py="18px"
-        gap="160px"
-      >
-        <Input
-          h="42px"
-          bg="background"
-          placeholder="Procurar pelo nome da categoria"
-          icon={Search}
-        />
-        <Select
-          mr="20px"
-          focusBorderColor="teal.300"
-          placeholder="Filtros"
-          bg="highlight_blue"
-          color="background"
-          fontWeight="medium"
-          h="42px"
-          w="210px"
-          _hover={{ bg: "teal.400" }}
-          onChange={(e) => handleFilterChange(e.target.value)}
-        >
-          <option value="asc">A-Z</option>
-          <option value="desc">Z-A</option>
-        </Select>
-      </Flex>
+      <SearchBar
+        searchValue={search}
+        placeholder="Buscar pelo nome"
+        onSearch={setSearch}
+        onFilter={handleFilterChange}
+        filterOptions={filterOptions}
+      />
 
       {isLoading ? (
         <SimpleTableLoading />

@@ -1,11 +1,10 @@
-import { Flex, Select } from "@chakra-ui/react";
-import { Search } from "lucide-react";
 import { useRouter } from "next/router";
 import { ReactElement, useState } from "react";
 
+import { CheckboxTableUsersLoading } from "@/components/CheckboxTable/LoadingState/loading-users";
 import { CheckboxTableUsers } from "@/components/CheckboxTable/user";
 import { HomeLayout } from "@/components/Home/layout";
-import { Input } from "@/components/input";
+import { SearchBar } from "@/components/search-bar";
 import { TableCheckboxProvider } from "@/context/checkboxContext";
 import { useListUsers } from "@/services/Users/useListUsers";
 import { ensureUserAdmin } from "@/utils/ensureUserAdmin";
@@ -18,6 +17,25 @@ export type UsersPageProps = {
   sort?: string | null;
   isAdmin: boolean;
 };
+
+const filterOptions = [
+  {
+    value: "asc",
+    label: "A-Z",
+  },
+  {
+    value: "desc",
+    label: "Z-A",
+  },
+  {
+    value: "operator",
+    label: "Operador",
+  },
+  {
+    value: "admin",
+    label: "Admin",
+  },
+];
 
 const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
   const { data, isLoading } = useListUsers(page, sort);
@@ -39,45 +57,16 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
 
   return (
     <>
-      <Flex
-        boxShadow="lg"
-        mt="36px"
-        align="center"
-        bg="gray_300"
-        borderRadius="lg"
-        px="24px"
-        py="18px"
-        gap="160px"
-      >
-        <Input
-          h="42px"
-          bg="background"
-          placeholder="Procurar pelo nome do usuário"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          icon={Search}
-        />
-        <Select
-          mr="20px"
-          focusBorderColor="teal.300"
-          placeholder="Filtros"
-          bg="highlight_blue"
-          color="background"
-          fontWeight="medium"
-          h="42px"
-          w="210px"
-          _hover={{ bg: "teal.400" }}
-          onChange={(e) => handleFilterChange(e.target.value)}
-        >
-          <option value="asc">A-Z</option>
-          <option value="desc">Z-A</option>
-          <option value="operator">Operador</option>
-          <option value="admin">Admin</option>
-        </Select>
-      </Flex>
+      <SearchBar
+        searchValue={search}
+        placeholder="Buscar pelo nome"
+        onSearch={setSearch}
+        onFilter={handleFilterChange}
+        filterOptions={filterOptions}
+      />
 
       {isLoading ? (
-        <div>Carregando...</div>
+        <CheckboxTableUsersLoading />
       ) : (
         <TableCheckboxProvider>
           <CheckboxTableUsers

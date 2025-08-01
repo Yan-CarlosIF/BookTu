@@ -4,9 +4,10 @@ import { useRouter } from "next/router";
 import { ReactElement, useMemo, useState } from "react";
 
 import { CheckBoxTableBooks } from "@/components/CheckboxTable/books";
-import { CheckboxTableLoading } from "@/components/CheckboxTable/loading";
+import { CheckboxTableBooksLoading } from "@/components/CheckboxTable/LoadingState/loading-books";
 import { HomeLayout } from "@/components/Home/layout";
 import { Input } from "@/components/input";
+import { SearchBar } from "@/components/search-bar";
 import { TableCheckboxProvider } from "@/context/checkboxContext";
 import { UseListBooks } from "@/services/Books/useListBooks";
 import { withAuthServerSideProps } from "@/utils/withAuth";
@@ -19,6 +20,33 @@ type BooksPageProps = {
   sort?: string;
   isAdmin?: boolean;
 };
+
+const filterOptions = [
+  {
+    value: "asc",
+    label: "A-Z",
+  },
+  {
+    value: "desc",
+    label: "Z-A",
+  },
+  {
+    value: "price-asc",
+    label: "Menor preço",
+  },
+  {
+    value: "price-desc",
+    label: "Maior preço",
+  },
+  {
+    value: "latest",
+    label: "Mais recentes",
+  },
+  {
+    value: "oldest",
+    label: "Mais antigos",
+  },
+];
 
 const BooksPage: NextPageWithLayout<BooksPageProps> = ({
   page,
@@ -63,47 +91,16 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({
 
   return (
     <>
-      <Flex
-        boxShadow="lg"
-        mt="36px"
-        align="center"
-        bg="gray_300"
-        borderRadius="lg"
-        px="24px"
-        py="18px"
-        gap="160px"
-      >
-        <Input
-          h="42px"
-          bg="background"
-          placeholder="Procurar pelo título ou autor"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          icon={Search}
-        />
-        <Select
-          mr="20px"
-          focusBorderColor="teal.300"
-          placeholder="Filtros"
-          bg="highlight_blue"
-          color="background"
-          fontWeight="medium"
-          h="42px"
-          w="210px"
-          _hover={{ bg: "teal.400" }}
-          onChange={(e) => handleFilterChange(e.target.value)}
-        >
-          <option value="asc">A-Z</option>
-          <option value="desc">Z-A</option>
-          <option value="price-asc">Menor preço</option>
-          <option value="price-desc">Maior preço</option>
-          <option value="latest">Mais recentes</option>
-          <option value="oldest">Mais antigos</option>
-        </Select>
-      </Flex>
+      <SearchBar
+        searchValue={search}
+        placeholder="Buscar pelo título ou autor"
+        onSearch={setSearch}
+        onFilter={handleFilterChange}
+        filterOptions={filterOptions}
+      />
 
       {isLoading ? (
-        <CheckboxTableLoading />
+        <CheckboxTableBooksLoading />
       ) : (
         <TableCheckboxProvider>
           <CheckBoxTableBooks
