@@ -2,15 +2,24 @@ import { GetServerSideProps, GetServerSidePropsContext } from "next";
 
 import { api } from "@/lib/axios";
 
-type WithAuthResult = {
+type UserAdmin = {
   name: string;
   isAdmin: boolean;
 };
 
-export function withAuthServerSideProps<T>(
+type IUserResponse = {
+  id: string;
+  name: string;
+  registration: string;
+  login: string;
+  role: string;
+  permission: "admin" | "operator";
+};
+
+export function ensureUserAdmin<T>(
   handler: (
     ctx: GetServerSidePropsContext,
-    user: WithAuthResult
+    user: UserAdmin
   ) => Promise<{ props: T }>
 ): GetServerSideProps {
   return async (ctx) => {
@@ -28,13 +37,22 @@ export function withAuthServerSideProps<T>(
     }
 
     try {
-      const response = await api.get("/users/me", {
+      const response = await api.get<IUserResponse>("/users/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       const user = response.data;
+
+      if (user.permission !== "admin") {
+        return {
+          redirect: {
+            destination: "/home/books",
+            permanent: false,
+          },
+        };
+      }
 
       return await handler(ctx, {
         name: user.name,

@@ -16,6 +16,7 @@ export type CategoriesPageProps = {
   name: string;
   page: number;
   sort?: string | null;
+  isAdmin?: boolean;
 };
 
 const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
@@ -81,25 +82,28 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
 
 CategoriesPage.getLayout = function getLayout(
   page: ReactElement,
-  pageProps: CategoriesPageProps
+  { name, isAdmin }: CategoriesPageProps
 ) {
   return (
-    <HomeLayout slug="categories" name={pageProps.name}>
+    <HomeLayout isAdmin={isAdmin} slug="categories" name={name}>
       {page}
     </HomeLayout>
   );
 };
 
-export const getServerSideProps = withAuthServerSideProps(async (ctx, user) => {
-  const { page, sort } = ctx.query;
+export const getServerSideProps = withAuthServerSideProps(
+  async (ctx, { isAdmin, name }) => {
+    const { page, sort } = ctx.query;
 
-  return {
-    props: {
-      name: user.name,
-      page: page ? Number(page) : 1,
-      sort: sort ?? null,
-    },
-  };
-});
+    return {
+      props: {
+        name,
+        isAdmin,
+        page: page ? Number(page) : 1,
+        sort: sort ?? null,
+      },
+    };
+  }
+);
 
 export default CategoriesPage;

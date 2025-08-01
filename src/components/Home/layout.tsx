@@ -7,9 +7,15 @@ type HomeLayoutProps = {
   children: React.ReactNode;
   slug: string;
   name: string;
+  isAdmin?: boolean;
 };
 
-export function HomeLayout({ children, slug, name }: HomeLayoutProps) {
+export function HomeLayout({
+  children,
+  slug,
+  name,
+  isAdmin = false,
+}: HomeLayoutProps) {
   const getDisplayTitle = () => {
     switch (slug) {
       case "books":
@@ -25,7 +31,7 @@ export function HomeLayout({ children, slug, name }: HomeLayoutProps) {
 
   return (
     <Flex as="main" w="100%" h="100vh">
-      <Sidebar slug={slug} />
+      <Sidebar isAdmin={isAdmin} slug={slug} />
       <Box p="40px" as="main" w="100%" h="100vh">
         <Flex align="center" justify="space-between">
           <Heading as="h1" fontFamily="poppins" fontSize="4xl">

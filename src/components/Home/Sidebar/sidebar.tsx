@@ -3,7 +3,12 @@ import { Book, LogOut, PlusCircle, Users } from "lucide-react";
 
 import { SidebarItem } from "./sidebar-item";
 
-export function Sidebar({ slug }: { slug: string }) {
+interface SidebarProps {
+  slug: string;
+  isAdmin?: boolean;
+}
+
+export function Sidebar({ slug, isAdmin }: SidebarProps) {
   return (
     <Box
       as="aside"
@@ -25,12 +30,14 @@ export function Sidebar({ slug }: { slug: string }) {
           href="/home/books"
           isActive={slug === "books"}
         />
-        <SidebarItem
-          icon={Users}
-          title="Usuários"
-          href="/home/users"
-          isActive={slug === "users"}
-        />
+        {isAdmin && (
+          <SidebarItem
+            icon={Users}
+            title="Usuários"
+            href="/home/users"
+            isActive={slug === "users"}
+          />
+        )}
         <SidebarItem
           icon={PlusCircle}
           title="Categorias"
