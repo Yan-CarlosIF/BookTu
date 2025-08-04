@@ -1,15 +1,19 @@
+import { Th } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { ReactElement, useState } from "react";
+import { ReactElement, useContext, useState } from "react";
 
 import { HomeLayout } from "@/components/Home/layout";
 import { SearchBar } from "@/components/search-bar";
-import { SimpleTable } from "@/components/SimpleTable";
-import { SimpleTableLoading } from "@/components/SimpleTable/loading";
+import { BaseTable } from "@/components/Table";
+import { SimpleTableLoading } from "@/components/Table/LoadingState/loading-categories";
+import { userContext } from "@/context/userContext";
 import { useDataFilter } from "@/hooks/useDataFilter";
 import { UseListCategories } from "@/services/Categories/useListCategories";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
-import { NextPageWithLayout } from "../_app";
+import { NextPageWithLayout } from "../../_app";
+import { CategoriesTableContent } from "./_components/categories-table-content";
+import { CategoriesTableItem } from "./_components/categories-table-item";
 
 export type CategoriesPageProps = {
   page: number;
@@ -26,6 +30,18 @@ const filterOptions = [
     label: "Z-A",
   },
 ];
+
+const TableHeaders = () => {
+  const { user, isLoading } = useContext(userContext);
+
+  return (
+    <>
+      <Th>Nome</Th>
+      <Th>Editar</Th>
+      {!isLoading && user.permission === "admin" && <Th>Deletar</Th>}
+    </>
+  );
+};
 
 const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
   page,
@@ -68,14 +84,14 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
       {isLoading ? (
         <SimpleTableLoading />
       ) : (
-        <SimpleTable
-          data={{
-            categories: filteredCategories,
-            total: filteredCategories.length,
-            page: data?.page,
-            lastPage: data?.lastPage,
-          }}
-        />
+        <>
+          <BaseTable headers={<TableHeaders />}>
+            {filteredCategories.map((category) => (
+              <CategoriesTableItem key={category.id} category={category} />
+            ))}
+          </BaseTable>
+          <CategoriesTableContent page={page} lastPage={data?.lastPage} />
+        </>
       )}
     </>
   );

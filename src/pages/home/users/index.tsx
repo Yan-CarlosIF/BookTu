@@ -1,16 +1,21 @@
+import { Th } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { ReactElement, useState } from "react";
+import { ReactElement, useContext, useState } from "react";
 
-import { CheckboxTableUsersLoading } from "@/components/CheckboxTable/LoadingState/loading-users";
-import { CheckboxTableUsers } from "@/components/CheckboxTable/users";
 import { HomeLayout } from "@/components/Home/layout";
 import { SearchBar } from "@/components/search-bar";
-import { TableCheckboxProvider } from "@/context/checkboxContext";
-import { useDataFilter } from "@/hooks/useDataFilter";
+import { BaseTable } from "@/components/Table";
+import { CheckboxTableUsersLoading } from "@/components/Table/LoadingState/loading-users";
+import {
+  TableCheckboxContext,
+  TableCheckboxProvider,
+} from "@/context/checkboxContext";
 import { useListUsers } from "@/services/Users/useListUsers";
 import { ensureUserAdmin } from "@/utils/ensureUserAdmin";
 
-import { NextPageWithLayout } from "../_app";
+import { NextPageWithLayout } from "../../_app";
+import { UserTableContent } from "./_components/user-table-content";
+import { UserTableItem } from "./_components/user-table-item";
 
 export type UsersPageProps = {
   name: string;
@@ -38,6 +43,14 @@ const filterOptions = [
   },
 ];
 
+const TableHeaders = () => (
+  <>
+    <Th>Nome</Th>
+    <Th>Matrícula</Th>
+    <Th isNumeric>Permissão</Th>
+  </>
+);
+
 const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
   const { data, isLoading } = useListUsers(page, sort);
   const [search, setSearch] = useState("");
@@ -56,11 +69,12 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
     });
   }
 
-  const filteredUsers = useDataFilter({
-    data: data?.users,
-    searchValue: search,
-    searchKeys: ["name"],
-  });
+  const filteredUsers = data?.users.filter((user) =>
+    user.name.toLowerCase().includes(search.toLowerCase().trim())
+  );
+
+  const { selectedUsers, toggleSelectAllUsers } =
+    useContext(TableCheckboxContext);
 
   return (
     <>
@@ -76,14 +90,21 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
         <CheckboxTableUsersLoading />
       ) : (
         <TableCheckboxProvider>
-          <CheckboxTableUsers
-            data={{
-              data: filteredUsers,
-              total: filteredUsers.length,
-              page: data.page,
-              lastPage: data.lastPage,
-            }}
-          />
+          <BaseTable
+            isCheckboxChecked={selectedUsers?.length === filteredUsers?.length}
+            isCheckboxIndeterminate={
+              selectedUsers?.length > 0 &&
+              selectedUsers?.length < filteredUsers?.length
+            }
+            onCheckboxChange={() => toggleSelectAllUsers(filteredUsers)}
+            headers={<TableHeaders />}
+            checkbox
+          >
+            {filteredUsers?.map((user) => (
+              <UserTableItem key={user.id} user={user} />
+            ))}
+          </BaseTable>
+          <UserTableContent page={page} lastPage={data?.lastPage} />
         </TableCheckboxProvider>
       )}
     </>

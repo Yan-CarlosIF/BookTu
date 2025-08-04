@@ -1,16 +1,21 @@
+import { Th } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { ReactElement, useState } from "react";
+import { ReactElement, useContext, useState } from "react";
 
-import { CheckBoxTableBooks } from "@/components/CheckboxTable/books";
-import { CheckboxTableBooksLoading } from "@/components/CheckboxTable/LoadingState/loading-books";
 import { HomeLayout } from "@/components/Home/layout";
 import { SearchBar } from "@/components/search-bar";
-import { TableCheckboxProvider } from "@/context/checkboxContext";
-import { useDataFilter } from "@/hooks/useDataFilter";
+import { BaseTable } from "@/components/Table";
+import { CheckboxTableBooksLoading } from "@/components/Table/LoadingState/loading-books";
+import {
+  TableCheckboxContext,
+  TableCheckboxProvider,
+} from "@/context/checkboxContext";
 import { UseListBooks } from "@/services/Books/useListBooks";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
-import { NextPageWithLayout } from "../_app";
+import { NextPageWithLayout } from "../../_app";
+import { BooksTableContent } from "./_components/books-table-content";
+import { BooksTableItem } from "./_components/books-table-item";
 
 type BooksPageProps = {
   page: number;
@@ -44,6 +49,15 @@ const filterOptions = [
   },
 ];
 
+const TableHeaders = () => (
+  <>
+    <Th>Título</Th>
+    <Th>Categoria(s)</Th>
+    <Th>Ano de Lançamento</Th>
+    <Th isNumeric>Preço (R$)</Th>
+  </>
+);
+
 const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
   const { data, isLoading } = UseListBooks(page, sort);
   const [search, setSearch] = useState("");
@@ -62,11 +76,15 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
     });
   }
 
-  const filteredBooks = useDataFilter({
-    data: data?.books,
-    searchValue: search,
-    searchKeys: ["title", "author"],
+  const filteredBooks = data?.books.filter((book) => {
+    return (
+      book.title.toLowerCase().includes(search.toLowerCase().trim()) ||
+      book.author.toLowerCase().includes(search.toLowerCase().trim())
+    );
   });
+
+  const { selectedBooks, toggleSelectAllBooks } =
+    useContext(TableCheckboxContext);
 
   return (
     <>
@@ -82,14 +100,21 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
         <CheckboxTableBooksLoading />
       ) : (
         <TableCheckboxProvider>
-          <CheckBoxTableBooks
-            data={{
-              data: filteredBooks,
-              total: filteredBooks.length,
-              page: data?.page,
-              lastPage: data?.lastPage,
-            }}
-          />
+          <BaseTable
+            isCheckboxChecked={selectedBooks?.length === filteredBooks?.length}
+            isCheckboxIndeterminate={
+              selectedBooks?.length > 0 &&
+              selectedBooks?.length < filteredBooks?.length
+            }
+            onCheckboxChange={() => toggleSelectAllBooks(filteredBooks)}
+            checkbox
+            headers={<TableHeaders />}
+          >
+            {filteredBooks?.map((book) => (
+              <BooksTableItem book={book} key={book.id} />
+            ))}
+          </BaseTable>
+          <BooksTableContent page={page} lastPage={data?.lastPage} />
         </TableCheckboxProvider>
       )}
     </>

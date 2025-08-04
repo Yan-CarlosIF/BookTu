@@ -27,7 +27,7 @@ import { IEditBook } from "@/services/Books/useEditBook";
 import { useAllCategories } from "@/services/Categories/useAllCategories";
 import { Category } from "@/shared/types/category";
 
-import { Input } from "../../input";
+import { Input } from "../../../../../components/input";
 import { CategoriesCheckboxList } from "./categories-menu";
 
 interface BookModalProps {

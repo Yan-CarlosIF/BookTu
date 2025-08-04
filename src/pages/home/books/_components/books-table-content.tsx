@@ -1,42 +1,23 @@
-import {
-  Button,
-  Checkbox,
-  Flex,
-  Table,
-  TableContainer,
-  Tbody,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
 import { useContext } from "react";
 
+import { ActionBar } from "@/components/ActionBar/action-bar";
+import { DeleteAlertDialog } from "@/components/ActionBar/delete-alert-dialog";
+import { Pagination } from "@/components/Pagination/pagination";
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { userContext } from "@/context/userContext";
+import { BookModal } from "@/pages/home/books/_components/BookModal";
 import { useCreateBook } from "@/services/Books/useCreateBook";
 import { useEditBook } from "@/services/Books/useEditBook";
-import { Book } from "@/shared/types/book";
 
-import { ActionBar } from "../ActionBar/action-bar";
-import { DeleteAlertDialog } from "../ActionBar/delete-alert-dialog";
-import { Pagination } from "../Pagination/pagination";
-import { BookModal } from "./BookModal";
-import { CheckboxTableItem } from "./checkbox-table-item";
-
-interface CheckBoxTableProps {
-  data: {
-    data: Book[];
-    total: number;
-    page: number;
-    lastPage: number;
-  };
+interface BooksTableContentProps {
+  page: number;
+  lastPage: number;
 }
 
-export function CheckBoxTableBooks({ data }: CheckBoxTableProps) {
-  const { user, isLoading } = useContext(userContext);
+export function BooksTableContent({ page, lastPage }: BooksTableContentProps) {
+  const { user, isLoading: isUserLoading } = useContext(userContext);
   const { mutateAsync: createBookFn } = useCreateBook();
   const { mutateAsync: editBookFn } = useEditBook();
 
@@ -48,42 +29,13 @@ export function CheckBoxTableBooks({ data }: CheckBoxTableProps) {
     onClose: onCloseCancel,
   } = useDisclosure();
 
-  const { selectedBooks, toggleSelectAllBooks, setSelectedBooks } =
-    useContext(TableCheckboxContext);
+  const { selectedBooks, setSelectedBooks } = useContext(TableCheckboxContext);
 
   return (
     <>
-      <TableContainer h="575px" mt="40px">
-        <Table borderWidth={1} borderColor="gray.200" colorScheme="gray">
-          <Thead bg="gray_300">
-            <Tr>
-              <Th>
-                <Checkbox
-                  colorScheme="teal"
-                  isChecked={selectedBooks.length === data.data.length}
-                  isIndeterminate={
-                    selectedBooks.length > 0 &&
-                    selectedBooks.length < data.data.length
-                  }
-                  onChange={() => toggleSelectAllBooks(data.data)}
-                />
-              </Th>
-              <Th>Título</Th>
-              <Th>Categoria(s)</Th>
-              <Th>Ano de Lançamento</Th>
-              <Th isNumeric>Preço (R$)</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data.data.map((book) => (
-              <CheckboxTableItem type="book" data={book} key={book.id} />
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
       <Flex px="40px" mt="40px" align="center" justify="space-between">
         <Text color="gray_800" fontWeight="medium">
-          Página {data?.page} de {data?.lastPage}
+          Página {page} de {lastPage}
         </Text>
 
         <Button
@@ -106,9 +58,9 @@ export function CheckBoxTableBooks({ data }: CheckBoxTableProps) {
           mutateAsync={createBookFn}
         />
 
-        <Pagination currentPage={data.page} lastPage={data.lastPage} />
+        <Pagination currentPage={page} lastPage={lastPage} />
       </Flex>
-      <ActionBar count={selectedBooks.length}>
+      <ActionBar count={selectedBooks?.length}>
         <Button
           color="gray_800"
           variant="outline"
@@ -117,7 +69,7 @@ export function CheckBoxTableBooks({ data }: CheckBoxTableProps) {
         >
           Cancelar
         </Button>
-        {selectedBooks.length === 1 && (
+        {selectedBooks?.length === 1 && (
           <>
             <Button
               color="gray_800"
@@ -135,7 +87,7 @@ export function CheckBoxTableBooks({ data }: CheckBoxTableProps) {
             />
           </>
         )}
-        {!isLoading && user?.permission === "admin" && (
+        {!isUserLoading && user?.permission === "admin" && (
           <>
             <Button colorScheme="red" size="sm" onClick={onOpenCancel}>
               Excluir

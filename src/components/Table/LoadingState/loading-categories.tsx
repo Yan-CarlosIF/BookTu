@@ -18,8 +18,15 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
+import { useContext } from "react";
+
+import { userContext } from "@/context/userContext";
 
 export function SimpleTableLoading() {
+  const { user, isLoading } = useContext(userContext);
+
+  const isAdmin = !isLoading && user.permission === "admin";
+
   return (
     <>
       <TableContainer mt="40px">
@@ -28,7 +35,7 @@ export function SimpleTableLoading() {
             <Tr>
               <Th>Nome</Th>
               <Th>Editar</Th>
-              <Th>Deletar</Th>
+              {isAdmin && <Th>Deletar</Th>}
             </Tr>
           </Thead>
           <Tbody>
@@ -47,16 +54,18 @@ export function SimpleTableLoading() {
                     Editar
                   </Button>
                 </Th>
-                <Th>
-                  <Button
-                    isLoading
-                    rightIcon={<Trash2 size={16} />}
-                    size="sm"
-                    colorScheme="red"
-                  >
-                    Deletar
-                  </Button>
-                </Th>
+                {isAdmin && (
+                  <Th>
+                    <Button
+                      isLoading
+                      rightIcon={<Trash2 size={16} />}
+                      size="sm"
+                      colorScheme="red"
+                    >
+                      Deletar
+                    </Button>
+                  </Th>
+                )}
               </Tr>
             ))}
           </Tbody>

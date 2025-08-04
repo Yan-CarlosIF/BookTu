@@ -11,10 +11,9 @@ import {
 import { EditIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
+import { Input } from "@/components/input";
 import { useEditCategory } from "@/services/Categories/useEditCategory";
 import { Category } from "@/shared/types/category";
-
-import { Input } from "../input";
 
 interface EditPopoverProps {
   category: Category;

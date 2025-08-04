@@ -19,11 +19,11 @@ import { Category } from "@/shared/types/category";
 
 import { EditPopover } from "./edit-popover";
 
-interface SimpleTableItemProps {
+interface CategoriesTableItemProps {
   category: Category;
 }
 
-export function SimpleTableItem({ category }: SimpleTableItemProps) {
+export function CategoriesTableItem({ category }: CategoriesTableItemProps) {
   const { user, isLoading } = useContext(userContext);
 
   const isAdmin = !isLoading && user?.permission === "admin";
@@ -45,13 +45,15 @@ export function SimpleTableItem({ category }: SimpleTableItemProps) {
   }
 
   return (
-    <Tr key={category.id}>
-      <Th w="66%">{category.name}</Th>
-      <Th>
+    <Tr py="10px" key={category.id}>
+      <Th py="10px" w="66%">
+        {category.name}
+      </Th>
+      <Th py="10px">
         <EditPopover category={category} />
       </Th>
       {isAdmin && (
-        <Th>
+        <Th py="10px">
           <Button
             onClick={onOpenCancel}
             rightIcon={<Trash2 size={16} />}

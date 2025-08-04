@@ -33,7 +33,7 @@ export function UserHeader() {
           textOverflow="ellipsis"
           maxW="100px"
         >
-          {isLoading ? <Spinner /> : displayedName}
+          {isLoading ? <Spinner as="span" /> : displayedName}
         </Text>
         <Avatar
           justifySelf="flex-end"
