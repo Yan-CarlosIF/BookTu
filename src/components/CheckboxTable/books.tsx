@@ -15,6 +15,7 @@ import { Plus } from "lucide-react";
 import { useContext } from "react";
 
 import { TableCheckboxContext } from "@/context/checkboxContext";
+import { userContext } from "@/context/userContext";
 import { useCreateBook } from "@/services/Books/useCreateBook";
 import { useEditBook } from "@/services/Books/useEditBook";
 import { Book } from "@/shared/types/book";
@@ -32,13 +33,10 @@ interface CheckBoxTableProps {
     page: number;
     lastPage: number;
   };
-  isAdmin?: boolean;
 }
 
-export function CheckBoxTableBooks({
-  data,
-  isAdmin = false,
-}: CheckBoxTableProps) {
+export function CheckBoxTableBooks({ data }: CheckBoxTableProps) {
+  const { user, isLoading } = useContext(userContext);
   const { mutateAsync: createBookFn } = useCreateBook();
   const { mutateAsync: editBookFn } = useEditBook();
 
@@ -137,7 +135,7 @@ export function CheckBoxTableBooks({
             />
           </>
         )}
-        {isAdmin && (
+        {!isLoading && user?.permission === "admin" && (
           <>
             <Button colorScheme="red" size="sm" onClick={onOpenCancel}>
               Excluir

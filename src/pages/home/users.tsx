@@ -90,15 +90,8 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
   );
 };
 
-UsersPage.getLayout = function getLayout(
-  page: ReactElement,
-  pageProps: UsersPageProps
-) {
-  return (
-    <HomeLayout isAdmin={pageProps.isAdmin} slug="users" name={pageProps.name}>
-      {page}
-    </HomeLayout>
-  );
+UsersPage.getLayout = function getLayout(page: ReactElement) {
+  return <HomeLayout slug="users">{page}</HomeLayout>;
 };
 
 export const getServerSideProps = ensureUserAdmin(

@@ -1,11 +1,14 @@
-import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Spinner, Text } from "@chakra-ui/react";
+import { useContext } from "react";
 
-export function UserHeader({ name }: { name: string }) {
-  const names = name.split(" ");
+import { userContext } from "@/context/userContext";
 
-  if (names.length > 1) {
-    name = names[0];
-  }
+export function UserHeader() {
+  const { user, isLoading } = useContext(userContext);
+
+  const names = user?.name.split(" ");
+
+  const displayedName = names?.length > 1 ? names[0] : user?.name;
 
   return (
     <Flex
@@ -30,14 +33,14 @@ export function UserHeader({ name }: { name: string }) {
           textOverflow="ellipsis"
           maxW="100px"
         >
-          {name}
+          {isLoading ? <Spinner /> : displayedName}
         </Text>
         <Avatar
           justifySelf="flex-end"
           size="md"
           color="background"
           bg="highlight_blue"
-          name={name}
+          name={displayedName}
         />
       </Box>
     </Flex>

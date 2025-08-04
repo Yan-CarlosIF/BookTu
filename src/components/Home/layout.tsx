@@ -6,16 +6,9 @@ import { UserHeader } from "./user-header";
 type HomeLayoutProps = {
   children: React.ReactNode;
   slug: string;
-  name: string;
-  isAdmin?: boolean;
 };
 
-export function HomeLayout({
-  children,
-  slug,
-  name,
-  isAdmin = false,
-}: HomeLayoutProps) {
+export function HomeLayout({ children, slug }: HomeLayoutProps) {
   const getDisplayTitle = () => {
     switch (slug) {
       case "books":
@@ -31,13 +24,13 @@ export function HomeLayout({
 
   return (
     <Flex as="main" w="100%" h="100vh">
-      <Sidebar isAdmin={isAdmin} slug={slug} />
+      <Sidebar slug={slug} />
       <Box p="40px" as="main" w="100%" h="100vh">
         <Flex align="center" justify="space-between">
           <Heading as="h1" fontFamily="poppins" fontSize="4xl">
             {displayTitle}
           </Heading>
-          <UserHeader name={name} />
+          <UserHeader />
         </Flex>
         {children}
       </Box>

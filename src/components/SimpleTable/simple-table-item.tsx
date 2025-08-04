@@ -11,8 +11,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Trash2 } from "lucide-react";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 
+import { userContext } from "@/context/userContext";
 import { useDeleteCategory } from "@/services/Categories/useDeleteCategory";
 import { Category } from "@/shared/types/category";
 
@@ -20,10 +21,13 @@ import { EditPopover } from "./edit-popover";
 
 interface SimpleTableItemProps {
   category: Category;
-  isAdmin?: boolean;
 }
 
-export function SimpleTableItem({ category, isAdmin }: SimpleTableItemProps) {
+export function SimpleTableItem({ category }: SimpleTableItemProps) {
+  const { user, isLoading } = useContext(userContext);
+
+  const isAdmin = !isLoading && user?.permission === "admin";
+
   const { mutateAsync: deleteCategoryFn } = useDeleteCategory();
 
   const {

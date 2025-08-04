@@ -1,17 +1,7 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 
-import { api } from "@/lib/axios";
-
-type WithAuthResult = {
-  name: string;
-  isAdmin: boolean;
-};
-
 export function withAuthServerSideProps<T>(
-  handler: (
-    ctx: GetServerSidePropsContext,
-    user: WithAuthResult
-  ) => Promise<{ props: T }>
+  handler: (ctx: GetServerSidePropsContext) => Promise<{ props: T }>
 ): GetServerSideProps {
   return async (ctx) => {
     const { req } = ctx;
@@ -27,26 +17,6 @@ export function withAuthServerSideProps<T>(
       };
     }
 
-    try {
-      const response = await api.get("/users/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const user = response.data;
-
-      return await handler(ctx, {
-        name: user.name,
-        isAdmin: user.permission === "admin",
-      });
-    } catch (err) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
+    return await handler(ctx);
   };
 }

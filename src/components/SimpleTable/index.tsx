@@ -18,8 +18,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { ChartBarStacked, Plus } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
+import { userContext } from "@/context/userContext";
 import { useCreateCategory } from "@/services/Categories/useCreateCategory";
 import { Category } from "@/shared/types/category";
 
@@ -34,13 +35,15 @@ interface SimpleTableProps {
     page: number;
     lastPage: number;
   };
-  isAdmin?: boolean;
 }
 
-export function SimpleTable({ data, isAdmin = false }: SimpleTableProps) {
+export function SimpleTable({ data }: SimpleTableProps) {
+  const { user, isLoading } = useContext(userContext);
   const [name, setName] = useState("");
   const { mutateAsync: createCategoryFn } = useCreateCategory();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const isAdmin = !isLoading && user?.permission === "admin";
 
   async function handleCreateCategory() {
     await createCategoryFn(name);
@@ -61,11 +64,7 @@ export function SimpleTable({ data, isAdmin = false }: SimpleTableProps) {
           </Thead>
           <Tbody>
             {data.categories.map((category) => (
-              <SimpleTableItem
-                isAdmin={isAdmin}
-                key={category.id}
-                category={category}
-              />
+              <SimpleTableItem key={category.id} category={category} />
             ))}
           </Tbody>
         </Table>

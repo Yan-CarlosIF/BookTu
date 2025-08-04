@@ -12,10 +12,8 @@ import { withAuthServerSideProps } from "@/utils/withAuth";
 import { NextPageWithLayout } from "../_app";
 
 export type CategoriesPageProps = {
-  name: string;
   page: number;
   sort?: string | null;
-  isAdmin?: boolean;
 };
 
 const filterOptions = [
@@ -32,7 +30,6 @@ const filterOptions = [
 const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
   page,
   sort,
-  isAdmin,
 }) => {
   const [search, setSearch] = useState("");
   const { data, isLoading } = UseListCategories(page, sort);
@@ -72,7 +69,6 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
         <SimpleTableLoading />
       ) : (
         <SimpleTable
-          isAdmin={isAdmin}
           data={{
             categories: filteredCategories,
             total: filteredCategories.length,
@@ -85,30 +81,19 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
   );
 };
 
-CategoriesPage.getLayout = function getLayout(
-  page: ReactElement,
-  { name, isAdmin }: CategoriesPageProps
-) {
-  return (
-    <HomeLayout isAdmin={isAdmin} slug="categories" name={name}>
-      {page}
-    </HomeLayout>
-  );
+CategoriesPage.getLayout = function getLayout(page: ReactElement) {
+  return <HomeLayout slug="categories">{page}</HomeLayout>;
 };
 
-export const getServerSideProps = withAuthServerSideProps(
-  async (ctx, { isAdmin, name }) => {
-    const { page, sort } = ctx.query;
+export const getServerSideProps = withAuthServerSideProps(async (ctx) => {
+  const { page, sort } = ctx.query;
 
-    return {
-      props: {
-        name,
-        isAdmin,
-        page: page ? Number(page) : 1,
-        sort: sort ?? null,
-      },
-    };
-  }
-);
+  return {
+    props: {
+      page: page ? Number(page) : 1,
+      sort: sort ?? null,
+    },
+  };
+});
 
 export default CategoriesPage;

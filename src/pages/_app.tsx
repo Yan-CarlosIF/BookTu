@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ReactElement, ReactNode } from "react";
 
+import { UserContextProvider } from "@/context/userContext";
 import { chakraTheme } from "@/lib/chakra-theme";
 import { queryClient } from "@/lib/query-client";
 
@@ -21,12 +22,14 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ChakraProvider theme={chakraTheme}>
-        <Head>
-          <title>BookTu</title>
-        </Head>
-        {getLayout(<Component {...pageProps} />, pageProps)}
-      </ChakraProvider>
+      <UserContextProvider>
+        <ChakraProvider theme={chakraTheme}>
+          <Head>
+            <title>BookTu</title>
+          </Head>
+          {getLayout(<Component {...pageProps} />, pageProps)}
+        </ChakraProvider>
+      </UserContextProvider>
     </QueryClientProvider>
   );
 }

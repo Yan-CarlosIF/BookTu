@@ -1,14 +1,20 @@
 import { Box, Heading, Stack } from "@chakra-ui/react";
 import { Book, LogOut, PlusCircle, Users } from "lucide-react";
+import { useContext } from "react";
+
+import { userContext } from "@/context/userContext";
 
 import { SidebarItem } from "./sidebar-item";
 
 interface SidebarProps {
   slug: string;
-  isAdmin?: boolean;
 }
 
-export function Sidebar({ slug, isAdmin }: SidebarProps) {
+export function Sidebar({ slug }: SidebarProps) {
+  const { user, isLoading } = useContext(userContext);
+
+  const isAdmin = !isLoading && user.permission === "admin";
+
   return (
     <Box
       as="aside"
@@ -30,7 +36,7 @@ export function Sidebar({ slug, isAdmin }: SidebarProps) {
           href="/home/books"
           isActive={slug === "books"}
         />
-        {isAdmin && (
+        {!isLoading && isAdmin && (
           <SidebarItem
             icon={Users}
             title="Usuários"
