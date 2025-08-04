@@ -25,7 +25,7 @@ import { userContext } from "@/context/userContext";
 export function SimpleTableLoading() {
   const { user, isLoading } = useContext(userContext);
 
-  const isAdmin = !isLoading && user.permission === "admin";
+  const isAdmin = !isLoading && user?.permission === "admin";
 
   return (
     <>

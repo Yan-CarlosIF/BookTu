@@ -91,6 +91,7 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
       ) : (
         <TableCheckboxProvider>
           <BaseTable
+            h="575px"
             isCheckboxChecked={selectedUsers?.length === filteredUsers?.length}
             isCheckboxIndeterminate={
               selectedUsers?.length > 0 &&

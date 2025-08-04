@@ -34,7 +34,7 @@ export function useLogin() {
         isClosable: true,
       });
 
-      router.push("/home/books");
+      router.push("/home/establishments");
     },
 
     onError: () => {

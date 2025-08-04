@@ -17,6 +17,8 @@ export function HomeLayout({ children, slug }: HomeLayoutProps) {
         return "Categorias";
       case "users":
         return "Usuários";
+      case "establishments":
+        return "Estabelecimentos";
     }
   };
 

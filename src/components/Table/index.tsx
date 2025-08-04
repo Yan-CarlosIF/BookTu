@@ -2,17 +2,14 @@ import {
   Checkbox,
   Table,
   TableContainer,
+  TableContainerProps,
   Tbody,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useContext } from "react";
 
-import { TableCheckboxContext } from "@/context/checkboxContext";
-
-interface BaseTableProps {
-  // data: any;
+interface BaseTableProps extends TableContainerProps {
   isCheckboxChecked?: boolean;
   isCheckboxIndeterminate?: boolean;
   onCheckboxChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -28,12 +25,10 @@ export function BaseTable({
   isCheckboxIndeterminate,
   headers,
   onCheckboxChange,
+  ...rest
 }: BaseTableProps) {
-  const { selectedBooks, toggleSelectAllBooks } =
-    useContext(TableCheckboxContext);
-
   return (
-    <TableContainer h="575px" mt="40px">
+    <TableContainer {...rest} mt="40px">
       <Table borderWidth={1} borderColor="gray.200" colorScheme="gray">
         <Thead bg="gray_300">
           <Tr>

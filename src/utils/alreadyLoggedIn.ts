@@ -17,7 +17,7 @@ export function alreadyLoggedIn<T>(
     if (token) {
       return {
         redirect: {
-          destination: "/home/books",
+          destination: "/home/establishments",
           permanent: false,
         },
       };

@@ -101,6 +101,7 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
       ) : (
         <TableCheckboxProvider>
           <BaseTable
+            h="575px"
             isCheckboxChecked={selectedBooks?.length === filteredBooks?.length}
             isCheckboxIndeterminate={
               selectedBooks?.length > 0 &&

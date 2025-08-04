@@ -7,7 +7,6 @@ import { SearchBar } from "@/components/search-bar";
 import { BaseTable } from "@/components/Table";
 import { SimpleTableLoading } from "@/components/Table/LoadingState/loading-categories";
 import { userContext } from "@/context/userContext";
-import { useDataFilter } from "@/hooks/useDataFilter";
 import { UseListCategories } from "@/services/Categories/useListCategories";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
@@ -38,7 +37,7 @@ const TableHeaders = () => {
     <>
       <Th>Nome</Th>
       <Th>Editar</Th>
-      {!isLoading && user.permission === "admin" && <Th>Deletar</Th>}
+      {!isLoading && user?.permission === "admin" && <Th>Deletar</Th>}
     </>
   );
 };
@@ -65,11 +64,9 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
     });
   }
 
-  const filteredCategories = useDataFilter({
-    data: data?.categories,
-    searchValue: search,
-    searchKeys: ["name"],
-  });
+  const filteredCategories = data?.categories.filter((category) =>
+    category.name.toLowerCase().includes(search.toLowerCase().trim())
+  );
 
   return (
     <>
@@ -85,7 +82,7 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
         <SimpleTableLoading />
       ) : (
         <>
-          <BaseTable headers={<TableHeaders />}>
+          <BaseTable h="575px" headers={<TableHeaders />}>
             {filteredCategories.map((category) => (
               <CategoriesTableItem key={category.id} category={category} />
             ))}

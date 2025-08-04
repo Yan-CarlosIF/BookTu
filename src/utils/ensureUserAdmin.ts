@@ -45,18 +45,18 @@ export function ensureUserAdmin<T>(
 
       const user = response.data;
 
-      if (user.permission !== "admin") {
+      if (user?.permission !== "admin") {
         return {
           redirect: {
-            destination: "/home/books",
+            destination: "/home/establishments",
             permanent: false,
           },
         };
       }
 
       return await handler(ctx, {
-        name: user.name,
-        isAdmin: user.permission === "admin",
+        name: user?.name,
+        isAdmin: user?.permission === "admin",
       });
     } catch (err) {
       return {
