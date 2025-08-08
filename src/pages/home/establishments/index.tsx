@@ -1,18 +1,22 @@
 import { Th } from "@chakra-ui/react";
-import { ReactElement, useState } from "react";
+import { ReactElement, useContext, useState } from "react";
 
 import { HomeLayout } from "@/components/Home/layout";
 import { SearchBar } from "@/components/search-bar";
 import { BaseTable } from "@/components/Table";
+import {
+  TableCheckboxContext,
+  TableCheckboxProvider,
+} from "@/context/checkboxContext";
+import { userContext } from "@/context/userContext";
 import { NextPageWithLayout } from "@/pages/_app";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
-import { EstablishmentsPageContent } from "./_components/establishments-page-content";
+import { EstablishmentsTableContent } from "./_components/establishments-table-content";
 import { EstablishmentsTableItem } from "./_components/establishments-table-item";
 
 interface EstablishmentsPageProps {
   page: number;
-  sort?: string;
 }
 
 const dummyData = [
@@ -118,50 +122,79 @@ const dummyData = [
   },
 ];
 
-const EstablishmentsPage: NextPageWithLayout<EstablishmentsPageProps> = ({
-  page,
-  sort,
-}) => {
+const EstablishmentsPageContent: NextPageWithLayout<
+  EstablishmentsPageProps
+> = ({ page }) => {
+  const { user, isLoading } = useContext(userContext);
+  const isAdmin = !isLoading && user?.permission === "admin";
+
+  const [search, setSearch] = useState("");
   const [establishments, setEstablishments] = useState(dummyData);
+
+  const { selectedData, toggleSelectAll } = useContext(TableCheckboxContext);
+
+  const filteredEstablishments = establishments.filter((e) => {
+    return (
+      e.name.toLowerCase().includes(search) ||
+      e.cnpj.toLowerCase().includes(search)
+    );
+  });
 
   return (
     <>
       <SearchBar
-        onSearch={() => {}}
-        placeholder="Buscar pelo nome"
-        searchValue=""
+        onSearch={setSearch}
+        placeholder="Buscar pelo nome ou CNPJ"
+        searchValue={search}
       />
       <BaseTable
+        h="612px"
+        checkbox={isAdmin}
+        isCheckboxChecked={
+          selectedData?.length === filteredEstablishments?.length
+        }
+        isCheckboxIndeterminate={
+          selectedData?.length > 0 &&
+          selectedData?.length < filteredEstablishments?.length
+        }
+        onCheckboxChange={() => toggleSelectAll(filteredEstablishments)}
         headers={
           <>
             <Th>Nome</Th>
             <Th>CNPJ</Th>
-            <Th>Cidade</Th>
-            <Th>Estado</Th>
-            <Th textAlign="center">Ações</Th>
+            <Th>Endereço</Th>
           </>
         }
       >
-        {establishments.map((e) => (
+        {filteredEstablishments.map((e) => (
           <EstablishmentsTableItem key={e.id} establishment={e} />
         ))}
       </BaseTable>
-      <EstablishmentsPageContent page={page} lastPage={page} />
+      <EstablishmentsTableContent page={page} lastPage={page} />
     </>
   );
 };
 
+const EstablishmentsPage: NextPageWithLayout<EstablishmentsPageProps> = ({
+  page,
+}) => {
+  return (
+    <TableCheckboxProvider>
+      <EstablishmentsPageContent page={page} />
+    </TableCheckboxProvider>
+  );
+};
+
 EstablishmentsPage.getLayout = function getLayout(page: ReactElement) {
-  return <HomeLayout slug="establishments">{page}</HomeLayout>;
+  return <HomeLayout slug="Estabelecimentos">{page}</HomeLayout>;
 };
 
 export const getServerSideProps = withAuthServerSideProps(async (ctx) => {
-  const { page, sort } = ctx.query;
+  const { page } = ctx.query;
 
   return {
     props: {
       page: page ? Number(page) : 1,
-      sort: sort ?? null,
     },
   };
 });
