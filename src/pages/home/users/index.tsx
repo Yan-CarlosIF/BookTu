@@ -18,10 +18,8 @@ import { UserTableContent } from "./_components/user-table-content";
 import { UserTableItem } from "./_components/user-table-item";
 
 export type UsersPageProps = {
-  name: string;
   page: number;
   sort?: string | null;
-  isAdmin: boolean;
 };
 
 const filterOptions = [
@@ -51,7 +49,10 @@ const TableHeaders = () => (
   </>
 );
 
-const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
+const UsersPageContent: NextPageWithLayout<UsersPageProps> = ({
+  page,
+  sort,
+}) => {
   const { data, isLoading } = useListUsers(page, sort);
   const [search, setSearch] = useState("");
   const router = useRouter();
@@ -73,8 +74,7 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
     user.name.toLowerCase().includes(search.toLowerCase().trim())
   );
 
-  const { selectedUsers, toggleSelectAllUsers } =
-    useContext(TableCheckboxContext);
+  const { selectedData, toggleSelectAll } = useContext(TableCheckboxContext);
 
   return (
     <>
@@ -89,15 +89,15 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
       {isLoading ? (
         <CheckboxTableUsersLoading />
       ) : (
-        <TableCheckboxProvider>
+        <>
           <BaseTable
             h="575px"
-            isCheckboxChecked={selectedUsers?.length === filteredUsers?.length}
+            isCheckboxChecked={selectedData.length === filteredUsers?.length}
             isCheckboxIndeterminate={
-              selectedUsers?.length > 0 &&
-              selectedUsers?.length < filteredUsers?.length
+              selectedData.length > 0 &&
+              selectedData.length < filteredUsers?.length
             }
-            onCheckboxChange={() => toggleSelectAllUsers(filteredUsers)}
+            onCheckboxChange={() => toggleSelectAll(filteredUsers)}
             headers={<TableHeaders />}
             checkbox
           >
@@ -106,14 +106,22 @@ const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
             ))}
           </BaseTable>
           <UserTableContent page={page} lastPage={data?.lastPage} />
-        </TableCheckboxProvider>
+        </>
       )}
     </>
   );
 };
 
+const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
+  return (
+    <TableCheckboxProvider>
+      <UsersPageContent page={page} sort={sort} />;
+    </TableCheckboxProvider>
+  );
+};
+
 UsersPage.getLayout = function getLayout(page: ReactElement) {
-  return <HomeLayout slug="users">{page}</HomeLayout>;
+  return <HomeLayout slug="Usuários">{page}</HomeLayout>;
 };
 
 export const getServerSideProps = ensureUserAdmin(

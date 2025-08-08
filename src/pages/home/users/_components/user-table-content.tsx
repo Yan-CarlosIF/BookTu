@@ -16,7 +16,7 @@ interface UserTableContentProps {
 }
 
 export function UserTableContent({ page, lastPage }: UserTableContentProps) {
-  const { setSelectedUsers, selectedUsers } = useContext(TableCheckboxContext);
+  const { setSelectedData, selectedData } = useContext(TableCheckboxContext);
 
   const {
     isOpen: isOpenAdd,
@@ -60,16 +60,16 @@ export function UserTableContent({ page, lastPage }: UserTableContentProps) {
 
         <Pagination currentPage={page} lastPage={lastPage} />
       </Flex>
-      <ActionBar count={selectedUsers.length}>
+      <ActionBar count={selectedData.length}>
         <Button
           color="gray_800"
           variant="outline"
           size="sm"
-          onClick={() => setSelectedUsers([])}
+          onClick={() => setSelectedData([])}
         >
           Cancelar
         </Button>
-        {selectedUsers.length === 1 && (
+        {selectedData.length === 1 && (
           <>
             <Button
               color="gray_800"
@@ -86,7 +86,7 @@ export function UserTableContent({ page, lastPage }: UserTableContentProps) {
           Excluir
         </Button>
         <DeleteAlertDialog
-          data={selectedUsers.map(({ id }) => id)}
+          data={selectedData.map(({ id }) => id)}
           isOpen={isOpenCancel}
           onClose={onCloseCancel}
           type="user"

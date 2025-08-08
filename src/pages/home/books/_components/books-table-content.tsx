@@ -29,7 +29,7 @@ export function BooksTableContent({ page, lastPage }: BooksTableContentProps) {
     onClose: onCloseCancel,
   } = useDisclosure();
 
-  const { selectedBooks, setSelectedBooks } = useContext(TableCheckboxContext);
+  const { selectedData, setSelectedData } = useContext(TableCheckboxContext);
 
   return (
     <>
@@ -60,16 +60,16 @@ export function BooksTableContent({ page, lastPage }: BooksTableContentProps) {
 
         <Pagination currentPage={page} lastPage={lastPage} />
       </Flex>
-      <ActionBar count={selectedBooks?.length}>
+      <ActionBar count={selectedData?.length}>
         <Button
           color="gray_800"
           variant="outline"
           size="sm"
-          onClick={() => setSelectedBooks([])}
+          onClick={() => setSelectedData([])}
         >
           Cancelar
         </Button>
-        {selectedBooks?.length === 1 && (
+        {selectedData?.length === 1 && (
           <>
             <Button
               color="gray_800"
@@ -94,7 +94,7 @@ export function BooksTableContent({ page, lastPage }: BooksTableContentProps) {
             </Button>
             <DeleteAlertDialog
               type="book"
-              data={selectedBooks.map((book) => book.id)}
+              data={selectedData.map((book) => book.id)}
               isOpen={isCancelOpen}
               onClose={onCloseCancel}
             />

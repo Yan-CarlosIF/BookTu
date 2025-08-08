@@ -15,7 +15,7 @@ import { useDeleteUser } from "@/services/Users/useDeleteUser";
 
 interface DeleteAlertDialogProps {
   data: string[];
-  type: "book" | "user";
+  type: "user" | "book";
   isOpen: boolean;
   onClose: () => void;
 }
@@ -31,8 +31,7 @@ export function DeleteAlertDialog({
 
   const cancelRef = useRef();
 
-  const { setSelectedBooks, setSelectedUsers } =
-    useContext(TableCheckboxContext);
+  const { setSelectedData } = useContext(TableCheckboxContext);
 
   async function handleDelete(ids: string[]) {
     onClose();
@@ -40,11 +39,11 @@ export function DeleteAlertDialog({
     if (type === "user") {
       Promise.all(ids.map((id) => deleteUsersFn(id)));
 
-      setSelectedUsers([]);
+      setSelectedData([]);
     } else {
       Promise.all(ids.map((id) => deleteBooksFn(id)));
 
-      setSelectedBooks([]);
+      setSelectedData([]);
     }
   }
 

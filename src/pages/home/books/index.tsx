@@ -58,16 +58,20 @@ const TableHeaders = () => (
   </>
 );
 
-const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
+const BooksPageContent: NextPageWithLayout<BooksPageProps> = ({
+  page,
+  sort,
+}) => {
   const { data, isLoading } = UseListBooks(page, sort);
   const [search, setSearch] = useState("");
   const router = useRouter();
+
+  const { selectedData, toggleSelectAll } = useContext(TableCheckboxContext);
 
   function handleFilterChange(sort: string) {
     if (sort === "") {
       return router.push(`?page=${page}`);
     }
-
     router.push({
       query: {
         page,
@@ -83,9 +87,6 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
     );
   });
 
-  const { selectedBooks, toggleSelectAllBooks } =
-    useContext(TableCheckboxContext);
-
   return (
     <>
       <SearchBar
@@ -95,19 +96,18 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
         onFilter={handleFilterChange}
         filterOptions={filterOptions}
       />
-
       {isLoading ? (
         <CheckboxTableBooksLoading />
       ) : (
-        <TableCheckboxProvider>
+        <>
           <BaseTable
             h="575px"
-            isCheckboxChecked={selectedBooks?.length === filteredBooks?.length}
+            isCheckboxChecked={selectedData?.length === filteredBooks?.length}
             isCheckboxIndeterminate={
-              selectedBooks?.length > 0 &&
-              selectedBooks?.length < filteredBooks?.length
+              selectedData?.length > 0 &&
+              selectedData?.length < filteredBooks?.length
             }
-            onCheckboxChange={() => toggleSelectAllBooks(filteredBooks)}
+            onCheckboxChange={() => toggleSelectAll(filteredBooks)}
             checkbox
             headers={<TableHeaders />}
           >
@@ -116,14 +116,22 @@ const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
             ))}
           </BaseTable>
           <BooksTableContent page={page} lastPage={data?.lastPage} />
-        </TableCheckboxProvider>
+        </>
       )}
     </>
   );
 };
 
+const BooksPage: NextPageWithLayout<BooksPageProps> = ({ page, sort }) => {
+  return (
+    <TableCheckboxProvider>
+      <BooksPageContent page={page} sort={sort} />
+    </TableCheckboxProvider>
+  );
+};
+
 BooksPage.getLayout = function getLayout(page: ReactElement) {
-  return <HomeLayout slug="books">{page}</HomeLayout>;
+  return <HomeLayout slug="Livros">{page}</HomeLayout>;
 };
 
 export const getServerSideProps = withAuthServerSideProps(async (ctx) => {

@@ -36,27 +36,27 @@ export function Sidebar({ slug }: SidebarProps) {
           icon={Warehouse}
           title="Estabelecimentos"
           href="/home/establishments"
-          isActive={slug === "establishments"}
+          isActive={slug === "Estabelecimentos"}
         />
         <SidebarItem
           icon={Book}
           title="Livros"
           href="/home/books"
-          isActive={slug === "books"}
+          isActive={slug === "Livros"}
         />
         {!isLoading && isAdmin && (
           <SidebarItem
             icon={Users}
             title="Usuários"
             href="/home/users"
-            isActive={slug === "users"}
+            isActive={slug === "Usuários"}
           />
         )}
         <SidebarItem
           icon={PlusCircle}
           title="Categorias"
           href="/home/categories"
-          isActive={slug === "categories"}
+          isActive={slug === "Categorias"}
         />
         <SidebarItem mt="auto" icon={LogOut} title="Sair" href="/" />
       </Flex>

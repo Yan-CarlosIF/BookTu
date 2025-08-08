@@ -9,28 +9,13 @@ type HomeLayoutProps = {
 };
 
 export function HomeLayout({ children, slug }: HomeLayoutProps) {
-  const getDisplayTitle = () => {
-    switch (slug) {
-      case "books":
-        return "Livros";
-      case "categories":
-        return "Categorias";
-      case "users":
-        return "Usuários";
-      case "establishments":
-        return "Estabelecimentos";
-    }
-  };
-
-  const displayTitle = getDisplayTitle();
-
   return (
     <Flex as="main" w="100%" h="100vh">
       <Sidebar slug={slug} />
       <Box p="40px" as="main" w="100%" h="100vh">
         <Flex align="center" justify="space-between">
           <Heading as="h1" fontFamily="poppins" fontSize="4xl">
-            {displayTitle}
+            {slug}
           </Heading>
           <UserHeader />
         </Flex>

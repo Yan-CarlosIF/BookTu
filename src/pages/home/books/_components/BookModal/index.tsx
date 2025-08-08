@@ -25,6 +25,7 @@ import { useSelectToggle } from "@/hooks/selectToggle";
 import { ICreateBook } from "@/services/Books/useCreateBook";
 import { IEditBook } from "@/services/Books/useEditBook";
 import { useAllCategories } from "@/services/Categories/useAllCategories";
+import { Book } from "@/shared/types/book";
 import { Category } from "@/shared/types/category";
 
 import { Input } from "../../../../../components/input";
@@ -66,8 +67,8 @@ export function BookModal({
   const categories = data || [];
 
   const {
-    selectedBooks: [book],
-    setSelectedBooks,
+    selectedData: [book],
+    setSelectedData: setSelectedBooks,
   } = useContext(TableCheckboxContext);
 
   const {
@@ -112,15 +113,17 @@ export function BookModal({
 
   useEffect(() => {
     if (book && action === "edit") {
+      const selectedBook = book as Book;
+
       reset({
-        categoryIds: book.categories.map((category) => category.id),
-        release_year: book.release_year,
-        price: book.price,
-        description: book.description,
-        title: book.title,
-        author: book.author,
+        categoryIds: selectedBook.categories.map((category) => category.id),
+        release_year: selectedBook.release_year,
+        price: selectedBook.price,
+        description: selectedBook.description,
+        title: selectedBook.title,
+        author: selectedBook.author,
       });
-      setSelectedData(book.categories.map((category) => category.id));
+      setSelectedData(selectedBook.categories.map((category) => category.id));
     }
   }, [book, reset, setSelectedData, action]);
 

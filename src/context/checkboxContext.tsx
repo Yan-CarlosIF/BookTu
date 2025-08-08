@@ -1,68 +1,54 @@
 import { createContext, Dispatch, SetStateAction, useState } from "react";
 
-import { Book } from "@/shared/types/book";
-import { User } from "@/shared/types/users";
+interface SelectableItem {
+  id: string;
+}
 
 interface ITableCheckboxContext {
-  selectedBooks: Book[];
-  selectedUsers: User[];
-  toggleSelectBook: (book: Book) => void;
-  toggleSelectUser: (user: User) => void;
-  setSelectedBooks: Dispatch<SetStateAction<Book[]>>;
-  setSelectedUsers: Dispatch<SetStateAction<User[]>>;
-  toggleSelectAllBooks: (books: Book[]) => void;
-  toggleSelectAllUsers: (users: User[]) => void;
+  selectedData: SelectableItem[];
+  setSelectedData: Dispatch<SetStateAction<SelectableItem[]>>;
+  clearSelectedData: () => void;
+  toggleSelectAll: (data: SelectableItem[]) => void;
+  toggleSelectData: (item: SelectableItem) => void;
 }
 
 export const TableCheckboxContext = createContext({} as ITableCheckboxContext);
 
-export function TableCheckboxProvider({ children }: { children: React.ReactNode }) {
-  const [selectedBooks, setSelectedBooks] = useState<Book[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+export function TableCheckboxProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [selectedData, setSelectedData] = useState<SelectableItem[]>([]);
 
-  function toggleSelectAllBooks(books: Book[]) {
-    if (selectedBooks.length === books.length) {
-      setSelectedBooks([]);
+  function toggleSelect(item: SelectableItem) {
+    if (selectedData.some((i) => i.id === item.id)) {
+      setSelectedData(selectedData.filter((i) => i.id !== item.id));
     } else {
-      setSelectedBooks(books);
+      setSelectedData([...selectedData, item]);
     }
   }
 
-  function toggleSelectAllUsers(users: User[]) {
-    if (selectedUsers.length === users.length) {
-      setSelectedUsers([]);
+  function toggleSelectAll(data: SelectableItem[]) {
+    if (selectedData.length === data.length) {
+      setSelectedData([]);
     } else {
-      setSelectedUsers(users);
+      setSelectedData(data);
     }
   }
 
-  function toggleSelectBook(book: Book) {
-    if (selectedBooks.some((b) => b.id === book.id)) {
-      setSelectedBooks(selectedBooks.filter((b) => b.id !== book.id));
-    } else {
-      setSelectedBooks([...selectedBooks, book]);
-    }
-  }
-
-  function toggleSelectUser(user: User) {
-    if (selectedUsers.some((u) => u.id === user.id)) {
-      setSelectedUsers(selectedUsers.filter((u) => u.id !== user.id));
-    } else {
-      setSelectedUsers([...selectedUsers, user]);
-    }
+  function clearSelectedData() {
+    setSelectedData([]);
   }
 
   return (
     <TableCheckboxContext.Provider
       value={{
-        selectedBooks,
-        selectedUsers,
-        toggleSelectBook,
-        toggleSelectUser,
-        setSelectedBooks,
-        setSelectedUsers,
-        toggleSelectAllBooks,
-        toggleSelectAllUsers,
+        selectedData,
+        setSelectedData,
+        clearSelectedData,
+        toggleSelectAll,
+        toggleSelectData: toggleSelect,
       }}
     >
       {children}

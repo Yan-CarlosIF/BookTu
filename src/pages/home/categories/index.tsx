@@ -95,7 +95,7 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
 };
 
 CategoriesPage.getLayout = function getLayout(page: ReactElement) {
-  return <HomeLayout slug="categories">{page}</HomeLayout>;
+  return <HomeLayout slug="Categorias">{page}</HomeLayout>;
 };
 
 export const getServerSideProps = withAuthServerSideProps(async (ctx) => {

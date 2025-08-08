@@ -19,6 +19,7 @@ import { z } from "zod";
 import { Input } from "@/components/input";
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { useEditUser } from "@/services/Users/useEditUser";
+import { User } from "@/shared/types/users";
 
 interface EditUserModalProps {
   isOpen: boolean;
@@ -37,10 +38,9 @@ type EditUserFormData = z.infer<typeof editUserSchema>;
 
 export function EditUserModal({ isOpen, onClose }: EditUserModalProps) {
   const { mutateAsync: editUserFn } = useEditUser();
-  const {
-    selectedUsers: [user],
-    setSelectedUsers,
-  } = useContext(TableCheckboxContext);
+  const { selectedData, setSelectedData } = useContext(TableCheckboxContext);
+
+  const user = selectedData[0] as User;
 
   const {
     handleSubmit,
@@ -72,7 +72,7 @@ export function EditUserModal({ isOpen, onClose }: EditUserModalProps) {
       },
     });
 
-    setSelectedUsers([]);
+    setSelectedData([]);
     onClose();
   }
 

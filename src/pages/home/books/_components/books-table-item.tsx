@@ -11,15 +11,15 @@ interface BooksTableItemProps {
 }
 
 export function BooksTableItem({ book }: BooksTableItemProps) {
-  const { selectedBooks, toggleSelectBook } = useContext(TableCheckboxContext);
+  const { selectedData, toggleSelectData } = useContext(TableCheckboxContext);
 
   return (
     <Tr>
       <Td>
         <Checkbox
           colorScheme="teal"
-          isChecked={selectedBooks.some((b) => b.id === book.id)}
-          onChange={() => toggleSelectBook(book)}
+          isChecked={selectedData?.some((b) => b.id === book.id)}
+          onChange={() => toggleSelectData(book)}
         />
       </Td>
       <Td maxH="40px" p="0px" borderRight="1px" borderRightColor="gray.200">

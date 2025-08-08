@@ -9,15 +9,15 @@ interface UserTableItemProps {
 }
 
 export function UserTableItem({ user }: UserTableItemProps) {
-  const { selectedUsers, toggleSelectUser } = useContext(TableCheckboxContext);
+  const { selectedData, toggleSelectData } = useContext(TableCheckboxContext);
 
   return (
     <Tr>
       <Td>
         <Checkbox
           colorScheme="teal"
-          isChecked={selectedUsers?.some((b) => b.id === user.id)}
-          onChange={() => toggleSelectUser(user)}
+          isChecked={selectedData.some((b) => b.id === user.id)}
+          onChange={() => toggleSelectData(user)}
         />
       </Td>
       <Td maxH="40px" p="0px" borderRight="1px" borderRightColor="gray.200">
