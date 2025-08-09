@@ -11,11 +11,12 @@ import { useContext, useRef } from "react";
 
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { useDeleteBook } from "@/services/Books/useDeleteBook";
+import { useDeleteEstablishments } from "@/services/Establishments/useDeleteEstablishments";
 import { useDeleteUser } from "@/services/Users/useDeleteUser";
 
 interface DeleteAlertDialogProps {
   data: string[];
-  type: "user" | "book";
+  type: "user" | "book" | "establishment";
   isOpen: boolean;
   onClose: () => void;
 }
@@ -28,6 +29,7 @@ export function DeleteAlertDialog({
 }: DeleteAlertDialogProps) {
   const { mutateAsync: deleteUsersFn } = useDeleteUser();
   const { mutateAsync: deleteBooksFn } = useDeleteBook();
+  const { mutateAsync: deleteEstablishmentsFn } = useDeleteEstablishments();
 
   const cancelRef = useRef();
 
@@ -38,12 +40,27 @@ export function DeleteAlertDialog({
 
     if (type === "user") {
       Promise.all(ids.map((id) => deleteUsersFn(id)));
+    }
 
-      setSelectedData([]);
-    } else {
+    if (type === "book") {
       Promise.all(ids.map((id) => deleteBooksFn(id)));
+    }
 
-      setSelectedData([]);
+    if (type === "establishment") {
+      Promise.all(ids.map((id) => deleteEstablishmentsFn(id)));
+    }
+
+    setSelectedData([]);
+  }
+
+  function getDisplayName() {
+    switch (type) {
+      case "user":
+        return "usuário";
+      case "book":
+        return "livro";
+      case "establishment":
+        return "estabelecimento";
     }
   }
 
@@ -59,14 +76,13 @@ export function DeleteAlertDialog({
       <AlertDialogOverlay />
       <AlertDialogContent>
         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-          {type === "book"
-            ? `Deletar livro${data.length > 1 ? "s" : ""}`
-            : `Deletar usuário${data.length > 1 ? "s" : ""}`}
+          Deletar {getDisplayName()}
+          {data.length > 1 ? "s" : ""}
         </AlertDialogHeader>
 
         <AlertDialogBody>
           Tem certeza que deseja excluir o{data.length > 1 && "s"}{" "}
-          {type === "book" ? "livro" : "usuário"}
+          {getDisplayName()}
           {data.length > 1 && "s"} selecionado{data.length > 1 && "s"}?
         </AlertDialogBody>
 

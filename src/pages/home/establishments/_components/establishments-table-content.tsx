@@ -97,7 +97,7 @@ export function EstablishmentsTableContent({
           Excluir
         </Button>
         <DeleteAlertDialog
-          type="book"
+          type="establishment"
           data={selectedData.map((book) => book.id)}
           isOpen={isCancelOpen}
           onClose={onCloseCancel}
