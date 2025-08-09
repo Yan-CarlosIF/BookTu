@@ -7,6 +7,9 @@ import { DeleteAlertDialog } from "@/components/ActionBar/delete-alert-dialog";
 import { Pagination } from "@/components/Pagination/pagination";
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { userContext } from "@/context/userContext";
+import { useCreateEstablishments } from "@/services/Establishments/useCreateEstablishment";
+import { useEditEstablishment } from "@/services/Establishments/useEditEstablishment";
+import { Establishment } from "@/shared/types/establishment";
 
 import { AddEstablishmentModal } from "./EstablishmentModal";
 
@@ -27,6 +30,9 @@ export function EstablishmentsTableContent({
     onOpen: onOpenCancel,
     onClose: onCloseCancel,
   } = useDisclosure();
+
+  const { mutateAsync: createEstablishmentFn } = useCreateEstablishments();
+  const { mutateAsync: editEstablishmentFn } = useEditEstablishment();
 
   return (
     <Flex px="40px" mt="40px" align="center" justify="space-between">
@@ -49,7 +55,12 @@ export function EstablishmentsTableContent({
           >
             Adicionar
           </Button>
-          <AddEstablishmentModal isOpen={isOpen} onClose={onClose} />
+          <AddEstablishmentModal
+            mutateAsync={createEstablishmentFn}
+            type="add"
+            isOpen={isOpen}
+            onClose={onClose}
+          />
         </>
       )}
 
@@ -73,7 +84,13 @@ export function EstablishmentsTableContent({
             >
               Editar
             </Button>
-            <AddEstablishmentModal isOpen={isOpen} onClose={onClose} />
+            <AddEstablishmentModal
+              type="edit"
+              mutateAsync={editEstablishmentFn}
+              establishment={selectedData[0] as Establishment}
+              isOpen={isOpen}
+              onClose={onClose}
+            />
           </>
         )}
         <Button colorScheme="red" size="sm" onClick={onOpenCancel}>
