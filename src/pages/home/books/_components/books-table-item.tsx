@@ -25,9 +25,11 @@ export function BooksTableItem({ book }: BooksTableItemProps) {
       <Td maxH="40px" p="0px" borderRight="1px" borderRightColor="gray.200">
         <Box maxH="40px">
           <Text>{book.title}</Text>
-          <Text fontSize="xs" fontWeight="medium" color="gray_600">
-            {book.author || "Sem subtexto"}
-          </Text>
+          {book.author && (
+            <Text fontSize="xs" fontWeight="medium" color="gray_600">
+              {book.author}
+            </Text>
+          )}
         </Box>
       </Td>
       <Td

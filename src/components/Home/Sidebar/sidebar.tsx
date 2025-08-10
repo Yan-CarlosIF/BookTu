@@ -1,5 +1,12 @@
 import { Box, Flex, Heading } from "@chakra-ui/react";
-import { Book, LogOut, PlusCircle, Users, Warehouse } from "lucide-react";
+import {
+  Book,
+  Building,
+  LogOut,
+  PlusCircle,
+  Users,
+  Warehouse,
+} from "lucide-react";
 import { useContext } from "react";
 
 import { userContext } from "@/context/userContext";
@@ -33,7 +40,7 @@ export function Sidebar({ slug }: SidebarProps) {
       </Heading>
       <Flex gap="24px" direction="column" h="full" w="full" mt="48px">
         <SidebarItem
-          icon={Warehouse}
+          icon={Building}
           title="Estabelecimentos"
           href="/home/establishments"
           isActive={slug === "Estabelecimentos"}
@@ -52,6 +59,12 @@ export function Sidebar({ slug }: SidebarProps) {
             isActive={slug === "Usuários"}
           />
         )}
+        <SidebarItem
+          icon={Warehouse}
+          title="Estoques"
+          href="/home/stocks"
+          isActive={slug === "Estoques"}
+        />
         <SidebarItem
           icon={PlusCircle}
           title="Categorias"
