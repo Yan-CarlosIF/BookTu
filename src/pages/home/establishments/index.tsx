@@ -4,6 +4,7 @@ import { ReactElement, useContext, useState } from "react";
 import { HomeLayout } from "@/components/Home/layout";
 import { SearchBar } from "@/components/search-bar";
 import { BaseTable } from "@/components/Table";
+import { LoadingEstablishments } from "@/components/Table/LoadingState/loading-establishments";
 import {
   TableCheckboxContext,
   TableCheckboxProvider,
@@ -48,7 +49,7 @@ const EstablishmentsPageContent: NextPageWithLayout<
         searchValue={search}
       />
       {isEstablishmentsLoading ? (
-        <div>Carregando...</div>
+        <LoadingEstablishments />
       ) : (
         <>
           <BaseTable

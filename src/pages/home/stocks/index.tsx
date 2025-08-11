@@ -6,6 +6,7 @@ import { HomeLayout } from "@/components/Home/layout";
 import { Pagination } from "@/components/Pagination/pagination";
 import { SearchBar } from "@/components/search-bar";
 import { BaseTable } from "@/components/Table";
+import { LoadingStocks } from "@/components/Table/LoadingState/loading-stocks";
 import { NextPageWithLayout } from "@/pages/_app";
 import { useListAllEstablishments } from "@/services/Establishments/useListAllEstablishments";
 import { useListStocksItems } from "@/services/Stocks/useListStocksItems";
@@ -30,7 +31,7 @@ const tableHeaders = () => (
 const StocksPage: NextPageWithLayout<StocksPageProps> = ({ page, sort }) => {
   const router = useRouter();
   const { data: establishments } = useListAllEstablishments();
-  const { data: items } = useListStocksItems(page, sort);
+  const { data: items, isLoading } = useListStocksItems(page, sort);
   const [search, setSearch] = useState("");
 
   function handleFilterChange(sort: string) {
@@ -62,22 +63,28 @@ const StocksPage: NextPageWithLayout<StocksPageProps> = ({ page, sort }) => {
         }))}
       />
 
-      <BaseTable h="575px" headers={tableHeaders()}>
-        {filteredStocks?.map((item) => (
-          <StocksTableItem key={item.id} stockItem={item} />
-        ))}
-      </BaseTable>
-      <Flex px="40px" mt="40px" align="center" justify="space-between">
-        <Text color="gray_800" fontWeight="medium">
-          Página {page} de {items?.lastPage}
-        </Text>
+      {isLoading ? (
+        <LoadingStocks />
+      ) : (
+        <>
+          <BaseTable h="575px" headers={tableHeaders()}>
+            {filteredStocks?.map((item) => (
+              <StocksTableItem key={item.id} stockItem={item} />
+            ))}
+          </BaseTable>
+          <Flex px="40px" mt="40px" align="center" justify="space-between">
+            <Text color="gray_800" fontWeight="medium">
+              Página {page} de {items?.lastPage}
+            </Text>
 
-        <Pagination
-          w="fit-content"
-          currentPage={page}
-          lastPage={items?.lastPage}
-        />
-      </Flex>
+            <Pagination
+              w="fit-content"
+              currentPage={page}
+              lastPage={items?.lastPage}
+            />
+          </Flex>
+        </>
+      )}
     </>
   );
 };
