@@ -10,9 +10,9 @@ import { userContext } from "@/context/userContext";
 import { UseListCategories } from "@/services/Categories/useListCategories";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
-import { NextPageWithLayout } from "../../_app";
-import { CategoriesTableContent } from "./_components/categories-table-content";
-import { CategoriesTableItem } from "./_components/categories-table-item";
+import { CategoriesTableContent } from "../../components/pages/categories/categories-table-content";
+import { CategoriesTableItem } from "../../components/pages/categories/categories-table-item";
+import { NextPageWithLayout } from "../_app";
 
 export type CategoriesPageProps = {
   page: number;

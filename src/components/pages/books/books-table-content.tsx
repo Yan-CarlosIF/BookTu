@@ -4,10 +4,10 @@ import { useContext } from "react";
 
 import { ActionBar } from "@/components/ActionBar/action-bar";
 import { DeleteAlertDialog } from "@/components/ActionBar/delete-alert-dialog";
+import { BookModal } from "@/components/pages/books/BookModal";
 import { Pagination } from "@/components/Pagination/pagination";
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { userContext } from "@/context/userContext";
-import { BookModal } from "@/pages/home/books/_components/BookModal";
 import { useCreateBook } from "@/services/Books/useCreateBook";
 import { useEditBook } from "@/services/Books/useEditBook";
 

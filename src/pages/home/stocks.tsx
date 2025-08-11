@@ -12,7 +12,7 @@ import { useListAllEstablishments } from "@/services/Establishments/useListAllEs
 import { useListStocksItems } from "@/services/Stocks/useListStocksItems";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
-import { StocksTableItem } from "./_components/stocks-table-item";
+import { StocksTableItem } from "../../components/pages/stocks/stocks-table-item";
 
 interface StocksPageProps {
   page: number;

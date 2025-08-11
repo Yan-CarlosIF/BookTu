@@ -8,7 +8,6 @@ export function formatCNPJ(value: string) {
     .slice(0, 18); // limita ao tamanho do CNPJ formatado
 }
 
-// Função para formatar CEP
 export function formatCEP(value: string) {
   return value
     .replace(/\D/g, "") // remove tudo que não for número

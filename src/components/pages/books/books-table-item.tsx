@@ -1,8 +1,8 @@
 import { Box, Checkbox, Td, Text, Tr } from "@chakra-ui/react";
 import { useContext } from "react";
 
+import { TooltipCategories } from "@/components/pages/books/tooltip-categories";
 import { TableCheckboxContext } from "@/context/checkboxContext";
-import { TooltipCategories } from "@/pages/home/books/_components/tooltip-categories";
 import { Book } from "@/shared/types/book";
 import { formatPriceIntoBRL } from "@/utils/format";
 

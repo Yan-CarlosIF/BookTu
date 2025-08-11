@@ -14,8 +14,8 @@ import { NextPageWithLayout } from "@/pages/_app";
 import { useListEstablishments } from "@/services/Establishments/useListEstablishments";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
-import { EstablishmentsTableContent } from "./_components/establishments-table-content";
-import { EstablishmentsTableItem } from "./_components/establishments-table-item";
+import { EstablishmentsTableContent } from "../../components/pages/establishments/establishments-table-content";
+import { EstablishmentsTableItem } from "../../components/pages/establishments/establishments-table-item";
 
 interface EstablishmentsPageProps {
   page: number;

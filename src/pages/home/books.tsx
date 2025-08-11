@@ -13,9 +13,9 @@ import {
 import { UseListBooks } from "@/services/Books/useListBooks";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
-import { NextPageWithLayout } from "../../_app";
-import { BooksTableContent } from "./_components/books-table-content";
-import { BooksTableItem } from "./_components/books-table-item";
+import { BooksTableContent } from "../../components/pages/books/books-table-content";
+import { BooksTableItem } from "../../components/pages/books/books-table-item";
+import { NextPageWithLayout } from "../_app";
 
 type BooksPageProps = {
   page: number;

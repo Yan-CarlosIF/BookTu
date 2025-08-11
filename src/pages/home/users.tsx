@@ -13,9 +13,9 @@ import {
 import { useListUsers } from "@/services/Users/useListUsers";
 import { ensureUserAdmin } from "@/utils/ensureUserAdmin";
 
-import { NextPageWithLayout } from "../../_app";
-import { UserTableContent } from "./_components/user-table-content";
-import { UserTableItem } from "./_components/user-table-item";
+import { UserTableContent } from "../../components/pages/users/user-table-content";
+import { UserTableItem } from "../../components/pages/users/user-table-item";
+import { NextPageWithLayout } from "../_app";
 
 export type UsersPageProps = {
   page: number;

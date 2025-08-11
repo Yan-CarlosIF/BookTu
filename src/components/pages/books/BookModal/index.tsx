@@ -28,7 +28,7 @@ import { useAllCategories } from "@/services/Categories/useAllCategories";
 import { Book } from "@/shared/types/book";
 import { Category } from "@/shared/types/category";
 
-import { Input } from "../../../../../components/input";
+import { Input } from "../../../input";
 import { CategoriesCheckboxList } from "./categories-menu";
 
 interface BookModalProps {
