@@ -2,8 +2,9 @@ import { Box, Flex, Heading } from "@chakra-ui/react";
 import {
   Book,
   Building,
+  ChartColumnStacked,
+  ClipboardList,
   LogOut,
-  PlusCircle,
   Users,
   Warehouse,
 } from "lucide-react";
@@ -51,6 +52,12 @@ export function Sidebar({ slug }: SidebarProps) {
           href="/home/books"
           isActive={slug === "Livros"}
         />
+        <SidebarItem
+          icon={ChartColumnStacked}
+          title="Categorias"
+          href="/home/categories"
+          isActive={slug === "Categorias"}
+        />
         {!isLoading && isAdmin && (
           <SidebarItem
             icon={Users}
@@ -66,10 +73,10 @@ export function Sidebar({ slug }: SidebarProps) {
           isActive={slug === "Estoques"}
         />
         <SidebarItem
-          icon={PlusCircle}
-          title="Categorias"
-          href="/home/categories"
-          isActive={slug === "Categorias"}
+          icon={ClipboardList}
+          title="Inventários"
+          href="/home/inventories"
+          isActive={slug === "Inventários"}
         />
         <SidebarItem mt="auto" icon={LogOut} title="Sair" href="/" />
       </Flex>
