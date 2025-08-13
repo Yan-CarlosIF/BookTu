@@ -1,12 +1,16 @@
-import { Flex, Text, Th } from "@chakra-ui/react";
+import { Th } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { HomeLayout } from "@/components/Home/layout";
+import { InventoriesTableContent } from "@/components/pages/inventories/inventories-table-content";
 import { InventoriesTableItem } from "@/components/pages/inventories/inventories-table-item";
-import { Pagination } from "@/components/Pagination/pagination";
 import { SearchBar } from "@/components/search-bar";
 import { BaseTable } from "@/components/Table";
+import {
+  TableCheckboxContext,
+  TableCheckboxProvider,
+} from "@/context/checkboxContext";
 import { useListAllEstablishments } from "@/services/Establishments/useListAllEstablishments";
 import { useListInventories } from "@/services/Inventories/useListInventories";
 import { withAuthServerSideProps } from "@/utils/withAuth";
@@ -22,18 +26,19 @@ const TableHeaders = () => (
   <>
     <Th>Número identificador</Th>
     <Th>Estabelecimento</Th>
-    <Th>Produtos</Th>
+    <Th textAlign="center">Total de produtos</Th>
     <Th textAlign="center">Status</Th>
-    <Th textAlign="center">Ações</Th>
+    <Th textAlign="center">Processar</Th>
   </>
 );
 
-const InventoriesPage: NextPageWithLayout<InventoriesPageProps> = ({
+const InventoriesPageContent: NextPageWithLayout<InventoriesPageProps> = ({
   page,
   sort,
 }) => {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [isFetching, setIsFetching] = useState(false);
   const { data: establishments } = useListAllEstablishments();
   const { data: inventoriesData, isLoading } = useListInventories(page, sort);
 
@@ -51,6 +56,22 @@ const InventoriesPage: NextPageWithLayout<InventoriesPageProps> = ({
     });
   }
 
+  async function handleProcessInventory(
+    id: string,
+    setIsProcessing: React.Dispatch<React.SetStateAction<boolean>>
+  ) {
+    setIsProcessing(true);
+    setIsFetching(true);
+
+    console.log(`Processing inventory with ID: ${id}`);
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+
+    setIsProcessing(false);
+    setIsFetching(false);
+  }
+
+  const { selectedData, toggleSelectAll } = useContext(TableCheckboxContext);
+
   return (
     <>
       <SearchBar
@@ -64,23 +85,40 @@ const InventoriesPage: NextPageWithLayout<InventoriesPageProps> = ({
         }))}
       />
 
-      <BaseTable h="612px" headers={<TableHeaders />}>
+      <BaseTable
+        checkbox
+        h="612px"
+        isCheckboxChecked={selectedData?.length === inventories?.length}
+        isCheckboxIndeterminate={
+          selectedData?.length > 0 && selectedData?.length < inventories?.length
+        }
+        onCheckboxChange={() => toggleSelectAll(inventories)}
+        headers={<TableHeaders />}
+      >
         {inventories?.map((inventory) => (
-          <InventoriesTableItem key={inventory.id} inventory={inventory} />
+          <InventoriesTableItem
+            isFetching={isFetching}
+            handleProcessInventory={handleProcessInventory}
+            key={inventory.id}
+            inventory={inventory}
+          />
         ))}
       </BaseTable>
-      <Flex px="40px" mt="40px" align="center" justify="space-between">
-        <Text color="gray_800" fontWeight="medium">
-          Página {page} de {inventoriesData?.lastPage}
-        </Text>
-
-        <Pagination
-          w="fit-content"
-          currentPage={page}
-          lastPage={inventoriesData?.lastPage}
-        />
-      </Flex>
+      <InventoriesTableContent
+        page={page}
+        lastPage={inventoriesData?.lastPage}
+      />
     </>
+  );
+};
+
+const InventoriesPage: NextPageWithLayout<InventoriesPageProps> = ({
+  page,
+}) => {
+  return (
+    <TableCheckboxProvider>
+      <InventoriesPageContent page={page} sort={null} />;
+    </TableCheckboxProvider>
   );
 };
 
