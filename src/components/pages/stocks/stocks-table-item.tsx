@@ -1,19 +1,6 @@
-import {
-  Box,
-  IconButton,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Td,
-  Text,
-  Tr,
-} from "@chakra-ui/react";
-import { Ellipsis } from "lucide-react";
+import { Box, Td, Text, Tr } from "@chakra-ui/react";
 
+import { EstablishmentAddressPopover } from "@/components/establishment-address-popover";
 import { StockItem } from "@/shared/types/stockItem";
 import { formatPriceIntoBRL } from "@/utils/format";
 
@@ -48,29 +35,9 @@ export function StocksTableItem({ stockItem }: StocksTableItemProps) {
         borderRightColor="gray.200"
       >
         {stockItem.stock.establishment.name}
-        <Popover>
-          <PopoverTrigger>
-            <IconButton
-              _focus={{ ringColor: "transparent" }}
-              ml="4px"
-              aria-label="Mais detalhes"
-              size="xs"
-              variant="ghost"
-              icon={<Ellipsis size={16} />}
-            />
-          </PopoverTrigger>
-          <PopoverContent _focus={{ ringColor: "transparent" }}>
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverHeader>Endereço</PopoverHeader>
-            <PopoverBody>
-              <Text>CEP: {stockItem.stock.establishment.cep}</Text>
-              <Text>Estado: {stockItem.stock.establishment.state}</Text>
-              <Text>Cidade: {stockItem.stock.establishment.city}</Text>
-              <Text>Bairro: {stockItem.stock.establishment.district}</Text>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
+        <EstablishmentAddressPopover
+          establishment={stockItem.stock.establishment}
+        />
       </Td>
       <Td borderRight="1px" borderRightColor="gray.200">
         {formatPriceIntoBRL(stockItem.book.price)}
