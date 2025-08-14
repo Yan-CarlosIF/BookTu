@@ -7,6 +7,7 @@ import {
   Td,
   Text,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { LibraryBig } from "lucide-react";
 import { useContext, useState } from "react";
@@ -14,6 +15,8 @@ import { useContext, useState } from "react";
 import { EstablishmentAddressPopover } from "@/components/establishment-address-popover";
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { Inventory } from "@/shared/types/inventory";
+
+import { InventoryProductsModal } from "./inventory-products-modal";
 
 interface InventoriesTableItemProps {
   inventory: Inventory;
@@ -31,6 +34,7 @@ export function InventoriesTableItem({
 }: InventoriesTableItemProps) {
   const { selectedData, toggleSelectData } = useContext(TableCheckboxContext);
   const [isProcessing, setIsProcessing] = useState(false);
+  const disclosure = useDisclosure();
 
   return (
     <Tr key={inventory.id}>
@@ -64,6 +68,11 @@ export function InventoriesTableItem({
             icon={<LibraryBig size={16} />}
             size="xs"
             variant={"ghost"}
+            onClick={disclosure.onOpen}
+          />
+          <InventoryProductsModal
+            inventory={inventory}
+            disclosure={disclosure}
           />
         </Flex>
       </Td>

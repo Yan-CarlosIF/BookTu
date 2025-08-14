@@ -40,7 +40,7 @@ const InventoriesPageContent: NextPageWithLayout<InventoriesPageProps> = ({
   const [search, setSearch] = useState("");
   const [isFetching, setIsFetching] = useState(false);
   const { data: establishments } = useListAllEstablishments();
-  const { data: inventoriesData, isLoading } = useListInventories(page, sort);
+  const { data: inventoriesData } = useListInventories(page, sort);
 
   const inventories = inventoriesData?.data;
 
@@ -114,10 +114,11 @@ const InventoriesPageContent: NextPageWithLayout<InventoriesPageProps> = ({
 
 const InventoriesPage: NextPageWithLayout<InventoriesPageProps> = ({
   page,
+  sort,
 }) => {
   return (
     <TableCheckboxProvider>
-      <InventoriesPageContent page={page} sort={null} />;
+      <InventoriesPageContent page={page} sort={sort} />;
     </TableCheckboxProvider>
   );
 };
