@@ -76,7 +76,7 @@ export function Sidebar({ slug }: SidebarProps) {
           icon={ClipboardList}
           title="Inventários"
           href="/home/inventories"
-          isActive={slug === "Inventários"}
+          isActive={slug === "Inventários" || slug.includes("inventário")}
         />
         <SidebarItem mt="auto" icon={LogOut} title="Sair" href="/" />
       </Flex>

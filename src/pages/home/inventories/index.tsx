@@ -15,7 +15,7 @@ import { useListAllEstablishments } from "@/services/Establishments/useListAllEs
 import { useListInventories } from "@/services/Inventories/useListInventories";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
-import { NextPageWithLayout } from "../_app";
+import { NextPageWithLayout } from "../../_app";
 
 interface InventoriesPageProps {
   page: number;
