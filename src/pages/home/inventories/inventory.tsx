@@ -26,10 +26,13 @@ import { HomeLayout } from "@/components/Home/layout";
 import { BookSelector } from "@/components/pages/inventories/inventory/book-selector";
 import { CancelDialog } from "@/components/pages/inventories/inventory/cancel-dialog";
 import { SelectedBooksTableItem } from "@/components/pages/inventories/inventory/selected-books-table-item";
+import { api } from "@/lib/axios";
 import { NextPageWithLayout } from "@/pages/_app";
 import { useListAllBooks } from "@/services/Books/useListAllBooks";
 import { useListAllEstablishments } from "@/services/Establishments/useListAllEstablishments";
 import { useCreateInventory } from "@/services/Inventories/useCreateInventory";
+import { useEditInventory } from "@/services/Inventories/useEditInventory";
+import { Inventory } from "@/shared/types/inventory";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
 const createInventorySchema = z.object({
@@ -50,10 +53,12 @@ type CreateInventoryData = z.infer<typeof createInventorySchema>;
 
 interface CreateInventoryPageProps {
   id?: string | null;
+  inventory: Inventory | null;
 }
 
 const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
   id,
+  inventory,
 }) => {
   const {
     handleSubmit,
@@ -64,15 +69,21 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
   } = useForm<CreateInventoryData>({
     resolver: zodResolver(createInventorySchema),
     defaultValues: {
-      establishment_id: "",
-      total_quantity: 0,
-      inventoryBooks: [],
+      establishment_id: inventory ? inventory.establishment_id : "",
+      total_quantity: inventory ? inventory.total_quantity : 0,
+      inventoryBooks: inventory
+        ? inventory.books.map((b) => ({
+            book_id: b.book_id,
+            quantity: b.quantity,
+          }))
+        : [],
     },
   });
 
   const disclosure = useDisclosure();
 
   const { mutateAsync: createInventoryFn } = useCreateInventory();
+  const { mutateAsync: editInventoryFn } = useEditInventory();
 
   const { data: establishments } = useListAllEstablishments();
 
@@ -122,6 +133,13 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
       });
 
       reset();
+    }
+
+    if (id) {
+      await editInventoryFn({
+        id,
+        inventoryBooks: data.inventoryBooks,
+      });
     }
   }
 
@@ -202,7 +220,7 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
                   </Tr>
                 ) : (
                   inventoryBooks.map((book) => {
-                    const bookInfo = booksList.find(
+                    const bookInfo = booksList?.find(
                       (b) => b.id === book.book_id
                     );
                     return (
@@ -253,13 +271,43 @@ CreateInventoryPage.getLayout = (page, { id }) => {
 };
 
 export const getServerSideProps = withAuthServerSideProps(async (ctx) => {
+  const token = ctx.req.cookies["auth.token"];
   const { id = null } = ctx.query;
 
-  return {
-    props: {
-      id,
-    },
-  };
+  if (!id) {
+    return {
+      props: {
+        id: null,
+        inventory: null,
+      },
+    };
+  }
+
+  try {
+    const { data: inventory } = await api.get<Inventory>(`/inventories/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return {
+      props: {
+        id: id as string,
+        inventory: inventory || null,
+      },
+    };
+  } catch {
+    return {
+      props: {
+        id: null,
+        inventory: null,
+      },
+      redirect: {
+        destination: "/home/inventories",
+        permanent: false,
+      },
+    };
+  }
 });
 
 export default CreateInventoryPage;
