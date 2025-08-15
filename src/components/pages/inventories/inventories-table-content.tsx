@@ -1,10 +1,11 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 
 import { ActionBar } from "@/components/ActionBar/action-bar";
+import { DeleteAlertDialog } from "@/components/ActionBar/delete-alert-dialog";
 import { Pagination } from "@/components/Pagination/pagination";
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { userContext } from "@/context/userContext";
@@ -24,6 +25,7 @@ export function InventoriesTableContent({
   const isAdmin = !isLoading && user?.permission === "admin";
 
   const { selectedData, setSelectedData } = useContext(TableCheckboxContext);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const inventory = selectedData[0] as Inventory;
 
@@ -50,9 +52,17 @@ export function InventoriesTableContent({
           Cancelar
         </Button>
         {isAdmin && (
-          <Button colorScheme="red" size="sm">
-            Excluir
-          </Button>
+          <>
+            <Button onClick={onOpen} colorScheme="red" size="sm">
+              Excluir
+            </Button>
+            <DeleteAlertDialog
+              data={selectedData.map((inventory) => inventory.id)}
+              type="inventory"
+              isOpen={isOpen}
+              onClose={onClose}
+            />
+          </>
         )}
         {selectedData?.length === 1 && inventory.status === "unprocessed" && (
           <>

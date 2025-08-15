@@ -12,11 +12,12 @@ import { useContext, useRef } from "react";
 import { TableCheckboxContext } from "@/context/checkboxContext";
 import { useDeleteBook } from "@/services/Books/useDeleteBook";
 import { useDeleteEstablishments } from "@/services/Establishments/useDeleteEstablishments";
+import { useDeleteInventory } from "@/services/Inventories/useDeleteInventory";
 import { useDeleteUser } from "@/services/Users/useDeleteUser";
 
 interface DeleteAlertDialogProps {
   data: string[];
-  type: "user" | "book" | "establishment";
+  type: "user" | "book" | "establishment" | "inventory";
   isOpen: boolean;
   onClose: () => void;
 }
@@ -30,6 +31,7 @@ export function DeleteAlertDialog({
   const { mutateAsync: deleteUsersFn } = useDeleteUser();
   const { mutateAsync: deleteBooksFn } = useDeleteBook();
   const { mutateAsync: deleteEstablishmentsFn } = useDeleteEstablishments();
+  const { mutateAsync: deleteInventoriesFn } = useDeleteInventory();
 
   const cancelRef = useRef();
 
@@ -50,6 +52,10 @@ export function DeleteAlertDialog({
       Promise.all(ids.map((id) => deleteEstablishmentsFn(id)));
     }
 
+    if (type === "inventory") {
+      Promise.all(ids.map((id) => deleteInventoriesFn(id)));
+    }
+
     setSelectedData([]);
   }
 
@@ -61,6 +67,10 @@ export function DeleteAlertDialog({
         return "livro";
       case "establishment":
         return "estabelecimento";
+      case "inventory":
+        return "inventário";
+      default:
+        return "item";
     }
   }
 
