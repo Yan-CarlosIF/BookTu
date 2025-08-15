@@ -29,6 +29,7 @@ import { SelectedBooksTableItem } from "@/components/pages/inventories/inventory
 import { NextPageWithLayout } from "@/pages/_app";
 import { useListAllBooks } from "@/services/Books/useListAllBooks";
 import { useListAllEstablishments } from "@/services/Establishments/useListAllEstablishments";
+import { useCreateInventory } from "@/services/Inventories/useCreateInventory";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
 const createInventorySchema = z.object({
@@ -71,6 +72,8 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
 
   const disclosure = useDisclosure();
 
+  const { mutateAsync: createInventoryFn } = useCreateInventory();
+
   const { data: establishments } = useListAllEstablishments();
 
   const { data: booksList } = useListAllBooks();
@@ -110,6 +113,16 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
       ...data,
       total_quantity: totalQuantity,
     });
+
+    if (!id) {
+      await createInventoryFn({
+        establishment_id: data.establishment_id,
+        inventoryBooks: data.inventoryBooks,
+        total_quantity: totalQuantity,
+      });
+
+      reset();
+    }
   }
 
   function getSelectedEstablishment() {
