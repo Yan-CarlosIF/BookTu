@@ -1,10 +1,4 @@
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Box,
   Button,
   Flex,
@@ -15,8 +9,6 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  NumberInput,
-  NumberInputField,
   Table,
   Tbody,
   Td,
@@ -27,12 +19,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { HomeLayout } from "@/components/Home/layout";
 import { BookSelector } from "@/components/pages/inventories/inventory/book-selector";
+import { CancelDialog } from "@/components/pages/inventories/inventory/cancel-dialog";
+import { SelectedBooksTableItem } from "@/components/pages/inventories/inventory/selected-books-table-item";
 import { NextPageWithLayout } from "@/pages/_app";
 import { useListAllBooks } from "@/services/Books/useListAllBooks";
 import { useListAllEstablishments } from "@/services/Establishments/useListAllEstablishments";
@@ -76,13 +69,14 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
     },
   });
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const disclosure = useDisclosure();
 
   const { data: establishments } = useListAllEstablishments();
 
   const { data: booksList } = useListAllBooks();
 
   const inventoryBooks = watch("inventoryBooks");
+  const establishmentId = watch("establishment_id");
 
   const totalQuantity = inventoryBooks.reduce(
     (acc, book) => acc + book.quantity,
@@ -118,7 +112,12 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
     });
   }
 
-  const cancelRef = useRef();
+  function getSelectedEstablishment() {
+    return (
+      establishments?.find((e) => e.id === establishmentId)?.name ??
+      "Selecionar Estabelecimento"
+    );
+  }
 
   return (
     <Box mx="100px" px="100px" pb="100px" mt="100px">
@@ -130,12 +129,13 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
           >
             <FormLabel>Estabelecimento</FormLabel>
             <Menu>
-              <MenuButton as={Button} w="100%" variant="outline">
-                {watch("establishment_id")
-                  ? establishments?.find(
-                      (e) => e.id === watch("establishment_id")
-                    )?.name
-                  : "Selecionar Estabelecimento"}
+              <MenuButton
+                as={Button}
+                w="100%"
+                borderColor="gray_500"
+                variant="outline"
+              >
+                {getSelectedEstablishment()}
               </MenuButton>
               <MenuList maxH="150px" overflowY="auto">
                 {establishments?.map((est) => (
@@ -166,7 +166,6 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
           </FormControl>
         </Flex>
         <Box borderWidth="1px" borderRadius="md" overflow="hidden">
-          {/* Header fixo da tabela */}
           <Box bg="gray.50" borderBottom="1px" borderColor="gray.200">
             <Table size="sm">
               <Thead>
@@ -179,13 +178,12 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
             </Table>
           </Box>
 
-          {/* Container com scroll para o body da tabela */}
           <Box maxH="500px" overflowY="auto">
             <Table size="sm">
               <Tbody>
                 {inventoryBooks.length === 0 ? (
                   <Tr>
-                    <Td colSpan={3} textAlign="center" py={8}>
+                    <Td fontSize="md" colSpan={3} textAlign="center" py={8}>
                       Nenhum livro adicionado
                     </Td>
                   </Tr>
@@ -195,31 +193,15 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
                       (b) => b.id === book.book_id
                     );
                     return (
-                      <Tr key={book.book_id}>
-                        <Td>{bookInfo?.title}</Td>
-                        <Td>
-                          <NumberInput
-                            size="sm"
-                            w="fit-content"
-                            min={1}
-                            value={book.quantity}
-                            onChange={(val) =>
-                              handleUpdateQuantity(book.book_id, Number(val))
-                            }
-                          >
-                            <NumberInputField />
-                          </NumberInput>
-                        </Td>
-                        <Td w="100px">
-                          <Button
-                            size="xs"
-                            colorScheme="red"
-                            onClick={() => handleRemoveBook(book.book_id)}
-                          >
-                            Remover
-                          </Button>
-                        </Td>
-                      </Tr>
+                      <SelectedBooksTableItem
+                        key={book.book_id}
+                        book={{
+                          ...bookInfo,
+                          quantity: book.quantity,
+                        }}
+                        onUpdateQuantity={handleUpdateQuantity}
+                        onRemoveBook={handleRemoveBook}
+                      />
                     );
                   })
                 )}
@@ -233,49 +215,12 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
           <Flex gap={2}>
             <Button
               variant="outline"
-              onClick={() => onOpen()}
+              onClick={() => disclosure.onOpen()}
               isDisabled={isSubmitting}
             >
-              Cancelar
+              Limpar
             </Button>
-            <AlertDialog
-              motionPreset="slideInBottom"
-              leastDestructiveRef={cancelRef}
-              onClose={onClose}
-              isOpen={isOpen}
-              size="lg"
-              isCentered
-            >
-              <AlertDialogOverlay />
-              <AlertDialogContent>
-                <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                  Confirmar exclusão
-                </AlertDialogHeader>
-
-                <AlertDialogBody>
-                  Tem certeza que deseja limpar os dados do inventário?
-                  <Text fontSize="sm" mt={2} color="red.400">
-                    Todos os dados serão perdidos
-                  </Text>
-                </AlertDialogBody>
-
-                <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={onClose}>
-                    Cancelar
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      reset();
-                      onClose();
-                    }}
-                    colorScheme="red"
-                    ml={3}
-                  >
-                    Confirmar
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <CancelDialog disclosure={disclosure} reset={reset} />
             <Button type="submit" colorScheme="teal" isLoading={isSubmitting}>
               {id ? "Editar" : "Criar"} Inventário
             </Button>
