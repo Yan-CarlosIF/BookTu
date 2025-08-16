@@ -1,9 +1,11 @@
 import {
+  Box,
   Button,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
@@ -13,6 +15,7 @@ import {
   Book as BookIcon,
   Calendar,
   DollarSign,
+  Fingerprint,
   UserRound,
 } from "lucide-react";
 import { useContext, useEffect } from "react";
@@ -45,6 +48,7 @@ interface BookModalProps {
 
 const bookSchema = z.object({
   title: z.string().min(1, "Informe o título"),
+  identifier: z.string().min(1, "Informe o identificador"),
   author: z.string().min(1, "Informe o autor"),
   release_year: z.coerce
     .number()
@@ -88,6 +92,7 @@ export function BookModal({
   });
 
   const title = watch("title");
+  const identifier = watch("identifier");
   const author = watch("author");
   const release_year = watch("release_year");
   const price = watch("price");
@@ -108,6 +113,7 @@ export function BookModal({
     }
 
     reset();
+    setSelectedData([]);
     setSelectedBooks([]);
   }
 
@@ -121,6 +127,7 @@ export function BookModal({
         price: selectedBook.price,
         description: selectedBook.description,
         title: selectedBook.title,
+        identifier: selectedBook.identifier,
         author: selectedBook.author,
       });
       setSelectedData(selectedBook.categories.map((category) => category.id));
@@ -128,7 +135,7 @@ export function BookModal({
   }, [book, reset, setSelectedData, action]);
 
   return (
-    <Modal isCentered isOpen={isOpen} size="2xl" onClose={onClose}>
+    <Modal isCentered isOpen={isOpen} size="3xl" onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader color="gray_800">
@@ -140,6 +147,7 @@ export function BookModal({
           onSubmit={handleSubmit(() =>
             handleActionBook({
               categoryIds: selectedData,
+              identifier,
               title,
               author,
               release_year: Number(release_year),
@@ -212,22 +220,42 @@ export function BookModal({
             error={errors.description}
             {...register("description")}
           />
-          <CategoriesCheckboxList
-            selectedData={selectedData}
-            categories={categories}
-            setSelectedData={setSelectedData}
-          />
-          <Button
-            py={7}
-            colorScheme="teal"
-            type="submit"
-            fontSize="lg"
-            onClick={onClose}
-            isLoading={isSubmitting}
-            gridColumn="1 / -1"
+          <Box
+            h="140px"
+            maxH="140px"
+            display="flex"
+            flexDir="column"
+            gap="20px"
           >
-            {action === "edit" ? "Editar" : "Adicionar"}
-          </Button>
+            <Input
+              icon={Fingerprint}
+              label="Identificador"
+              name="identifier"
+              placeholder="Insira um identificador para o livro"
+              isInvalid={!!errors.identifier}
+              error={errors.identifier}
+              {...register("identifier")}
+            />
+            <CategoriesCheckboxList
+              selectedData={selectedData}
+              categories={categories}
+              setSelectedData={setSelectedData}
+            />
+          </Box>
+          <ModalFooter px="0px">
+            <Button
+              py={7}
+              w="full"
+              colorScheme="teal"
+              type="submit"
+              fontSize="lg"
+              onClick={onClose}
+              isLoading={isSubmitting}
+              gridColumn="1 / -1"
+            >
+              {action === "edit" ? "Editar" : "Adicionar"}
+            </Button>
+          </ModalFooter>
         </ModalBody>
       </ModalContent>
     </Modal>

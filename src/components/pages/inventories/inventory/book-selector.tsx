@@ -2,9 +2,10 @@ import { Box, List, ListItem, Text } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 
 import { Input } from "@/components/input";
+import { Book } from "@/shared/types/book";
 
 interface BookSelectorProps {
-  books: { id: string; title: string }[];
+  books: Book[];
   selectedBooks: string[];
   onSelectBook: (id: string) => void;
 }
@@ -19,8 +20,9 @@ export function BookSelector({
   const filteredBooks = useMemo(() => {
     return (books ?? []).filter(
       (book) =>
-        !selectedBooks.includes(book.id) &&
-        book.title.toLowerCase().includes(query.toLowerCase())
+        (!selectedBooks.includes(book.id) &&
+          book.title.toLowerCase().includes(query.toLowerCase())) ||
+        book.identifier.toLowerCase().includes(query.toLowerCase())
     );
   }, [books, selectedBooks, query]);
 
@@ -29,7 +31,7 @@ export function BookSelector({
       <Input
         type="text"
         bg="transparent"
-        placeholder="Busque por título e número do livro..."
+        placeholder="Busque por título ou identificador do livro..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />

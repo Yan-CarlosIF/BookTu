@@ -6,6 +6,7 @@ import { api } from "../../lib/axios";
 
 export interface ICreateBook {
   title: string;
+  identifier: string;
   author: string;
   release_year: number;
   price: number;
@@ -40,9 +41,11 @@ export function useCreateBook() {
       });
     },
 
-    onError: () => {
+    onError: ({ response }) => {
+      const { message } = response.data;
+
       toast({
-        title: "Erro ao cadastrar livro",
+        title: response.status === 500 ? "Erro ao cadastrar livro" : message,
         status: "error",
         duration: 3000,
         isClosable: true,

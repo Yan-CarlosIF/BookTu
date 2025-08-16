@@ -52,6 +52,7 @@ const filterOptions = [
 const TableHeaders = () => (
   <>
     <Th>Título</Th>
+    <Th>Identificador</Th>
     <Th>Categoria(s)</Th>
     <Th>Ano de Lançamento</Th>
     <Th isNumeric>Preço (R$)</Th>

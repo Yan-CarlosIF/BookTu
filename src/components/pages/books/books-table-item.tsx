@@ -22,7 +22,13 @@ export function BooksTableItem({ book }: BooksTableItemProps) {
           onChange={() => toggleSelectData(book)}
         />
       </Td>
-      <Td maxH="40px" p="0px" borderRight="1px" borderRightColor="gray.200">
+      <Td
+        w="30%"
+        maxH="40px"
+        p="0px"
+        borderRight="1px"
+        borderRightColor="gray.200"
+      >
         <Box maxH="40px">
           <Text>{book.title}</Text>
           {book.author && (
@@ -31,6 +37,9 @@ export function BooksTableItem({ book }: BooksTableItemProps) {
             </Text>
           )}
         </Box>
+      </Td>
+      <Td w="20%" borderRight="1px" borderRightColor="gray.200">
+        {book.identifier}
       </Td>
       <Td
         borderRight="1px"

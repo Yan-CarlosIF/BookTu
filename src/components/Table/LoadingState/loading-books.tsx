@@ -26,6 +26,7 @@ export function CheckboxTableBooksLoading() {
                 <Checkbox disabled colorScheme="teal" />
               </Th>
               <Th>Título</Th>
+              <Th>Identificador</Th>
               <Th>Categoria(s)</Th>
               <Th>Ano de Lançamento</Th>
               <Th isNumeric>Preço (R$)</Th>
@@ -38,12 +39,21 @@ export function CheckboxTableBooksLoading() {
                   <Checkbox disabled colorScheme="teal" />
                 </Td>
                 <Td
+                  w="30%"
                   maxH="40px"
                   h="40px"
                   p="0px"
                   borderRight="1px"
                   borderRightColor="gray.200"
                 >
+                  <Skeleton
+                    borderRadius="lg"
+                    h="20px"
+                    w="100px"
+                    noOfLines={1}
+                  />
+                </Td>
+                <Td w="20%" borderRight="1px" borderRightColor="gray.200">
                   <Skeleton
                     borderRadius="lg"
                     h="20px"

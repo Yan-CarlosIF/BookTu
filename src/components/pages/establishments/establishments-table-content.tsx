@@ -40,7 +40,7 @@ export function EstablishmentsTableContent({
         Página {page} de {lastPage}
       </Text>
 
-      {!isLoading && user.permission === "admin" && (
+      {!isLoading && user?.permission === "admin" && (
         <>
           <Button
             rightIcon={<Plus />}
