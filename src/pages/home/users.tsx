@@ -46,7 +46,7 @@ const TableHeaders = () => (
   <>
     <Th>Nome</Th>
     <Th>Matrícula</Th>
-    <Th isNumeric>Permissão</Th>
+    <Th textAlign="center">Permissão</Th>
   </>
 );
 
@@ -78,7 +78,7 @@ const UsersPageContent: NextPageWithLayout<UsersPageProps> = ({
     <>
       <SearchBar
         searchValue={search}
-        placeholder="Buscar pelo nome"
+        placeholder="Buscar pelo nome ou matrícula"
         onSearch={setSearch}
         onFilter={handleFilterChange}
         filterOptions={filterOptions}

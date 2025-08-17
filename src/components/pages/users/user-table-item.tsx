@@ -1,4 +1,4 @@
-import { Box, Checkbox, Td, Text, Tr } from "@chakra-ui/react";
+import { Badge, Box, Checkbox, Td, Text, Tr } from "@chakra-ui/react";
 import { useContext } from "react";
 
 import { TableCheckboxContext } from "@/context/checkboxContext";
@@ -20,7 +20,13 @@ export function UserTableItem({ user }: UserTableItemProps) {
           onChange={() => toggleSelectData(user)}
         />
       </Td>
-      <Td maxH="40px" p="0px" borderRight="1px" borderRightColor="gray.200">
+      <Td
+        w="30%"
+        maxH="40px"
+        p="0px"
+        borderRight="1px"
+        borderRightColor="gray.200"
+      >
         <Box maxH="40px">
           <Text>{user.name}</Text>
           <Text fontSize="xs" fontWeight="medium" color="gray_600">
@@ -31,8 +37,21 @@ export function UserTableItem({ user }: UserTableItemProps) {
       <Td borderRight="1px" borderRightColor="gray.200">
         {user.registration}
       </Td>
-      <Td isNumeric borderRight="1px" borderRightColor="gray.200">
-        {user.permission}
+      <Td
+        textAlign={"center"}
+        py="0px"
+        w="10%"
+        borderRight="1px"
+        borderRightColor="gray.200"
+      >
+        <Badge
+          borderRadius="sm"
+          colorScheme={user.permission === "admin" ? "purple" : "teal"}
+          w="80px"
+          textAlign="center"
+        >
+          {user.permission === "admin" ? "Admin" : "Operador"}
+        </Badge>
       </Td>
     </Tr>
   );
