@@ -10,6 +10,7 @@ import {
   TableCheckboxContext,
   TableCheckboxProvider,
 } from "@/context/checkboxContext";
+import { useDebounce } from "@/hooks/useDebounce";
 import { UseListBooks } from "@/services/Books/useListBooks";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
@@ -63,8 +64,9 @@ const BooksPageContent: NextPageWithLayout<BooksPageProps> = ({
   page,
   sort,
 }) => {
-  const { data, isLoading } = UseListBooks(page, sort);
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
+  const { data, isLoading } = UseListBooks(page, sort, debouncedSearch);
   const router = useRouter();
 
   const { selectedData, toggleSelectAll } = useContext(TableCheckboxContext);
@@ -81,18 +83,11 @@ const BooksPageContent: NextPageWithLayout<BooksPageProps> = ({
     });
   }
 
-  const filteredBooks = data?.books.filter((book) => {
-    return (
-      book.title.toLowerCase().includes(search.toLowerCase().trim()) ||
-      book.author.toLowerCase().includes(search.toLowerCase().trim())
-    );
-  });
-
   return (
     <>
       <SearchBar
         searchValue={search}
-        placeholder="Buscar pelo título ou autor"
+        placeholder="Busca pelo título, autor e identificador"
         onSearch={setSearch}
         onFilter={handleFilterChange}
         filterOptions={filterOptions}
@@ -103,16 +98,16 @@ const BooksPageContent: NextPageWithLayout<BooksPageProps> = ({
         <>
           <BaseTable
             h="575px"
-            isCheckboxChecked={selectedData?.length === filteredBooks?.length}
+            isCheckboxChecked={selectedData?.length === data.books.length}
             isCheckboxIndeterminate={
               selectedData?.length > 0 &&
-              selectedData?.length < filteredBooks?.length
+              selectedData?.length < data.books.length
             }
-            onCheckboxChange={() => toggleSelectAll(filteredBooks)}
+            onCheckboxChange={() => toggleSelectAll(data.books)}
             checkbox
             headers={<TableHeaders />}
           >
-            {filteredBooks?.map((book) => (
+            {data.books.map((book) => (
               <BooksTableItem book={book} key={book.id} />
             ))}
           </BaseTable>
