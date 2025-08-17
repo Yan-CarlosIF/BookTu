@@ -16,7 +16,7 @@ export function useEditCategory() {
 
   return useMutation({
     mutationFn: async ({ id, name }: IEditCategory) => {
-      const { data } = await api.patch(
+      const { data: response } = await api.patch(
         `/categories/${id}`,
         { name },
         {
@@ -26,7 +26,7 @@ export function useEditCategory() {
         }
       );
 
-      return data;
+      return response;
     },
 
     onSuccess: () => {
@@ -40,18 +40,11 @@ export function useEditCategory() {
       });
     },
 
-    onError: ({ response: { data } }) => {
-      if (data.message === "Category already exists") {
-        return toast({
-          title: "Categoria já cadastrada",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-      }
+    onError: ({ response }) => {
+      const { message } = response.data;
 
       toast({
-        title: "Erro ao editar categoria",
+        title: response.status === 500 ? "Erro ao editar categoria" : message,
         status: "error",
         duration: 3000,
         isClosable: true,

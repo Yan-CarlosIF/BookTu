@@ -23,11 +23,13 @@ export function useEditBook() {
 
   return useMutation({
     mutationFn: async ({ id, data }: IEditBook) => {
-      await api.patch(`/books/${id}`, data, {
+      const { data: response } = await api.patch(`/books/${id}`, data, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
         },
       });
+
+      return response;
     },
 
     onSuccess: () => {
@@ -41,9 +43,11 @@ export function useEditBook() {
       });
     },
 
-    onError: () => {
+    onError: ({ response }) => {
+      const { message } = response.data;
+
       toast({
-        title: "Erro ao editar livro",
+        title: response.status === 500 ? "Erro ao editar livro" : message,
         status: "error",
         duration: 3000,
         isClosable: true,

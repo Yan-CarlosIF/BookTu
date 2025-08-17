@@ -11,11 +11,13 @@ export function useDeleteCategory() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      await api.delete(`/categories/${id}`, {
+      const { data: response } = await api.delete(`/categories/${id}`, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
         },
       });
+
+      return response;
     },
 
     onSuccess: () => {
@@ -29,9 +31,11 @@ export function useDeleteCategory() {
       });
     },
 
-    onError: () => {
+    onError: ({ response }) => {
+      const { message } = response.data;
+
       toast({
-        title: "Erro ao excluir categoria",
+        title: response.status === 500 ? "Erro ao excluir categoria" : message,
         status: "error",
         duration: 3000,
         isClosable: true,

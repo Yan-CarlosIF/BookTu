@@ -11,11 +11,13 @@ export function useDeleteUser() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      await api.delete(`/users/${id}`, {
+      const { data: response } = await api.delete(`/users/${id}`, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
         },
       });
+
+      return response;
     },
 
     onSuccess: () => {
@@ -29,9 +31,11 @@ export function useDeleteUser() {
       });
     },
 
-    onError: () => {
+    onError: ({ response }) => {
+      const { message } = response.data;
+
       toast({
-        title: "Erro ao excluir usuário",
+        title: response.status === 500 ? "Erro ao excluir usuário" : message,
         status: "error",
         duration: 3000,
         isClosable: true,

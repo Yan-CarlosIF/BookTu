@@ -14,11 +14,13 @@ export function useEditUser() {
 
   return useMutation({
     mutationFn: async ({ id, data }: IEditUser) => {
-      await api.patch(`/users/${id}`, data, {
+      const { data: response } = await api.patch(`/users/${id}`, data, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
         },
       });
+
+      return response;
     },
 
     onSuccess: () => {
@@ -32,9 +34,11 @@ export function useEditUser() {
       });
     },
 
-    onError: () => {
+    onError: ({ response }) => {
+      const { message } = response.data;
+
       toast({
-        title: "Erro ao editar usuário",
+        title: response.status === 500 ? "Erro ao editar usuário" : message,
         status: "error",
         duration: 3000,
         isClosable: true,

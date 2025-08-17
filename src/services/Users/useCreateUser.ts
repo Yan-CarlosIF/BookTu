@@ -16,11 +16,13 @@ export function useCreateUser() {
 
   return useMutation({
     mutationFn: async (data: ICreateUser) => {
-      await api.post("/users", data, {
+      const { data: response } = await api.post("/users", data, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
         },
       });
+
+      return response;
     },
 
     onSuccess: () => {
@@ -34,9 +36,11 @@ export function useCreateUser() {
       });
     },
 
-    onError: () => {
+    onError: ({ response }) => {
+      const { message } = response.data;
+
       toast({
-        title: "Erro ao cadastrar usuário",
+        title: response.status === 500 ? "Erro ao cadastrar usuário" : message,
         status: "error",
         duration: 3000,
         isClosable: true,

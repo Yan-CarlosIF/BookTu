@@ -11,11 +11,13 @@ export function useDeleteBook() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      await api.delete(`/books/${id}`, {
+      const { data: response } = await api.delete(`/books/${id}`, {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",
         },
       });
+
+      return response;
     },
 
     onSuccess: () => {
@@ -29,9 +31,11 @@ export function useDeleteBook() {
       });
     },
 
-    onError: () => {
+    onError: ({ response }) => {
+      const { message } = response.data;
+
       toast({
-        title: "Erro ao excluir livro",
+        title: response.status === 500 ? "Erro ao excluir livro" : message,
         status: "error",
         duration: 3000,
         isClosable: true,

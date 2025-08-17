@@ -11,7 +11,7 @@ export function useCreateCategory() {
 
   return useMutation({
     mutationFn: async (name: string) => {
-      const { data } = await api.post(
+      const { data: response } = await api.post(
         "/categories",
         { name },
         {
@@ -21,7 +21,7 @@ export function useCreateCategory() {
         }
       );
 
-      return data;
+      return response;
     },
 
     onSuccess: () => {
@@ -35,18 +35,12 @@ export function useCreateCategory() {
       });
     },
 
-    onError: ({ response: { data } }) => {
-      if (data.message === "Category already exists") {
-        return toast({
-          title: "Categoria já cadastrada",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-      }
+    onError: ({ response }) => {
+      const { message } = response.data;
 
       toast({
-        title: "Erro ao cadastrar categoria",
+        title:
+          response.status === 500 ? "Erro ao cadastrar categoria" : message,
         status: "error",
         duration: 3000,
         isClosable: true,
