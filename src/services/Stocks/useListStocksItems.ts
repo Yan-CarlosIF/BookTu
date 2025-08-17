@@ -11,11 +11,15 @@ interface IResponse {
   lastPage: number;
 }
 
-export function useListStocksItems(page: number, sort?: string) {
+export function useListStocksItems(
+  page: number,
+  sort?: string,
+  search?: string
+) {
   const token = nookies.get(null)["auth.token"];
 
   return useQuery({
-    queryKey: ["stocks", page, sort],
+    queryKey: ["stocks", page, sort, search],
     queryFn: async () => {
       const { data } = await api.get<IResponse>("/stocks", {
         headers: {
@@ -24,6 +28,7 @@ export function useListStocksItems(page: number, sort?: string) {
         params: {
           page,
           establishmentId: sort,
+          search,
         },
       });
 

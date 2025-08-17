@@ -7,6 +7,7 @@ import { Pagination } from "@/components/Pagination/pagination";
 import { SearchBar } from "@/components/search-bar";
 import { BaseTable } from "@/components/Table";
 import { LoadingStocks } from "@/components/Table/LoadingState/loading-stocks";
+import { useDebounce } from "@/hooks/useDebounce";
 import { NextPageWithLayout } from "@/pages/_app";
 import { useListAllEstablishments } from "@/services/Establishments/useListAllEstablishments";
 import { useListStocksItems } from "@/services/Stocks/useListStocksItems";
@@ -30,9 +31,15 @@ const tableHeaders = () => (
 
 const StocksPage: NextPageWithLayout<StocksPageProps> = ({ page, sort }) => {
   const router = useRouter();
-  const { data: establishments } = useListAllEstablishments();
-  const { data: items, isLoading } = useListStocksItems(page, sort);
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
+
+  const { data: establishments } = useListAllEstablishments();
+  const { data: items, isLoading } = useListStocksItems(
+    page,
+    sort,
+    debouncedSearch
+  );
 
   function handleFilterChange(sort: string) {
     if (sort === "") {
@@ -46,16 +53,12 @@ const StocksPage: NextPageWithLayout<StocksPageProps> = ({ page, sort }) => {
     });
   }
 
-  const filteredStocks = items?.data?.filter((stock) =>
-    stock.book.title.toLowerCase().includes(search.toLowerCase().trim())
-  );
-
   return (
     <>
       <SearchBar
         searchValue={search}
         onSearch={setSearch}
-        placeholder="Procurar pelo nome do livro"
+        placeholder="Buscar pelo título do livro"
         onFilter={handleFilterChange}
         filterOptions={establishments?.map((e) => ({
           value: e.id,
@@ -68,7 +71,7 @@ const StocksPage: NextPageWithLayout<StocksPageProps> = ({ page, sort }) => {
       ) : (
         <>
           <BaseTable h="575px" headers={tableHeaders()}>
-            {filteredStocks?.map((item) => (
+            {items.data.map((item) => (
               <StocksTableItem key={item.id} stockItem={item} />
             ))}
           </BaseTable>

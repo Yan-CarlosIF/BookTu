@@ -7,6 +7,7 @@ import { SearchBar } from "@/components/search-bar";
 import { BaseTable } from "@/components/Table";
 import { SimpleTableLoading } from "@/components/Table/LoadingState/loading-categories";
 import { userContext } from "@/context/userContext";
+import { useDebounce } from "@/hooks/useDebounce";
 import { UseListCategories } from "@/services/Categories/useListCategories";
 import { withAuthServerSideProps } from "@/utils/withAuth";
 
@@ -47,7 +48,8 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
   sort,
 }) => {
   const [search, setSearch] = useState("");
-  const { data, isLoading } = UseListCategories(page, sort);
+  const debouncedSearch = useDebounce(search);
+  const { data, isLoading } = UseListCategories(page, sort, debouncedSearch);
 
   const router = useRouter();
 
@@ -64,10 +66,6 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
     });
   }
 
-  const filteredCategories = data?.categories.filter((category) =>
-    category.name.toLowerCase().includes(search.toLowerCase().trim())
-  );
-
   return (
     <>
       <SearchBar
@@ -83,7 +81,7 @@ const CategoriesPage: NextPageWithLayout<CategoriesPageProps> = ({
       ) : (
         <>
           <BaseTable h="575px" headers={<TableHeaders />}>
-            {filteredCategories.map((category) => (
+            {data.categories.map((category) => (
               <CategoriesTableItem key={category.id} category={category} />
             ))}
           </BaseTable>

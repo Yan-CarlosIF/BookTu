@@ -12,11 +12,11 @@ interface IResponse {
   lastPage: number;
 }
 
-export function UseListCategories(page: number, sort: string) {
+export function UseListCategories(page: number, sort: string, search?: string) {
   const token = nookies.get(null)["auth.token"];
 
   return useQuery({
-    queryKey: ["categories", page, sort],
+    queryKey: ["categories", page, sort, search],
     queryFn: async () => {
       const { data } = await api.get<IResponse>("/categories", {
         headers: {
@@ -25,6 +25,7 @@ export function UseListCategories(page: number, sort: string) {
         params: {
           page,
           sort,
+          search,
         },
       });
 

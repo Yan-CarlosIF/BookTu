@@ -10,6 +10,7 @@ import {
   TableCheckboxProvider,
 } from "@/context/checkboxContext";
 import { userContext } from "@/context/userContext";
+import { useDebounce } from "@/hooks/useDebounce";
 import { NextPageWithLayout } from "@/pages/_app";
 import { useListEstablishments } from "@/services/Establishments/useListEstablishments";
 import { withAuthServerSideProps } from "@/utils/withAuth";
@@ -28,18 +29,14 @@ const EstablishmentsPageContent: NextPageWithLayout<
   const isAdmin = !isLoading && user?.permission === "admin";
 
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
 
   const { selectedData, toggleSelectAll } = useContext(TableCheckboxContext);
 
-  const { data, isLoading: isEstablishmentsLoading } =
-    useListEstablishments(page);
-
-  const filteredEstablishments = data?.establishments.filter((e) => {
-    return (
-      e.name.toLowerCase().includes(search) ||
-      e.cnpj.toLowerCase().includes(search)
-    );
-  });
+  const { data, isLoading: isEstablishmentsLoading } = useListEstablishments(
+    page,
+    debouncedSearch
+  );
 
   return (
     <>
@@ -56,13 +53,13 @@ const EstablishmentsPageContent: NextPageWithLayout<
             h="612px"
             checkbox={isAdmin}
             isCheckboxChecked={
-              selectedData?.length === filteredEstablishments?.length
+              selectedData?.length === data.establishments.length
             }
             isCheckboxIndeterminate={
               selectedData?.length > 0 &&
-              selectedData?.length < filteredEstablishments?.length
+              selectedData?.length < data.establishments.length
             }
-            onCheckboxChange={() => toggleSelectAll(filteredEstablishments)}
+            onCheckboxChange={() => toggleSelectAll(data.establishments)}
             headers={
               <>
                 <Th>Nome</Th>
@@ -71,7 +68,7 @@ const EstablishmentsPageContent: NextPageWithLayout<
               </>
             }
           >
-            {filteredEstablishments.map((e) => (
+            {data.establishments.map((e) => (
               <EstablishmentsTableItem key={e.id} establishment={e} />
             ))}
           </BaseTable>

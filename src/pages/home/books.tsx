@@ -87,7 +87,7 @@ const BooksPageContent: NextPageWithLayout<BooksPageProps> = ({
     <>
       <SearchBar
         searchValue={search}
-        placeholder="Busca pelo título, autor e identificador"
+        placeholder="Buscar pelo título, autor e identificador"
         onSearch={setSearch}
         onFilter={handleFilterChange}
         filterOptions={filterOptions}

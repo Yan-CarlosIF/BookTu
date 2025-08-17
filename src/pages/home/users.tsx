@@ -10,6 +10,7 @@ import {
   TableCheckboxContext,
   TableCheckboxProvider,
 } from "@/context/checkboxContext";
+import { useDebounce } from "@/hooks/useDebounce";
 import { useListUsers } from "@/services/Users/useListUsers";
 import { ensureUserAdmin } from "@/utils/ensureUserAdmin";
 
@@ -53,8 +54,9 @@ const UsersPageContent: NextPageWithLayout<UsersPageProps> = ({
   page,
   sort,
 }) => {
-  const { data, isLoading } = useListUsers(page, sort);
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
+  const { data, isLoading } = useListUsers(page, sort, debouncedSearch);
   const router = useRouter();
 
   function handleFilterChange(sort: string) {
@@ -69,10 +71,6 @@ const UsersPageContent: NextPageWithLayout<UsersPageProps> = ({
       },
     });
   }
-
-  const filteredUsers = data?.users.filter((user) =>
-    user.name.toLowerCase().includes(search.toLowerCase().trim())
-  );
 
   const { selectedData, toggleSelectAll } = useContext(TableCheckboxContext);
 
@@ -92,16 +90,15 @@ const UsersPageContent: NextPageWithLayout<UsersPageProps> = ({
         <>
           <BaseTable
             h="575px"
-            isCheckboxChecked={selectedData.length === filteredUsers?.length}
+            isCheckboxChecked={selectedData.length === data.users.length}
             isCheckboxIndeterminate={
-              selectedData.length > 0 &&
-              selectedData.length < filteredUsers?.length
+              selectedData.length > 0 && selectedData.length < data.users.length
             }
-            onCheckboxChange={() => toggleSelectAll(filteredUsers)}
+            onCheckboxChange={() => toggleSelectAll(data.users)}
             headers={<TableHeaders />}
             checkbox
           >
-            {filteredUsers?.map((user) => (
+            {data.users.map((user) => (
               <UserTableItem key={user.id} user={user} />
             ))}
           </BaseTable>

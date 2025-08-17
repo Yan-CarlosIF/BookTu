@@ -11,11 +11,11 @@ interface IResponse {
   lastPage: number;
 }
 
-export function useListEstablishments(page: number) {
+export function useListEstablishments(page: number, search?: string) {
   const token = nookies.get(null)["auth.token"];
 
   return useQuery({
-    queryKey: ["establishments", page],
+    queryKey: ["establishments", page, search],
     queryFn: async () => {
       const { data } = await api.get<IResponse>("/establishments", {
         headers: {
@@ -23,6 +23,7 @@ export function useListEstablishments(page: number) {
         },
         params: {
           page,
+          search,
         },
       });
 

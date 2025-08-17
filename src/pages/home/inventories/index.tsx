@@ -12,6 +12,7 @@ import {
   TableCheckboxProvider,
 } from "@/context/checkboxContext";
 import { userContext } from "@/context/userContext";
+import { useDebounce } from "@/hooks/useDebounce";
 import { useListAllEstablishments } from "@/services/Establishments/useListAllEstablishments";
 import { useListInventories } from "@/services/Inventories/useListInventories";
 import { withAuthServerSideProps } from "@/utils/withAuth";
@@ -45,9 +46,15 @@ const InventoriesPageContent: NextPageWithLayout<InventoriesPageProps> = ({
 }) => {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
+
   const [isProcessing, setIsProcessing] = useState(false);
   const { data: establishments } = useListAllEstablishments();
-  const { data: inventoriesData } = useListInventories(page, sort);
+  const { data: inventoriesData } = useListInventories(
+    page,
+    sort,
+    debouncedSearch
+  );
 
   const inventories = inventoriesData?.data;
 
@@ -70,7 +77,7 @@ const InventoriesPageContent: NextPageWithLayout<InventoriesPageProps> = ({
       <SearchBar
         searchValue={search}
         onSearch={setSearch}
-        placeholder="Procurar pelo número identificador do inventário"
+        placeholder="Buscar pelo número identificador do inventário"
         onFilter={handleFilterChange}
         filterOptions={establishments?.map((e) => ({
           value: e.id,
