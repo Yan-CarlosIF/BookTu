@@ -10,31 +10,41 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { LibraryBig } from "lucide-react";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 
 import { EstablishmentAddressPopover } from "@/components/establishment-address-popover";
 import { TableCheckboxContext } from "@/context/checkboxContext";
+import { userContext } from "@/context/userContext";
+import { useProcessInventory } from "@/services/Inventories/useProcessInventory";
 import { Inventory } from "@/shared/types/inventory";
 
 import { InventoryProductsModal } from "./inventory-products-modal";
 
 interface InventoriesTableItemProps {
   inventory: Inventory;
-  handleProcessInventory: (
-    id: string,
-    setIsProcessing: React.Dispatch<React.SetStateAction<boolean>>
-  ) => Promise<void>;
-  isFetching: boolean;
+  setIsProcessing: React.Dispatch<React.SetStateAction<boolean>>;
+  isProcessing: boolean;
 }
 
 export function InventoriesTableItem({
   inventory,
-  handleProcessInventory,
-  isFetching,
+  setIsProcessing,
+  isProcessing,
 }: InventoriesTableItemProps) {
+  const { isLoading, user } = useContext(userContext);
   const { selectedData, toggleSelectData } = useContext(TableCheckboxContext);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const { mutateAsync: processInventoryFn, isPending } = useProcessInventory();
   const disclosure = useDisclosure();
+
+  const isAdmin = !isLoading && user?.permission === "admin";
+
+  async function handleProcessInventory(id: string) {
+    setIsProcessing(true);
+
+    await processInventoryFn(id);
+
+    setIsProcessing(false);
+  }
 
   return (
     <Tr key={inventory.id}>
@@ -88,7 +98,7 @@ export function InventoriesTableItem({
           w="130px"
           variant="subtle"
           colorScheme={
-            isProcessing
+            isPending
               ? "orange"
               : inventory.status === "processed"
               ? "teal"
@@ -98,26 +108,28 @@ export function InventoriesTableItem({
           textAlign="center"
           py="3px"
         >
-          {isProcessing
+          {isPending
             ? "PROCESSANDO..."
             : inventory.status === "unprocessed"
             ? "NÃO PROCESSADO"
             : "PROCESSADO"}
         </Badge>
       </Td>
-      <Td w="10%" textAlign="center" py="0px">
-        <Button
-          disabled={
-            inventory.status === "processed" || isProcessing || isFetching
-          }
-          isLoading={isProcessing}
-          size="sm"
-          colorScheme="teal"
-          onClick={() => handleProcessInventory(inventory.id, setIsProcessing)}
-        >
-          Processar
-        </Button>
-      </Td>
+      {isAdmin && (
+        <Td w="10%" textAlign="center" py="0px">
+          <Button
+            disabled={
+              inventory.status === "processed" || isProcessing || isPending
+            }
+            isLoading={isPending}
+            size="sm"
+            colorScheme="teal"
+            onClick={() => handleProcessInventory(inventory.id)}
+          >
+            Processar
+          </Button>
+        </Td>
+      )}
     </Tr>
   );
 }

@@ -11,6 +11,7 @@ import {
   TableCheckboxContext,
   TableCheckboxProvider,
 } from "@/context/checkboxContext";
+import { userContext } from "@/context/userContext";
 import { useListAllEstablishments } from "@/services/Establishments/useListAllEstablishments";
 import { useListInventories } from "@/services/Inventories/useListInventories";
 import { withAuthServerSideProps } from "@/utils/withAuth";
@@ -22,15 +23,21 @@ interface InventoriesPageProps {
   sort: string | null;
 }
 
-const TableHeaders = () => (
-  <>
-    <Th>Número identificador</Th>
-    <Th>Estabelecimento</Th>
-    <Th textAlign="center">Total de produtos</Th>
-    <Th textAlign="center">Status</Th>
-    <Th textAlign="center">Processar</Th>
-  </>
-);
+const TableHeaders = () => {
+  const { isLoading, user } = useContext(userContext);
+
+  const isAdmin = !isLoading && user?.permission === "admin";
+
+  return (
+    <>
+      <Th>Número identificador</Th>
+      <Th>Estabelecimento</Th>
+      <Th textAlign="center">Total de produtos</Th>
+      <Th textAlign="center">Status</Th>
+      {isAdmin && <Th textAlign="center">Processar</Th>}
+    </>
+  );
+};
 
 const InventoriesPageContent: NextPageWithLayout<InventoriesPageProps> = ({
   page,
@@ -38,7 +45,7 @@ const InventoriesPageContent: NextPageWithLayout<InventoriesPageProps> = ({
 }) => {
   const router = useRouter();
   const [search, setSearch] = useState("");
-  const [isFetching, setIsFetching] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { data: establishments } = useListAllEstablishments();
   const { data: inventoriesData } = useListInventories(page, sort);
 
@@ -54,20 +61,6 @@ const InventoriesPageContent: NextPageWithLayout<InventoriesPageProps> = ({
         sort,
       },
     });
-  }
-
-  async function handleProcessInventory(
-    id: string,
-    setIsProcessing: React.Dispatch<React.SetStateAction<boolean>>
-  ) {
-    setIsProcessing(true);
-    setIsFetching(true);
-
-    console.log(`Processing inventory with ID: ${id}`);
-    await new Promise((resolve) => setTimeout(resolve, 4000));
-
-    setIsProcessing(false);
-    setIsFetching(false);
   }
 
   const { selectedData, toggleSelectAll } = useContext(TableCheckboxContext);
@@ -97,8 +90,8 @@ const InventoriesPageContent: NextPageWithLayout<InventoriesPageProps> = ({
       >
         {inventories?.map((inventory) => (
           <InventoriesTableItem
-            isFetching={isFetching}
-            handleProcessInventory={handleProcessInventory}
+            isProcessing={isProcessing}
+            setIsProcessing={setIsProcessing}
             key={inventory.id}
             inventory={inventory}
           />
