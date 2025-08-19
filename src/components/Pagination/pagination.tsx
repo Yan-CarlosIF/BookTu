@@ -5,11 +5,13 @@ import { useRouter } from "next/router";
 import { PaginationItem } from "./pagination-item";
 
 interface PaginationProps extends StackProps {
+  withState?: boolean;
   currentPage: number;
   lastPage: number;
 }
 
 export function Pagination({
+  withState,
   lastPage,
   currentPage,
   ...rest
@@ -24,11 +26,32 @@ export function Pagination({
     router.push(`?page=${page}`);
   }
 
+  function handlePageChangeWithState(page: number) {
+    if (router.query.sort) {
+      if (router.query.page) {
+        return router.push(
+          `?prodPage=${page}&sort=${router.query.sort}&page=${router.query.page}`
+        );
+      }
+      return router.push(`?prodPage=${page}&sort=${router.query.sort}`);
+    }
+
+    router.push(`?prodPage=${page}`);
+  }
+
   function handlePreviousPage() {
+    if (withState) {
+      return handlePageChangeWithState(currentPage - 1);
+    }
+
     handlePageChange(currentPage - 1);
   }
 
   function handleNextPage() {
+    if (withState) {
+      return handlePageChangeWithState(currentPage + 1);
+    }
+
     handlePageChange(currentPage + 1);
   }
 
