@@ -1,4 +1,4 @@
-import { Box, Checkbox, Td, Text, Tr } from "@chakra-ui/react";
+import { Badge, Box, Checkbox, Td, Text, Tr } from "@chakra-ui/react";
 import { useContext } from "react";
 
 import { TooltipCategories } from "@/components/pages/books/tooltip-categories";
@@ -22,10 +22,13 @@ export function BooksTableItem({ book }: BooksTableItemProps) {
           onChange={() => toggleSelectData(book)}
         />
       </Td>
+      <Td w="10%" py="0px" borderRight="1px" borderRightColor="gray.200">
+        <Badge>{book.identifier}</Badge>
+      </Td>
       <Td
         w="30%"
         maxH="40px"
-        p="0px"
+        py="0px"
         borderRight="1px"
         borderRightColor="gray.200"
       >
@@ -38,10 +41,8 @@ export function BooksTableItem({ book }: BooksTableItemProps) {
           )}
         </Box>
       </Td>
-      <Td w="20%" borderRight="1px" borderRightColor="gray.200">
-        {book.identifier}
-      </Td>
       <Td
+        w="20%"
         borderRight="1px"
         color={book.categories.length === 0 ? "gray.400" : "gray_800"}
         borderRightColor="gray.200"

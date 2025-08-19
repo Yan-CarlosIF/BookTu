@@ -22,6 +22,7 @@ interface StocksPageProps {
 
 const tableHeaders = () => (
   <>
+    <Th>Identificador</Th>
     <Th>Livro</Th>
     <Th>Estabelecimento</Th>
     <Th>Preço</Th>

@@ -1,4 +1,4 @@
-import { Box, Td, Text, Tr } from "@chakra-ui/react";
+import { Badge, Box, Td, Text, Tr } from "@chakra-ui/react";
 
 import { EstablishmentAddressPopover } from "@/components/establishment-address-popover";
 import { StockItem } from "@/shared/types/stockItem";
@@ -11,6 +11,9 @@ interface StocksTableItemProps {
 export function StocksTableItem({ stockItem }: StocksTableItemProps) {
   return (
     <Tr>
+      <Td borderRight="1px" py="0px" borderRightColor="gray.200">
+        <Badge>{stockItem.book.identifier}</Badge>
+      </Td>
       <Td
         w="40%"
         maxH="40px"

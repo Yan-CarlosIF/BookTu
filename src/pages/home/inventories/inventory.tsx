@@ -201,9 +201,12 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
             <Table size="sm">
               <Thead>
                 <Tr>
-                  <Th>Título</Th>
+                  <Th w="10%">Identificador</Th>
+                  <Th w="35%" textAlign="center">
+                    Título
+                  </Th>
                   <Th>Quantidade</Th>
-                  <Th w="100px"></Th>
+                  <Th w="10%"></Th>
                 </Tr>
               </Thead>
             </Table>

@@ -1,4 +1,4 @@
-import { Box, List, ListItem, Text } from "@chakra-ui/react";
+import { Badge, Box, List, ListItem, Text } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 
 import { Input } from "@/components/input";
@@ -63,7 +63,9 @@ export function BookSelector({
                   setQuery("");
                 }}
               >
-                <Text fontSize="sm">{book.title}</Text>
+                <Text fontSize="sm">
+                  <Badge>{book.identifier}</Badge> - {book.title}
+                </Text>
               </ListItem>
             ))}
           </List>

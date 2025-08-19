@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Modal,
   ModalBody,
@@ -48,6 +49,7 @@ export function InventoryProductsModal({
             <Table variant="striped" colorScheme="gray">
               <Thead bg="gray.50">
                 <Tr>
+                  <Th>Identificador</Th>
                   <Th>Título</Th>
                   <Th>Categoria(s)</Th>
                   <Th isNumeric>Quantidade</Th>
@@ -58,6 +60,11 @@ export function InventoryProductsModal({
               <Tbody>
                 {inventory.books.map((product) => (
                   <Tr key={product.id}>
+                    <Td>
+                      <Badge colorScheme="blackAlpha">
+                        {product.book.identifier}
+                      </Badge>
+                    </Td>
                     <Td>{product.book.title}</Td>
                     <Td
                       color={

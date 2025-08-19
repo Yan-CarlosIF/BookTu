@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   NumberInput,
   NumberInputField,
@@ -21,7 +22,12 @@ export function SelectedBooksTableItem({
 }: SelectedBooksTableItemProps) {
   return (
     <Tr key={book.id}>
-      <Td>{book.title}</Td>
+      <Td w="10%">
+        <Badge>{book.identifier}</Badge>
+      </Td>
+      <Td w="37%" textAlign="center">
+        {book.title}
+      </Td>
       <Td>
         <NumberInput
           size="sm"

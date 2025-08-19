@@ -2,7 +2,7 @@ import { Button, ButtonProps, Flex, Icon, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/router";
-import nookies from "nookies";
+import { destroyCookie } from "nookies";
 
 interface SidebarItemProps extends ButtonProps {
   isActive?: boolean;
@@ -24,7 +24,7 @@ export function SidebarItem({
   const router = useRouter();
 
   function handleLogout() {
-    nookies.destroy(null, "auth.token", { path: "/" });
+    destroyCookie(null, "auth.token", { path: "/" });
     router.push("/");
   }
 
