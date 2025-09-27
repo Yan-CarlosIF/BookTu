@@ -6,6 +6,7 @@ import { api } from "@/lib/axios";
 
 interface IRequest {
   id: string;
+  establishment_id: string;
   inventoryBooks: { book_id?: string; quantity?: number }[];
 }
 
@@ -15,11 +16,12 @@ export function useEditInventory() {
   const token = nookies.get(null)["auth.token"];
 
   return useMutation({
-    mutationFn: async ({ id, inventoryBooks }: IRequest) => {
+    mutationFn: async ({ id, inventoryBooks, establishment_id }: IRequest) => {
       console.log(inventoryBooks);
       const { data: response } = await api.put(
         `/inventories/${id}`,
         {
+          establishment_id,
           inventoryBooks: [...inventoryBooks],
         },
         {

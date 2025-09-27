@@ -118,7 +118,7 @@ const InventoriesPage: NextPageWithLayout<InventoriesPageProps> = ({
 }) => {
   return (
     <TableCheckboxProvider>
-      <InventoriesPageContent page={page} sort={sort} />;
+      <InventoriesPageContent page={page} sort={sort} />
     </TableCheckboxProvider>
   );
 };

@@ -112,7 +112,7 @@ const UsersPageContent: NextPageWithLayout<UsersPageProps> = ({
 const UsersPage: NextPageWithLayout<UsersPageProps> = ({ page, sort }) => {
   return (
     <TableCheckboxProvider>
-      <UsersPageContent page={page} sort={sort} />;
+      <UsersPageContent page={page} sort={sort} />
     </TableCheckboxProvider>
   );
 };

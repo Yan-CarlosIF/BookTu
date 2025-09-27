@@ -81,6 +81,10 @@ const StocksPage: NextPageWithLayout<StocksPageProps> = ({ page, sort }) => {
               Página {page} de {items?.lastPage}
             </Text>
 
+            <Text fontSize="xl" color="gray_800" fontWeight="semibold">
+              Total: {items?.total}
+            </Text>
+
             <Pagination
               w="fit-content"
               currentPage={page}

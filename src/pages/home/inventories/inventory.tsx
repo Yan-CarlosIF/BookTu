@@ -138,6 +138,7 @@ const CreateInventoryPage: NextPageWithLayout<CreateInventoryPageProps> = ({
     if (id) {
       await editInventoryFn({
         id,
+        establishment_id: data.establishment_id,
         inventoryBooks: data.inventoryBooks,
       });
     }
