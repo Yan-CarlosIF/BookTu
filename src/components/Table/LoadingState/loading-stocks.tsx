@@ -82,6 +82,17 @@ export function LoadingStocks() {
           de <Skeleton as="strong" w="20px" h="16px" borderRadius="4px" />
         </Text>
 
+        <Text
+          fontSize="lg"
+          gap="10px"
+          color="gray_800"
+          fontWeight="semibold"
+          display="flex"
+          alignItems="center"
+        >
+          Total: <Skeleton as="strong" w="24px" h="16px" borderRadius="4px" />
+        </Text>
+
         <HStack spacing="2">
           <Button
             size="sm"

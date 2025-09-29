@@ -7,6 +7,7 @@ import { StockItem } from "@/shared/types/stockItem";
 interface IResponse {
   data: StockItem[];
   total: number;
+  totalUnits: number;
   page: number;
   lastPage: number;
 }
